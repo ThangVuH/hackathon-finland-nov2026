@@ -2,7 +2,8 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { APICallError, NoObjectGeneratedError, Output, jsonSchema, streamText, type ModelMessage } from "ai";
 
 import { createLovableAiGatewayRunIdFetch } from "./ai/run-id.server";
-import { callArbitrate, callDetector } from "./detector.server";
+import { arbitrate, nameReason, questionType, withoutDetector, type VisionPayload } from "./checker";
+import { callDetector } from "./detector.server";
 import type { RawAnalysis } from "./detections";
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1";
@@ -162,23 +163,28 @@ function refused(reason: string): RawAnalysis {
 }
 
 export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<AnalyzeOutcome> {
+  const refusedName = nameReason(input.filename);
+  if (refusedName) return { ok: true, raw: refused(refusedName) };
+
   const detected = await callDetector(input);
-  if (!detected.ok) return detected;
-  if (detected.body.scope === "out_of_scope") return { ok: true, raw: refused(detected.body.reason) };
+  if (detected.ok && detected.body.scope === "out_of_scope") return { ok: true, raw: refused(detected.body.reason) };
 
   const vision = await runVision(input);
-  const visionPayload = vision.ok
+  const visionPayload: VisionPayload = vision.ok
     ? { available: true, answer: vision.raw.answer, object_type: vision.raw.object_type, count: vision.raw.count, items: vision.raw.items }
     : { available: false, error: vision.error, items: [] };
 
-  if (detected.body.question_type === "other") {
-    if (!vision.ok) return vision;
+  if (!detected.ok) {
+    if (!detected.unavailable) return detected;
+    const kind = questionType(input.question);
+    if (!vision.ok && kind === "other") return vision;
+    return { ok: true, raw: withoutDetector(kind, visionPayload) };
   }
 
-  return callArbitrate({
-    questionType: detected.body.question_type,
-    detectorItems: detected.body.items,
-    confidence: detected.body.confidence,
-    vision: visionPayload,
-  });
+  if (detected.body.question_type === "other" && !vision.ok) return vision;
+
+  return {
+    ok: true,
+    raw: arbitrate(detected.body.question_type, detected.body.items, detected.body.confidence, visionPayload),
+  };
 }

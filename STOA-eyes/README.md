@@ -25,21 +25,15 @@ npm run dev
 
 ## Counting service
 
-Window and door counts are checked by the trained detector before the page trusts them. From `stoa-preview/counting`:
+Not required to open the site. Without it, window and door counts still come back from the vision model and stay marked "not checked".
 
-```sh
-py -3.13 -m uvicorn server:app --port 8765
-```
-
-The page calls that service from the server. Set `DETECTOR_URL` if it is not on port 8765.
-
-A count is marked reliable only when this detector and the vision model report the same total and their boxes overlap. Otherwise the disagreed boxes stay highlighted, and a click keeps or drops one. IFC files, PDF sheets and archive scans are refused.
+To mark a count reliable, run the service that is already trained, from `counting/` at the repo root. One shared machine is enough; set `DETECTOR_URL` on the others. See the repo README. Do not reinstall a training environment just to launch the page.
 
 ## API key
 
 Questions call the vision model from the server. That call needs `LOVABLE_API_KEY`.
 
-The site still loads without the key. A window or door count then comes from the detector only, and is marked unchecked. Any other question returns “The AI service isn’t configured.”
+The site still loads without the key. A window or door count then needs the optional detector, and is marked unchecked. Any other question returns “The AI service isn’t configured.”
 
 Where the key comes from, and how we share it, is still to be decided. When we have one, put it in `.env` in this folder and restart the dev server:
 
