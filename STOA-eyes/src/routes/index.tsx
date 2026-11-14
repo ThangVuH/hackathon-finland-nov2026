@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Eye, EyeOff, ImagePlus } from "lucide-react";
+import { ImagePlus } from "lucide-react";
 import { toast } from "sonner";
 
 import { ChatPanel, type ChatMessage } from "@/components/stoa/ChatPanel";
@@ -8,7 +8,8 @@ import { DrawingCanvas, isAcceptedFile, type Drawing, type DrawingCanvasHandle }
 import { normalizeAnalysis, stabilizeDetections } from "@/lib/detections";
 import { prepareImageForAnalysis, type PreparedImage } from "@/lib/image-prep";
 import { detectSheetMarks } from "@/lib/sketch-mark";
-import { analyzeDrawing, backendStatus, simplifyDrawing } from "@/lib/vision.functions";
+import { offTopicReply } from "@/lib/off-topic";
+import { analyzeDrawing, simplifyDrawing } from "@/lib/vision.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -50,7 +51,6 @@ function StoaVision() {
   const [showBlueprint, setShowBlueprint] = useState(true);
   const [showOriginal, setShowOriginal] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [backendNote, setBackendNote] = useState("Backend starting");
   const [sheets, setSheets] = useState<Record<string, SheetView>>({});
 
   const canvasRef = useRef<DrawingCanvasHandle>(null);
@@ -68,12 +68,6 @@ function StoaVision() {
       ? activeDone
       : [...messages].reverse().find((message) => message.role === "assistant" && message.status === "done" && message.fileId === drawing?.id);
   const detections = resultMessage?.role === "assistant" && resultMessage.status === "done" ? resultMessage.result.detections : [];
-
-  useEffect(() => {
-    void backendStatus()
-      .then((status) => setBackendNote(status.label))
-      .catch(() => setBackendNote("Backend unavailable"));
-  }, []);
 
   useEffect(() => {
     for (const drawing of drawings) {
@@ -139,6 +133,15 @@ function StoaVision() {
   }, []);
 
   const ask = async (question: string) => {
+    const aside = offTopicReply(question);
+    if (aside) {
+      setMessages((current) => [
+        ...current,
+        { id: uid(), role: "user", text: question, files: [] },
+        { id: uid(), role: "assistant", status: "note", text: aside },
+      ]);
+      return;
+    }
     if (drawings.length === 0) {
       toast.error("Add a drawing first");
       return;
@@ -234,17 +237,8 @@ function StoaVision() {
             Stoa <span className="text-safety">Vision</span>
           </span>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowBlueprint((value) => !value)}
-          aria-pressed={showBlueprint}
-          className="ml-auto inline-flex items-center gap-2 rounded-sm border border-border px-2.5 py-1 font-mono text-[0.7rem] text-foreground hover:border-safety hover:text-safety"
-        >
-          {showBlueprint ? <Eye className="size-3.5 text-scan" /> : <EyeOff className="size-3.5" />}
-          {showBlueprint ? "Hide blueprint" : "Show blueprint"}
-        </button>
       </header>
-      <main className="flex min-h-0 flex-1 flex-col lg:flex-row">
+      <main className="flex min-h-0 flex-1 flex-col bg-canvas lg:flex-row">
         {showBlueprint && (
           <section className="h-[55vh] min-h-0 border-border lg:h-auto lg:w-[70%] lg:border-r" aria-label="Drawing canvas">
             {drawing && displaySrc ? (
@@ -269,12 +263,13 @@ function StoaVision() {
             )}
           </section>
         )}
-        <aside className={cn("flex min-h-0 flex-1 flex-col", showBlueprint ? "border-t border-border lg:w-[30%] lg:flex-none lg:border-t-0" : "mx-auto w-full max-w-3xl")} aria-label="Drawing Q&A">
+        <aside className={cn("flex min-h-0 flex-1 flex-col bg-canvas", showBlueprint ? "border-t border-border lg:w-[30%] lg:flex-none lg:border-t-0" : "mx-auto w-full max-w-3xl")} aria-label="Drawing Q&A">
           <ChatPanel
             messages={messages}
             files={drawings.map((item) => ({ id: item.id, name: item.name }))}
             busy={busy}
-            backendNote={backendNote}
+            showBlueprint={showBlueprint}
+            onToggleBlueprint={() => setShowBlueprint((value) => !value)}
             activeFileId={drawing?.id ?? null}
             activeMessageId={activeMessageId}
             highlighted={highlighted}
@@ -320,18 +315,29 @@ function EmptySheet({ onUpload, onFiles }: { onUpload: () => void; onFiles: (fil
         if (event.dataTransfer.files.length) onFiles(event.dataTransfer.files);
       }}
     >
-      <div className="flex h-11 shrink-0 items-center gap-2 border-b border-border bg-panel px-3">
+      <div className="flex h-11 shrink-0 items-center gap-2 border-b border-border bg-canvas px-3">
         <span className="label-tech">Sheet</span>
         <span className="font-mono text-xs text-muted-foreground">No drawing loaded</span>
       </div>
       <button
         type="button"
         onClick={onUpload}
-        className={cn("flex min-h-0 flex-1 flex-col items-center justify-center gap-3 bg-blueprint-grid", dropActive && "bg-safety/10")}
+        className={cn("flex min-h-0 flex-1 flex-col items-center justify-center gap-8 bg-blueprint-grid px-8", dropActive && "bg-safety/10")}
       >
-        <ImagePlus className="size-8 text-safety" />
-        <p className="font-display text-xl text-foreground">Upload a drawing</p>
-        <p className="label-tech">PNG · JPG · WEBP</p>
+        <div className="pointer-events-none">
+          <p className="font-display text-[0.975rem] tracking-[0.42em] text-muted-foreground">You ask</p>
+          <p className="mt-[0.975rem] font-display text-[4.875rem] leading-none font-bold tracking-[0.18em] text-safety">Blueprints</p>
+          <p className="mt-[0.975rem] font-display text-[0.975rem] tracking-[0.42em] text-foreground">respond</p>
+          <div className="mx-auto mt-[1.95rem] h-px w-[6.5rem] bg-safety" aria-hidden />
+          <p className="mx-auto mt-[1.95rem] max-w-md text-[1.3rem] leading-relaxed text-muted-foreground">
+            We detect doors, windows, rooms, and columns on the sheet
+          </p>
+        </div>
+        <span className="inline-flex items-center gap-2 font-display text-sm text-foreground">
+          <ImagePlus className="size-4 text-safety" />
+          {dropActive ? "Drop the files" : "Upload a drawing"}
+          <span className="label-tech">PNG · JPG · WEBP</span>
+        </span>
       </button>
     </div>
   );

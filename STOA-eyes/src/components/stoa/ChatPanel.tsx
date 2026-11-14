@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, FileImage, Loader2, ScanSearch, TriangleAlert, X } from "lucide-react";
+import { ArrowUp, Eye, EyeOff, FileImage, Loader2, TriangleAlert, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { AnalysisResult } from "@/lib/detections";
@@ -10,7 +10,8 @@ export type ChatMessage =
   | { id: string; role: "user"; text: string; files: ChatFile[] }
   | { id: string; role: "assistant"; status: "pending"; fileId: string; fileName: string }
   | { id: string; role: "assistant"; status: "error"; error: string; fileId: string; fileName: string }
-  | { id: string; role: "assistant"; status: "done"; result: AnalysisResult; fileId: string; fileName: string };
+  | { id: string; role: "assistant"; status: "done"; result: AnalysisResult; fileId: string; fileName: string }
+  | { id: string; role: "assistant"; status: "note"; text: string };
 
 const QUICK_PROMPTS = ["How many doors?", "Count all windows", "How many rooms?", "Count the columns"];
 
@@ -18,7 +19,8 @@ interface Props {
   messages: ChatMessage[];
   files: ChatFile[];
   busy: boolean;
-  backendNote: string;
+  showBlueprint: boolean;
+  onToggleBlueprint: () => void;
   activeFileId: string | null;
   activeMessageId: string | null;
   highlighted: number | null;
@@ -34,7 +36,8 @@ export function ChatPanel({
   messages,
   files,
   busy,
-  backendNote,
+  showBlueprint,
+  onToggleBlueprint,
   activeFileId,
   activeMessageId,
   highlighted,
@@ -64,7 +67,7 @@ export function ChatPanel({
 
   return (
     <div
-      className="flex h-full min-h-0 flex-col bg-panel"
+      className="flex h-full min-h-0 flex-col bg-canvas"
       onDragOver={(event) => {
         event.preventDefault();
         setDropActive(true);
@@ -78,14 +81,25 @@ export function ChatPanel({
         if (event.dataTransfer.files.length) onAddFiles(event.dataTransfer.files);
       }}
     >
-      <div className="flex h-11 shrink-0 items-center gap-2 border-b border-border px-4">
-        <ScanSearch className="size-4 shrink-0 text-safety" />
-        <span className="font-display text-sm font-semibold text-foreground">Drawing Q&amp;A</span>
-        <span className="label-tech truncate">{backendNote}</span>
+      <div className="flex h-12 shrink-0 items-center justify-end px-3">
+        <button
+          type="button"
+          onClick={onToggleBlueprint}
+          aria-pressed={showBlueprint}
+          className={cn(
+            "inline-flex shrink-0 items-center gap-2 rounded-sm px-3 py-1.5 font-display text-sm font-semibold",
+            showBlueprint
+              ? "border border-border text-foreground hover:border-safety hover:text-safety"
+              : "bg-safety text-safety-foreground hover:opacity-90",
+          )}
+        >
+          {showBlueprint ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          {showBlueprint ? "Hide blueprint" : "Show blueprint"}
+        </button>
       </div>
 
       <div ref={scrollRef} className="scrollbar-thin min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
-        {messages.length === 0 && <EmptyState dropActive={dropActive} />}
+        {messages.length === 0 && (files.length > 0 || !showBlueprint) && <EmptyState dropActive={dropActive} />}
         {messages.map((m) =>
           m.role === "user" ? (
             <div key={m.id} className="flex justify-end">
@@ -95,6 +109,10 @@ export function ChatPanel({
                   <p className="mt-1 font-mono text-[0.68rem] text-muted-foreground">{m.files.map((file) => file.name).join(" · ")}</p>
                 )}
               </div>
+            </div>
+          ) : m.status === "note" ? (
+            <div key={m.id} className="max-w-[85%] rounded-sm border border-border px-3 py-2 text-sm leading-relaxed text-foreground">
+              {m.text}
             </div>
           ) : (
             <AssistantMessage
@@ -149,7 +167,7 @@ export function ChatPanel({
             e.preventDefault();
             submit(input);
           }}
-          className="flex items-end gap-2 rounded-sm border border-input bg-background p-1.5 focus-within:border-scan"
+          className="flex items-end gap-2 rounded-sm border border-input bg-canvas p-1.5 focus-within:border-scan"
         >
           <button
             type="button"
@@ -202,16 +220,24 @@ export function ChatPanel({
 
 function EmptyState({ dropActive }: { dropActive: boolean }) {
   return (
-    <div className="flex h-full flex-col justify-center gap-3 py-8">
-      <div className="hazard-stripe h-1.5 w-16" />
-      <h2 className="font-display text-2xl leading-tight font-bold text-foreground">
-        Ask the drawings.
-        <br />
-        <span className="text-safety">Read the count.</span>
+    <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+      <BlueprintIntro />
+      {dropActive && <p className="mt-4 text-sm text-safety">Drop the files to add them.</p>}
+    </div>
+  );
+}
+
+function BlueprintIntro({ large = false }: { large?: boolean }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <p className="font-display text-[0.975rem] tracking-[0.42em] text-muted-foreground">You ask</p>
+      <h2 className={cn("mt-[0.975rem] font-display leading-none font-bold tracking-[0.18em] text-safety", large ? "text-[4.875rem]" : "text-[2.925rem]")}>
+        Blueprints
       </h2>
-      <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
-        Add one or more drawings. Each answer gives the count and the file it came from.
-        {dropActive ? " Drop the files to add them." : ""}
+      <p className="mt-[0.975rem] font-display text-[0.975rem] tracking-[0.42em] text-foreground">respond</p>
+      <div className="mt-[1.95rem] h-px w-[6.5rem] bg-safety" aria-hidden />
+      <p className={cn("mt-[1.95rem] leading-relaxed text-muted-foreground", large ? "max-w-md text-[1.3rem]" : "max-w-xs text-[1.1375rem]")}>
+        We detect doors, windows, rooms, and columns on the sheet
       </p>
     </div>
   );
@@ -224,7 +250,7 @@ function AssistantMessage({
   onHover,
   onSelect,
 }: {
-  message: Extract<ChatMessage, { role: "assistant" }>;
+  message: Exclude<Extract<ChatMessage, { role: "assistant" }>, { status: "note" }>;
   active: boolean;
   highlighted: number | null;
   onHover: (index: number | null) => void;

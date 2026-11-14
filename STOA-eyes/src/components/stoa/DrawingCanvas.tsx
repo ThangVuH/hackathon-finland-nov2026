@@ -201,7 +201,7 @@ export function DrawingCanvas({
   return (
     <div className="relative flex h-full min-h-0 flex-col bg-canvas">
       {/* Toolbar */}
-      <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-border bg-panel px-3">
+      <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-border bg-canvas px-3">
         <div className="flex min-w-0 items-center gap-2">
           <span className="label-tech">Sheet</span>
           <span className="truncate font-mono text-xs text-foreground">{drawing.name}</span>
