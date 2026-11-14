@@ -4,7 +4,6 @@ import { Crosshair, Maximize, Minus, Plus, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Detection } from "@/lib/detections";
 import { ACCEPTED_TYPES } from "@/lib/image-prep";
-import { detectSheetMarks, type InkRead } from "@/lib/sketch-mark";
 
 export interface Drawing {
   id: string;
@@ -58,7 +57,6 @@ export function DrawingCanvas({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
-  const [marks, setMarks] = useState<InkRead>({ drafted: false, handSketch: false, complicated: false });
   const [view, setView] = useState<View>({ x: 0, y: 0, z: 1 });
   const viewRef = useRef(view);
   viewRef.current = view;
@@ -93,17 +91,6 @@ export function DrawingCanvas({
     const img = imgRef.current;
     if (img?.complete && img.naturalWidth) setNatural({ w: img.naturalWidth, h: img.naturalHeight });
     else setNatural(null);
-  }, [drawing.src]);
-
-  useEffect(() => {
-    let cancel = false;
-    setMarks({ drafted: false, handSketch: false, complicated: false });
-    void detectSheetMarks(drawing.src).then((next) => {
-      if (!cancel) setMarks(next);
-    });
-    return () => {
-      cancel = true;
-    };
   }, [drawing.src]);
 
   useEffect(() => {
@@ -218,8 +205,6 @@ export function DrawingCanvas({
         <div className="flex min-w-0 items-center gap-2">
           <span className="label-tech">Sheet</span>
           <span className="truncate font-mono text-xs text-foreground">{drawing.name}</span>
-          {marks.drafted && <span className="label-tech shrink-0">Drafted</span>}
-          {marks.handSketch && <span className="label-tech shrink-0 text-scan">Hand sketch</span>}
           {badge && (
             <span className="label-tech shrink-0 text-scan" title={badgeTitle}>
               {badge}

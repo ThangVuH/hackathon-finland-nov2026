@@ -369,12 +369,18 @@ async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Pro
   try {
     let response: { status: number; text: string } | undefined;
     for (const candidate of usable) {
-      response = await postJson(
-        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(candidate)}:generateContent`,
-        { "Content-Type": "application/json", "x-goog-api-key": backend.apiKey ?? "" },
-        body,
-        120_000,
-      );
+      try {
+        response = await postJsonRetry(
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(candidate)}:generateContent`,
+          { "Content-Type": "application/json", "x-goog-api-key": backend.apiKey ?? "" },
+          body,
+          120_000,
+        );
+      } catch (error) {
+        console.error("[stoa-vision] gemini request", candidate, error instanceof Error ? error.message : error);
+        response = undefined;
+        continue;
+      }
       if (response.status === 429) {
         holdModel(candidate, response.text);
         console.error("[stoa-vision] gemini status", response.status, candidate, safeMessage(response.text) ?? "");
@@ -384,24 +390,35 @@ async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Pro
         console.error("[stoa-vision] gemini status", response.status, candidate);
         continue;
       }
-      break;
+      if (response.status < 200 || response.status >= 300) break;
+      let payload: {
+        candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[];
+        promptFeedback?: { blockReason?: string };
+      };
+      try {
+        payload = JSON.parse(response.text) as typeof payload;
+      } catch {
+        console.error("[stoa-vision] gemini unreadable", candidate);
+        continue;
+      }
+      if (payload.promptFeedback?.blockReason) {
+        return { ok: false, error: "The model declined to read this drawing. Try another sheet." };
+      }
+      const text = (payload.candidates?.[0]?.content?.parts ?? [])
+        .filter((part) => part.text && !part.thought)
+        .map((part) => part.text)
+        .join("\n");
+      try {
+        return { ok: true, raw: parseAnalysisText(text) };
+      } catch (error) {
+        console.error("[stoa-vision] gemini unreadable", candidate, error instanceof Error ? error.message : error);
+      }
     }
     if (!response || response.status < 200 || response.status >= 300) {
       console.error("[stoa-vision] gemini status", response?.status ?? 0);
       return { ok: false, error: geminiHttpError(response?.status ?? 0, response?.text ?? "") };
     }
-    const payload = JSON.parse(response.text) as {
-      candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[];
-      promptFeedback?: { blockReason?: string };
-    };
-    if (payload.promptFeedback?.blockReason) {
-      return { ok: false, error: "The model declined to read this drawing. Try another sheet." };
-    }
-    const text = (payload.candidates?.[0]?.content?.parts ?? [])
-      .filter((part) => part.text && !part.thought)
-      .map((part) => part.text)
-      .join("\n");
-    return { ok: true, raw: parseAnalysisText(text) };
+    return { ok: false, error: "The vision model did not answer. Try the question again." };
   } catch (error) {
     console.error("[stoa-vision] analysis failed", error instanceof Error ? error.message : error);
     const message = error instanceof Error ? error.message : "";
@@ -450,6 +467,26 @@ function geminiHttpError(status: number, body: string): string {
   if (status === 400) return safeMessage(body) ?? "The drawing couldn't be processed. Try a smaller or clearer image.";
   const message = safeMessage(body);
   return message ? `The vision model refused the drawing: ${message}` : "The vision model had a temporary problem. Please try again.";
+}
+
+async function postJsonRetry(
+  url: string,
+  headers: Record<string, string>,
+  body: string,
+  timeoutMs: number,
+): Promise<{ status: number; text: string }> {
+  let last: unknown;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      return await postJson(url, headers, body, timeoutMs);
+    } catch (error) {
+      last = error;
+      const message = error instanceof Error ? error.message : "";
+      if (!/ENOTFOUND|EAI_AGAIN|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EHOSTUNREACH|ENETUNREACH|socket/i.test(message)) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 700 * (attempt + 1)));
+    }
+  }
+  throw last;
 }
 
 function postJson(
