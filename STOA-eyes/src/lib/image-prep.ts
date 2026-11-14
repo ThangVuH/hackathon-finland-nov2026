@@ -5,7 +5,7 @@ export interface PreparedImage {
   height: number;
 }
 
-const MAX_SIDE = 1800;
+const MAX_SIDE = 1280;
 
 export function prepareImageForAnalysis(src: string): Promise<PreparedImage> {
   return new Promise((resolve, reject) => {
@@ -23,7 +23,7 @@ export function prepareImageForAnalysis(src: string): Promise<PreparedImage> {
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, width, height);
       ctx.drawImage(img, 0, 0, width, height);
-      resolve({ dataUrl: canvas.toDataURL("image/jpeg", 0.9), width, height });
+      resolve({ dataUrl: canvas.toDataURL("image/jpeg", 0.75), width, height });
     };
     img.onerror = () => reject(new Error("Could not read this image"));
     img.src = src;

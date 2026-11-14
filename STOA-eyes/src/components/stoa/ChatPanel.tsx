@@ -19,6 +19,7 @@ interface Props {
   activeMessageId: string | null;
   highlighted: number | null;
   showBoxes: boolean;
+  backendNote: string;
   onShowBoxesChange: (v: boolean) => void;
   onAsk: (question: string) => void;
   onActivate: (messageId: string) => void;
@@ -32,6 +33,7 @@ export function ChatPanel({
   activeMessageId,
   highlighted,
   showBoxes,
+  backendNote,
   onShowBoxesChange,
   onAsk,
   onActivate,
@@ -56,9 +58,10 @@ export function ChatPanel({
   return (
     <div className="flex h-full min-h-0 flex-col bg-panel">
       <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-4">
-        <div className="flex items-center gap-2">
-          <ScanSearch className="size-4 text-safety" />
+        <div className="flex min-w-0 items-center gap-2">
+          <ScanSearch className="size-4 shrink-0 text-safety" />
           <span className="font-display text-sm font-semibold text-foreground">Drawing Q&amp;A</span>
+          <span className="label-tech truncate">{backendNote}</span>
         </div>
         <label className="flex cursor-pointer items-center gap-2">
           {showBoxes ? <Eye className="size-3.5 text-scan" /> : <EyeOff className="size-3.5 text-muted-foreground" />}

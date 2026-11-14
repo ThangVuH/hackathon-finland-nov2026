@@ -6,9 +6,16 @@ const inputSchema = z.object({
   imageWidth: z.number().int().positive(),
   imageHeight: z.number().int().positive(),
   question: z.string().trim().min(1).max(1000),
+  sheetName: z.string().trim().max(180).optional(),
   history: z
     .array(z.object({ role: z.enum(["user", "assistant"]), text: z.string().max(4000) }))
     .max(20),
+});
+
+export const backendStatus = createServerFn({ method: "GET" }).handler(async () => {
+  const { currentBackend } = await import("./vision.server");
+  const backend = currentBackend();
+  return { kind: backend.kind, label: backend.label };
 });
 
 export const analyzeDrawing = createServerFn({ method: "POST" })
