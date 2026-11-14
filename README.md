@@ -30,6 +30,8 @@ LOVABLE_API_KEY=your-key
 
 With only this, the site opens a plan and answers. A window or door count is marked **not checked**, because the trained detector did not confirm it. Any other question (rooms, columns, area) needs the key. On a terminal that was open before Node was installed, `npm` is unknown. Open a new one.
 
+`STOA_API_KEY` in the same `.env` is used before `LOVABLE_API_KEY`. `.env.example` points it at Gemini. With no key at all, the two sample sheets still answer, and **Project Check** compares a schedule, a note, and a drawing name without a model. Press **Load sample** in that panel. A match there means the written numbers agree, not that the sheet was counted.
+
 ### Optional: the trained checker
 
 This is the only step that needs Python. One machine can run it for the whole team. The others do not install PyTorch; they point the site at that machine.

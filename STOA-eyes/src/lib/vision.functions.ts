@@ -12,6 +12,12 @@ const inputSchema = z.object({
     .max(20),
 });
 
+export const backendStatus = createServerFn({ method: "GET" }).handler(async () => {
+  const { currentBackend } = await import("./vision.server");
+  const backend = currentBackend();
+  return { kind: backend.kind, label: backend.label };
+});
+
 export const analyzeDrawing = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => inputSchema.parse(data))
   .handler(async ({ data }) => {

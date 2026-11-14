@@ -1,7 +1,10 @@
+import https from "node:https";
+
 import { createOpenAI } from "@ai-sdk/openai";
 import { APICallError, NoObjectGeneratedError, Output, jsonSchema, streamText, type ModelMessage } from "ai";
 
 import { createLovableAiGatewayRunIdFetch } from "./ai/run-id.server";
+import { answerSampleSheet, localMissError, selectBackend, type BackendInfo } from "./backend.server";
 import { arbitrate, nameReason, questionType, withoutDetector, type VisionPayload } from "./checker";
 import { callDetector } from "./detector.server";
 import type { RawAnalysis } from "./detections";
@@ -90,10 +93,22 @@ function safeMessage(body: string | undefined) {
   }
 }
 
-async function runVision(input: AnalyzeInput): Promise<AnalyzeOutcome> {
-  const apiKey = process.env["LOVABLE_API_KEY"];
-  if (!apiKey) return { ok: false, error: "The AI service isn't configured for this app." };
+export function currentBackend(): BackendInfo {
+  return selectBackend(process.env);
+}
 
+async function runVision(input: AnalyzeInput): Promise<AnalyzeOutcome> {
+  const backend = selectBackend(process.env);
+  if (backend.kind === "local") {
+    const raw = answerSampleSheet(input.filename, input.question);
+    return raw ? { ok: true, raw } : { ok: false, error: localMissError() };
+  }
+  if (backend.kind === "openai") {
+    if ((backend.baseURL ?? "").includes("generativelanguage.googleapis.com")) return analyzeWithGemini(input, backend);
+    return analyzeWithChatModel(input, backend);
+  }
+
+  const apiKey = backend.apiKey ?? "";
   const runIdFetch = createLovableAiGatewayRunIdFetch(undefined);
   const provider = createOpenAI({
     baseURL: GATEWAY_URL,
@@ -187,4 +202,205 @@ export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<Analy
     ok: true,
     raw: arbitrate(detected.body.question_type, detected.body.items, detected.body.confidence, visionPayload),
   };
+}
+
+async function analyzeWithChatModel(input: AnalyzeInput, backend: BackendInfo): Promise<AnalyzeOutcome> {
+  const provider = createOpenAI({
+    ...(backend.baseURL ? { baseURL: backend.baseURL } : {}),
+    ...(backend.apiKey ? { apiKey: backend.apiKey } : {}),
+  });
+  const messages: ModelMessage[] = [
+    ...input.history.slice(-8).map(
+      (m): ModelMessage => (m.role === "user" ? { role: "user", content: m.text } : { role: "assistant", content: m.text }),
+    ),
+    {
+      role: "user",
+      content: [
+        { type: "text", text: `Drawing image is ${input.imageWidth} x ${input.imageHeight} px. Question: ${input.question}` },
+        { type: "image", image: new URL(input.imageDataUrl) },
+      ],
+    },
+  ];
+  try {
+    const result = streamText({
+      model: provider.chat(backend.model ?? "gpt-4o-mini"),
+      instructions: INSTRUCTIONS,
+      messages,
+      maxRetries: 1,
+      timeout: 120_000,
+      output: Output.object({ schema: analysisSchema }),
+    });
+    let streamError: unknown;
+    for await (const part of result.fullStream) {
+      if (part.type === "error") streamError = part.error;
+    }
+    if (streamError) throw streamError;
+    const raw = await result.output;
+    return { ok: true, raw };
+  } catch (error) {
+    console.error("[stoa-vision] analysis failed", error);
+    return { ok: false, error: describeError(error) };
+  }
+}
+
+const GEMINI_SCHEMA = {
+  type: "OBJECT",
+  required: ["answer", "object_type", "count", "items"],
+  properties: {
+    answer: { type: "STRING" },
+    object_type: { type: "STRING" },
+    count: { type: "INTEGER" },
+    items: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        required: ["label", "ymin", "xmin", "ymax", "xmax"],
+        properties: {
+          label: { type: "STRING" },
+          ymin: { type: "NUMBER" },
+          xmin: { type: "NUMBER" },
+          ymax: { type: "NUMBER" },
+          xmax: { type: "NUMBER" },
+        },
+      },
+    },
+  },
+};
+
+/** Gemini's own generateContent endpoint. The OpenAI-compatible route kept the connection open and never sent a reply. */
+async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Promise<AnalyzeOutcome> {
+  const image = dataUrlParts(input.imageDataUrl);
+  if (!image) return { ok: false, error: "The drawing couldn't be prepared for analysis." };
+  const model = backend.model || "gemini-2.5-flash";
+  const models = [model];
+  for (const fallback of ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"]) {
+    if (!models.includes(fallback)) models.push(fallback);
+  }
+  const contents = [
+    ...input.history.slice(-8).map((message) => ({
+      role: message.role === "assistant" ? "model" : "user",
+      parts: [{ text: message.text }],
+    })),
+    {
+      role: "user",
+      parts: [
+        { text: `Drawing image is ${input.imageWidth} x ${input.imageHeight} px. Question: ${input.question}` },
+        { inlineData: { mimeType: image.mime, data: image.base64 } },
+      ],
+    },
+  ];
+  const body = JSON.stringify({
+    systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
+    contents,
+    generationConfig: {
+      temperature: 0.2,
+      maxOutputTokens: 8192,
+      responseMimeType: "application/json",
+      responseSchema: GEMINI_SCHEMA,
+    },
+  });
+  try {
+    let response: { status: number; text: string } | undefined;
+    for (const candidate of models) {
+      response = await postJson(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(candidate)}:generateContent`,
+        { "Content-Type": "application/json", "x-goog-api-key": backend.apiKey ?? "" },
+        body,
+        120_000,
+      );
+      if (response.status !== 503 && response.status !== 404) break;
+      console.error("[stoa-vision] gemini status", response.status, candidate);
+    }
+    if (!response || response.status < 200 || response.status >= 300) {
+      console.error("[stoa-vision] gemini status", response?.status ?? 0);
+      return { ok: false, error: geminiHttpError(response?.status ?? 0, response?.text ?? "") };
+    }
+    const payload = JSON.parse(response.text) as {
+      candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[];
+      promptFeedback?: { blockReason?: string };
+    };
+    if (payload.promptFeedback?.blockReason) {
+      return { ok: false, error: "The model declined to read this drawing. Try another sheet." };
+    }
+    const text = (payload.candidates?.[0]?.content?.parts ?? [])
+      .filter((part) => part.text && !part.thought)
+      .map((part) => part.text)
+      .join("\n");
+    return { ok: true, raw: parseAnalysisText(text) };
+  } catch (error) {
+    console.error("[stoa-vision] analysis failed", error instanceof Error ? error.message : error);
+    const message = error instanceof Error ? error.message : "";
+    if (/unreadable answer/i.test(message)) return { ok: false, error: message };
+    if (/too long/i.test(message)) return { ok: false, error: message };
+    return { ok: false, error: "The vision model did not answer. Try the question again." };
+  }
+}
+
+function dataUrlParts(dataUrl: string): { mime: string; base64: string } | null {
+  const match = /^data:([^;,]+);base64,([A-Za-z0-9+/=\s]+)$/.exec(dataUrl);
+  if (!match?.[1] || !match[2]) return null;
+  return { mime: match[1], base64: match[2].replace(/\s/g, "") };
+}
+
+function parseAnalysisText(text: string): RawAnalysis {
+  const trimmed = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  const start = trimmed.indexOf("{");
+  const end = trimmed.lastIndexOf("}");
+  if (start < 0 || end <= start) throw new Error("The AI returned an unreadable answer. Try rephrasing the question.");
+  let parsed: Partial<RawAnalysis>;
+  try {
+    parsed = JSON.parse(trimmed.slice(start, end + 1)) as Partial<RawAnalysis>;
+  } catch {
+    throw new Error("The AI returned an unreadable answer. Try rephrasing the question.");
+  }
+  const items = Array.isArray(parsed.items) ? parsed.items : [];
+  return {
+    answer: String(parsed.answer ?? ""),
+    object_type: String(parsed.object_type ?? ""),
+    count: Number(parsed.count ?? items.length),
+    items: items.map((item) => ({
+      label: String(item?.label ?? ""),
+      ymin: Number(item?.ymin),
+      xmin: Number(item?.xmin),
+      ymax: Number(item?.ymax),
+      xmax: Number(item?.xmax),
+    })),
+  };
+}
+
+function geminiHttpError(status: number, body: string): string {
+  if (status === 404) return "This model is not on the free key. In .env set STOA_MODEL to a Flash model from AI Studio, then restart.";
+  if (status === 401 || status === 403) return "The Gemini key was rejected. Copy it again into STOA_API_KEY and restart.";
+  if (status === 429) return "The free Gemini quota is used up for the moment. Wait a minute and try again.";
+  if (status === 400) return safeMessage(body) ?? "The drawing couldn't be processed. Try a smaller or clearer image.";
+  const message = safeMessage(body);
+  return message ? `The vision model refused the drawing: ${message}` : "The vision model had a temporary problem. Please try again.";
+}
+
+function postJson(url: string, headers: Record<string, string>, body: string, timeoutMs: number): Promise<{ status: number; text: string }> {
+  return new Promise((resolve, reject) => {
+    const target = new URL(url);
+    const req = https.request(
+      {
+        hostname: target.hostname,
+        path: `${target.pathname}${target.search}`,
+        method: "POST",
+        headers: { ...headers, "Content-Length": Buffer.byteLength(body) },
+      },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on("data", (chunk: Buffer) => chunks.push(chunk));
+        res.on("end", () => resolve({ status: res.statusCode ?? 0, text: Buffer.concat(chunks).toString("utf8") }));
+      },
+    );
+    const timer = setTimeout(() => {
+      req.destroy(new Error("The vision model took too long to answer. Try again."));
+    }, timeoutMs);
+    req.on("error", (error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
+    req.on("close", () => clearTimeout(timer));
+    req.end(body);
+  });
 }

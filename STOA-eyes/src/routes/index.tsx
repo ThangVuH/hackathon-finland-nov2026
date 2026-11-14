@@ -1,15 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ImagePlus } from "lucide-react";
+import { FolderUp, ImagePlus } from "lucide-react";
 import { toast } from "sonner";
 
 import sampleApartment from "@/assets/sample-apartment.jpg";
 import sampleOffice from "@/assets/sample-office.jpg";
+import sampleSchedule from "../../sample-project/schedule.csv?raw";
+import sampleNotes from "../../sample-project/site-meeting.txt?raw";
+import sampleBlueprint from "../../sample-project/A-201 Office 1.jpg";
 import { ChatPanel, type ChatMessage } from "@/components/stoa/ChatPanel";
 import { DrawingCanvas, isAcceptedFile, type Drawing, type DrawingCanvasHandle } from "@/components/stoa/DrawingCanvas";
+import { ProjectCheckPanel } from "@/components/stoa/ProjectCheckPanel";
+import { checkProject, type ProjectReport } from "@/lib/project-check";
+import { readProjectFiles } from "@/lib/project-files";
 import { normalizeAnalysis } from "@/lib/detections";
 import { prepareImageForAnalysis, type PreparedImage } from "@/lib/image-prep";
-import { analyzeDrawing } from "@/lib/vision.functions";
+import { analyzeDrawing, backendStatus } from "@/lib/vision.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -56,13 +62,24 @@ function StoaVision() {
   };
   const [showBoxes, setShowBoxes] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [mode, setMode] = useState<"check" | "qa">("qa");
+  const [report, setReport] = useState<ProjectReport | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [backendNote, setBackendNote] = useState("Backend starting");
 
   const canvasRef = useRef<DrawingCanvasHandle>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const projectInput = useRef<HTMLInputElement>(null);
   const prepared = useRef<Map<string, PreparedImage>>(new Map());
 
   const activeMessage = messages.find((m) => m.id === activeMessageId);
   const detections = activeMessage?.role === "assistant" && activeMessage.status === "done" ? activeMessage.result.detections : [];
+
+  useEffect(() => {
+    void backendStatus()
+      .then((status) => setBackendNote(status.label))
+      .catch(() => setBackendNote("Backend unavailable"));
+  }, []);
 
   useEffect(() => {
     setHighlighted(null);
@@ -73,6 +90,49 @@ function StoaVision() {
 
   const updateThread = (id: string, fn: (msgs: ChatMessage[]) => ChatMessage[]) =>
     setThreads((t) => ({ ...t, [id]: fn(t[id] ?? []) }));
+
+  const handleProject = useCallback(async (list: FileList | File[]) => {
+    const files = Array.from(list);
+    if (!files.length) return;
+    const images = files.filter(isAcceptedFile);
+    const known = new Set(drawings.map((item) => item.name));
+    const created: Drawing[] = images
+      .filter((file) => !known.has(file.name))
+      .map((file) => ({
+        id: `upload-${uid()}`,
+        name: file.name,
+        src: URL.createObjectURL(file),
+        kind: "upload",
+      }));
+    if (created.length) {
+      setDrawings((ds) => [...ds, ...created]);
+      setDrawingId(created[0]!.id);
+    }
+    setMode("check");
+    setChecking(true);
+    try {
+      setReport(checkProject(await readProjectFiles(files)));
+    } catch (error) {
+      console.error(error);
+      toast.error("Project check failed", { description: "One of the files could not be read." });
+    } finally {
+      setChecking(false);
+    }
+  }, [drawings]);
+
+  const loadSampleProject = useCallback(async () => {
+    const image = await fetch(sampleBlueprint).then((response) => response.blob());
+    await handleProject([
+      new File([sampleSchedule], "schedule.csv", { type: "text/csv" }),
+      new File([sampleNotes], "site-meeting.txt", { type: "text/plain" }),
+      new File([image], "A-201 Office 1.jpg", { type: "image/jpeg" }),
+    ]);
+  }, [handleProject]);
+
+  const openBlueprint = (filename: string) => {
+    const found = drawings.find((item) => item.name === filename);
+    if (found) setDrawingId(found.id);
+  };
 
   const handleFiles = useCallback((files: FileList | File[]) => {
     const file = Array.from(files)[0];
@@ -198,12 +258,31 @@ function StoaVision() {
         </nav>
         <button
           type="button"
+          onClick={() => projectInput.current?.click()}
+          className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-safety bg-safety/10 px-3 py-1.5 font-display text-sm font-semibold text-foreground transition-colors hover:bg-safety/20"
+        >
+          <FolderUp className="size-4 text-safety" />
+          Upload project
+        </button>
+        <button
+          type="button"
           onClick={() => fileInput.current?.click()}
           className="inline-flex shrink-0 items-center gap-2 rounded-sm bg-primary px-3 py-1.5 font-display text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           <ImagePlus className="size-4" />
           Upload drawing
         </button>
+        <input
+          ref={projectInput}
+          type="file"
+          multiple
+          accept=".png,.jpg,.jpeg,.webp,.pdf,.xlsx,.csv,.txt,.md,.docx,image/png,image/jpeg,image/webp,application/pdf,text/plain,text/csv"
+          className="hidden"
+          onChange={(e) => {
+            if (e.target.files) void handleProject(e.target.files);
+            e.target.value = "";
+          }}
+        />
         <input
           ref={fileInput}
           type="file"
@@ -230,13 +309,45 @@ function StoaVision() {
             onFiles={handleFiles}
           />
         </section>
-        <aside className="min-h-0 flex-1 border-t border-border lg:w-[30%] lg:flex-none lg:border-t-0" aria-label="Q&A">
+        <aside className="flex min-h-0 flex-1 flex-col border-t border-border lg:w-[30%] lg:flex-none lg:border-t-0" aria-label="Project tools">
+          <div className="flex h-10 shrink-0 border-b border-border bg-background">
+            <button
+              type="button"
+              onClick={() => setMode("check")}
+              className={cn(
+                "flex-1 font-display text-sm font-semibold tracking-wide",
+                mode === "check" ? "bg-safety/10 text-safety" : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Project Check
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("qa")}
+              className={cn(
+                "flex-1 border-l border-border font-display text-sm font-semibold tracking-wide",
+                mode === "qa" ? "bg-safety/10 text-safety" : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Drawing Q&A
+            </button>
+          </div>
+          <div className="min-h-0 flex-1">
+          {mode === "check" ? (
+            <ProjectCheckPanel
+              report={report}
+              checking={checking}
+              onOpenBlueprint={openBlueprint}
+              onLoadSample={() => void loadSampleProject()}
+            />
+          ) : (
           <ChatPanel
             messages={messages}
             busy={busy}
             activeMessageId={activeMessageId}
             highlighted={highlighted}
             showBoxes={showBoxes}
+            backendNote={backendNote}
             onShowBoxesChange={setShowBoxes}
             onAsk={ask}
             onActivate={(id) => {
@@ -247,6 +358,8 @@ function StoaVision() {
             onHover={(_, i) => setHovered(i)}
             onSelect={selectDetection}
           />
+          )}
+          </div>
         </aside>
       </main>
     </div>

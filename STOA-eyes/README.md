@@ -29,13 +29,15 @@ Not required to open the site. Without it, window and door counts still come bac
 
 To mark a count reliable, run the service that is already trained, from `counting/` at the repo root. One shared machine is enough; set `DETECTOR_URL` on the others. See the repo README. Do not reinstall a training environment just to launch the page.
 
+## Project Check
+
+Open **Project Check** and press **Load sample**, or upload a schedule, notes, and drawings together. The check compares quantities written in those files and pairs each space with a blueprint by file name. It does not call a model. **Match** means the written numbers agree and a sheet name matches the space. It does not mean the drawing was counted.
+
 ## API key
 
-Questions call the vision model from the server. That call needs `LOVABLE_API_KEY`.
+Drawing questions use the first key that is set: `STOA_API_KEY` (Gemini or another OpenAI-compatible model, see `.env.example`), then `OPENAI_API_KEY`, then `LOVABLE_API_KEY`.
 
-The site still loads without the key. A window or door count then needs the optional detector, and is marked unchecked. Any other question returns “The AI service isn’t configured.”
-
-Where the key comes from, and how we share it, is still to be decided. When we have one, put it in `.env` in this folder and restart the dev server:
+With no key, the two sample sheets still answer locally, and a window or door count on any other drawing needs the optional detector. Those answers stay unchecked unless the detector and a vision model agree. Put the key in `.env` in this folder and restart the dev server:
 
 ```
 LOVABLE_API_KEY=your-key
