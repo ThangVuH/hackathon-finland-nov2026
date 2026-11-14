@@ -1,0 +1,12 @@
+Plans de test : 36
+Questions de test : 64
+Plans de validation utilisés pour le seuil : 36
+Seuil retenu : 0.40
+
+Détecteur seul, plans exacts : 4/36 (11.1%)
+Détecteur seul, questions exactes : 17/64 (26.6%)
+  écarts  0 17  ±1 19  ±2 ou plus 28
+Vision seule : non mesurée. Ni cache/vision.jsonl ni LOVABLE_API_KEY.
+La courbe combinée attend les boîtes du modèle de vision.
+
+Filtre de périmètre : aucun plan de test refusé.

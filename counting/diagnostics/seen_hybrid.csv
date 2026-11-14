@@ -1,0 +1,4 @@
+style,sample_id,cubicasa_split,seconds,window_polygon,window_added,window_hybrid,window_answer,window_svg,door_polygon,door_added,door_hybrid,door_answer,door_svg,window_fp,window_fp_door,window_fp_near_door,window_fp_other,window_fp_rest,error
+colorful,1732,train,39.7,1,1,2,2,2,4,0,4,3,3,0,0,0,0,0,
+colorful,2002,train,60.6,4,1,5,7,7,5,4,9,6,6,0,0,0,0,0,
+colorful,2194,train,35.2,2,0,2,2,2,4,0,4,4,4,0,0,0,0,0,

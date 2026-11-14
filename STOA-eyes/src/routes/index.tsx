@@ -109,7 +109,14 @@ function StoaVision() {
         prepared.current.set(target.id, img);
       }
       const res = await analyzeDrawing({
-        data: { imageDataUrl: img.dataUrl, imageWidth: img.width, imageHeight: img.height, question, history },
+        data: {
+          imageDataUrl: img.dataUrl,
+          imageWidth: img.width,
+          imageHeight: img.height,
+          question,
+          filename: target.name,
+          history,
+        },
       });
       if (!res.ok) {
         updateThread(target.id, (msgs) =>
@@ -143,7 +150,18 @@ function StoaVision() {
     setActiveMessageId(messageId);
     setPinned(index);
     setShowBoxes(true);
-    // Wait for the active message's boxes to render before focusing.
+    updateThread(drawing.id, (msgs) =>
+      msgs.map((m) => {
+        if (m.id !== messageId || m.role !== "assistant" || m.status !== "done") return m;
+        const targetBox = m.result.detections[index];
+        if (!targetBox?.disputed) return m;
+        const detections = m.result.detections.map((d, i) =>
+          i === index ? { ...d, included: d.included === false } : d,
+        );
+        const count = detections.filter((d) => d.included !== false).length;
+        return { ...m, result: { ...m.result, detections, count } };
+      }),
+    );
     requestAnimationFrame(() => canvasRef.current?.focusDetection(index));
   };
 

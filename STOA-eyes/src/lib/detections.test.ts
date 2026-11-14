@@ -25,6 +25,21 @@ describe("normalizeAnalysis", () => {
     expect(r.detections[0]!.box).toEqual([200, 100, 400, 300]);
   });
 
+  it("keeps a dropped box on the sheet but out of the count", () => {
+    const r = normalizeAnalysis({
+      ...base,
+      verdict: "review",
+      items: [
+        { label: "kept", ymin: 0, xmin: 0, ymax: 10, xmax: 10, disputed: true, included: true },
+        { label: "dropped", ymin: 20, xmin: 20, ymax: 40, xmax: 40, disputed: true, included: false },
+      ],
+    });
+    expect(r.count).toBe(1);
+    expect(r.detections).toHaveLength(2);
+    expect(r.detections[1]!.included).toBe(false);
+    expect(r.verdict).toBe("review");
+  });
+
   it("counts the boxes drawn, not the model's stated number", () => {
     const r = normalizeAnalysis({
       ...base,

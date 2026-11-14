@@ -2,6 +2,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { APICallError, NoObjectGeneratedError, Output, jsonSchema, streamText, type ModelMessage } from "ai";
 
 import { createLovableAiGatewayRunIdFetch } from "./ai/run-id.server";
+import { callArbitrate, callDetector } from "./detector.server";
 import type { RawAnalysis } from "./detections";
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1";
@@ -56,6 +57,7 @@ export interface AnalyzeInput {
   imageWidth: number;
   imageHeight: number;
   question: string;
+  filename?: string;
   history: { role: "user" | "assistant"; text: string }[];
 }
 
@@ -87,7 +89,7 @@ function safeMessage(body: string | undefined) {
   }
 }
 
-export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<AnalyzeOutcome> {
+async function runVision(input: AnalyzeInput): Promise<AnalyzeOutcome> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) return { ok: false, error: "The AI service isn't configured for this app." };
 
@@ -146,4 +148,37 @@ export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<Analy
     console.error("[stoa-vision] analysis failed", error);
     return { ok: false, error: describeError(error) };
   }
+}
+
+function refused(reason: string): RawAnalysis {
+  return {
+    answer: reason,
+    object_type: "",
+    count: 0,
+    items: [],
+    verdict: "refused",
+    warning: "Out of scope. No count was invented.",
+  };
+}
+
+export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<AnalyzeOutcome> {
+  const detected = await callDetector(input);
+  if (!detected.ok) return detected;
+  if (detected.body.scope === "out_of_scope") return { ok: true, raw: refused(detected.body.reason) };
+
+  const vision = await runVision(input);
+  const visionPayload = vision.ok
+    ? { available: true, answer: vision.raw.answer, object_type: vision.raw.object_type, count: vision.raw.count, items: vision.raw.items }
+    : { available: false, error: vision.error, items: [] };
+
+  if (detected.body.question_type === "other") {
+    if (!vision.ok) return vision;
+  }
+
+  return callArbitrate({
+    questionType: detected.body.question_type,
+    detectorItems: detected.body.items,
+    confidence: detected.body.confidence,
+    vision: visionPayload,
+  });
 }

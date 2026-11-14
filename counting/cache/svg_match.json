@@ -1,0 +1,15 @@
+{
+  "plans": 241,
+  "svg_found": 241,
+  "missing": [],
+  "example_svg_paths": [
+    "cubicasa5k/high_quality/1245/model.svg",
+    "cubicasa5k/high_quality/3858/model.svg",
+    "cubicasa5k/high_quality/1318/model.svg",
+    "cubicasa5k/high_quality/1230/model.svg",
+    "cubicasa5k/high_quality/5509/model.svg",
+    "cubicasa5k/high_quality/4643/model.svg",
+    "cubicasa5k/high_quality/8507/model.svg",
+    "cubicasa5k/high_quality/7856/model.svg"
+  ]
+}

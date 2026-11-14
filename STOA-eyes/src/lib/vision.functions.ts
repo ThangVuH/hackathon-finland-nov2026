@@ -6,6 +6,7 @@ const inputSchema = z.object({
   imageWidth: z.number().int().positive(),
   imageHeight: z.number().int().positive(),
   question: z.string().trim().min(1).max(1000),
+  filename: z.string().trim().max(300).optional(),
   history: z
     .array(z.object({ role: z.enum(["user", "assistant"]), text: z.string().max(4000) }))
     .max(20),

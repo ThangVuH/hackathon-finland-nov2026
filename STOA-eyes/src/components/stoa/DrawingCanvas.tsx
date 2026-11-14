@@ -272,19 +272,22 @@ export function DrawingCanvas({
             detections.map((d, i) => {
               const [ymin, xmin, ymax, xmax] = d.box;
               const active = highlighted === i;
+              const dropped = d.included === false;
+              const disputed = d.disputed === true && !dropped;
               return (
                 <button
                   key={i}
                   type="button"
-                  aria-label={`${d.tag}${d.label ? `: ${d.label}` : ""}`}
+                  aria-label={`${d.tag}${d.disputed ? ", disputed" : ""}${dropped ? ", dropped" : ""}${d.label ? `: ${d.label}` : ""}`}
                   onPointerEnter={() => onHoverDetection(i)}
                   onPointerLeave={() => onHoverDetection(null)}
                   onClick={() => onSelectDetection(i)}
                   className={cn(
-                    "absolute cursor-pointer rounded-[1px] border-solid transition-colors",
-                    active
-                      ? "z-20 animate-box-pulse border-safety"
-                      : "z-10 border-scan bg-scan/10 hover:bg-scan/20",
+                    "absolute cursor-pointer rounded-[1px] transition-colors",
+                    dropped && "z-10 border-dashed border-muted-foreground/80 bg-transparent",
+                    !dropped && active && "z-20 animate-box-pulse border-solid border-safety",
+                    !dropped && !active && disputed && "z-10 border-solid border-safety bg-safety/20",
+                    !dropped && !active && !disputed && "z-10 border-solid border-scan bg-scan/10 hover:bg-scan/20",
                   )}
                   style={{
                     top: `${ymin / 10}%`,
@@ -304,7 +307,7 @@ export function DrawingCanvas({
                       padding: "3px 5px",
                     }}
                   >
-                    {d.tag}
+                    {dropped ? `${d.tag} off` : disputed ? `${d.tag} ?` : d.tag}
                   </span>
                 </button>
               );
@@ -338,7 +341,8 @@ export function DrawingCanvas({
         </div>
         {showBoxes && detections.length > 0 && (
           <div className="pointer-events-none absolute right-3 bottom-3 rounded-sm border border-scan/50 bg-panel/90 px-2.5 py-1.5 font-mono text-[0.7rem] text-scan backdrop-blur">
-            {detections.length} BOX{detections.length === 1 ? "" : "ES"} OVERLAID
+            {detections.filter((d) => d.included !== false).length} IN COUNT
+            {detections.some((d) => d.disputed) ? " · CLICK A ? BOX" : ""}
           </div>
         )}
       </div>

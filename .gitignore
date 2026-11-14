@@ -25,5 +25,13 @@ logs
 .vscode/*
 !.vscode/extensions.json
 
-# dataset
+# dataset (the preview zip is about 480 MB; GitHub refuses a file over 100 MB)
 junction-dataset-preview/
+*.pkl
+
+# Python and generated training tiles
+__pycache__/
+*.py[cod]
+*.cache
+counting/yolo/images/
+counting/yolo/labels/

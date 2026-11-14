@@ -1,0 +1,20 @@
+lines 127044
+types count 111763, area 14243, text 836, volume 138, length 64
+files with questions
+  cubicasa5k              4787 files   85514 lines
+  swiss_dwellings         1040 files   37584 lines
+  ifc_models                84 files    3062 lines
+  ifc_bench                 25 files     820 lines
+  opening_design             3 files      64 lines
+by source and type
+  cubicasa5k             count     85514
+  ifc_bench              text        820
+  ifc_models             area       2218
+  ifc_models             count       642
+  ifc_models             length       64
+  ifc_models             volume      138
+  opening_design         area          9
+  opening_design         count        39
+  opening_design         text         16
+  swiss_dwellings        area      12016
+  swiss_dwellings        count     25568

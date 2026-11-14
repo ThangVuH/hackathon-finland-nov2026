@@ -3,7 +3,7 @@ import { ArrowUp, Eye, EyeOff, Loader2, ScanSearch, TriangleAlert } from "lucide
 
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import type { AnalysisResult } from "@/lib/detections";
+import type { AnalysisResult, Verdict } from "@/lib/detections";
 
 export type ChatMessage =
   | { id: string; role: "user"; text: string }
@@ -154,9 +154,32 @@ function EmptyState() {
         <span className="text-safety">Verify every count.</span>
       </h2>
       <p className="text-sm leading-relaxed text-muted-foreground">
-        Every answer comes with a numbered box on the sheet for each item found, so you can check the count at a glance.
+        Window and door counts are compared with a second model. When the two disagree, click a highlighted box to keep it or drop it.
       </p>
     </div>
+  );
+}
+
+const VERDICT_LABEL: Record<Verdict, string> = {
+  reliable: "RELIABLE",
+  review: "CHECK",
+  unverified: "NOT CHECKED",
+  refused: "OUT OF SCOPE",
+};
+
+function VerdictBadge({ verdict }: { verdict: Verdict }) {
+  return (
+    <p
+      className={cn(
+        "mb-2 font-mono text-[0.68rem] tracking-[0.14em]",
+        verdict === "reliable" && "text-scan",
+        verdict === "review" && "text-safety",
+        verdict === "unverified" && "text-muted-foreground",
+        verdict === "refused" && "text-destructive",
+      )}
+    >
+      {VERDICT_LABEL[verdict]}
+    </p>
   );
 }
 
@@ -208,6 +231,7 @@ function AssistantMessage({
       )}
     >
       <div className="p-3">
+        {result.verdict && <VerdictBadge verdict={result.verdict} />}
         {hasItems && (
           <div className="mb-2 flex items-baseline gap-2">
             <span className="font-mono text-3xl leading-none font-bold text-safety tabular-nums">{result.count}</span>
@@ -218,6 +242,7 @@ function AssistantMessage({
           </div>
         )}
         <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground">{result.answer}</p>
+        {result.warning && <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{result.warning}</p>}
       </div>
 
       {hasItems && (
@@ -239,6 +264,7 @@ function AssistantMessage({
           <ul className={cn("pb-1.5", (!active || !showBoxes) && "opacity-60")}>
             {result.detections.map((d, i) => {
               const on = active && highlighted === i;
+              const dropped = d.included === false;
               return (
                 <li key={i}>
                   <button
@@ -250,7 +276,8 @@ function AssistantMessage({
                     onClick={() => onSelect(i)}
                     className={cn(
                       "flex w-full items-center gap-2.5 border-l-2 px-3 py-1.5 text-left transition-colors",
-                      on ? "border-safety bg-safety/10" : "border-transparent hover:bg-accent/60",
+                      dropped && "opacity-50",
+                      on ? "border-safety bg-safety/10" : d.disputed ? "border-safety/70 hover:bg-safety/10" : "border-transparent hover:bg-accent/60",
                     )}
                   >
                     <span
@@ -262,7 +289,10 @@ function AssistantMessage({
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[0.82rem] font-medium text-foreground">{d.tag}</span>
+                      <span className={cn("block truncate text-[0.82rem] font-medium text-foreground", dropped && "line-through")}>
+                        {d.tag}
+                        {d.disputed ? (dropped ? " · dropped" : " · check") : ""}
+                      </span>
                       {d.label && <span className="block truncate text-xs text-muted-foreground">{d.label}</span>}
                     </span>
                     <span className="shrink-0 font-mono text-[0.62rem] text-muted-foreground tabular-nums">
