@@ -15,4 +15,7 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // A Node server so Gemini can run outside the Cloudflare worker preset.
+  // Lovable's own build still pins its preset and ignores this.
+  nitro: { preset: "node-server" },
 });

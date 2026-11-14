@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: blueprinteye
+    runtime: node
+    rootDir: STOA-eyes
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: HOST
+        value: 0.0.0.0
+      - key: STOA_API_KEY
+        sync: false
+      - key: STOA_API_BASE
+        value: https://generativelanguage.googleapis.com/v1beta/openai/
+      - key: STOA_MODEL
+        value: gemini-3.6-flash
+      - key: STOA_IMAGE_MODEL
+        value: gemini-3.1-flash-lite-image

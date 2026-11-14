@@ -41,3 +41,21 @@ npm run dev
 ```
 
 The key stays on the server. Do not commit `.env`.
+
+## Deploy
+
+This is a Node server, so Streamlit and GitHub Pages cannot run it. Push this repo to GitHub, then host `STOA-eyes` on Render. The dataset folder and the zip stay out: git ignores both, and Render is pointed only at `STOA-eyes`.
+
+1. Push the repo to GitHub. Leave `.env` uncommitted.
+2. On [Render](https://render.com), create a Blueprint from the repo. `render.yaml` is already at the root.
+3. When Render asks for `STOA_API_KEY`, paste the Gemini key. The other model settings are already in the blueprint.
+4. Open the URL Render prints. Add a PNG, JPG, or WebP and ask.
+
+The same image runs anywhere else with Docker, from `STOA-eyes`:
+
+```sh
+docker build -t blueprinteye .
+docker run --rm -p 8080:8080 -e STOA_API_KEY=your-key -e STOA_API_BASE=https://generativelanguage.googleapis.com/v1beta/openai/ -e STOA_MODEL=gemini-3.6-flash blueprinteye
+```
+
+A count can take up to two minutes. Use a host that allows a request that long.

@@ -1,5 +1,3 @@
-import https from "node:https";
-
 import { createOpenAI } from "@ai-sdk/openai";
 import { APICallError, NoObjectGeneratedError, Output, jsonSchema, streamText, type ModelMessage } from "ai";
 
@@ -513,7 +511,7 @@ async function postJsonRetry(
     } catch (error) {
       last = error;
       const message = error instanceof Error ? error.message : "";
-      if (!/ENOTFOUND|EAI_AGAIN|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EHOSTUNREACH|ENETUNREACH|socket/i.test(message)) throw error;
+      if (!/ENOTFOUND|EAI_AGAIN|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EHOSTUNREACH|ENETUNREACH|socket|fetch failed|network/i.test(message)) throw error;
       await new Promise((resolve) => setTimeout(resolve, 700 * (attempt + 1)));
     }
   }
@@ -527,29 +525,13 @@ function postJson(
   timeoutMs: number,
   timeoutMessage = "The vision model took too long to answer. Try again.",
 ): Promise<{ status: number; text: string }> {
-  return new Promise((resolve, reject) => {
-    const target = new URL(url);
-    const req = https.request(
-      {
-        hostname: target.hostname,
-        path: `${target.pathname}${target.search}`,
-        method: "POST",
-        headers: { ...headers, "Content-Length": Buffer.byteLength(body) },
-      },
-      (res) => {
-        const chunks: Buffer[] = [];
-        res.on("data", (chunk: Buffer) => chunks.push(chunk));
-        res.on("end", () => resolve({ status: res.statusCode ?? 0, text: Buffer.concat(chunks).toString("utf8") }));
-      },
-    );
-    const timer = setTimeout(() => {
-      req.destroy(new Error(timeoutMessage));
-    }, timeoutMs);
-    req.on("error", (error) => {
-      clearTimeout(timer);
-      reject(error);
-    });
-    req.on("close", () => clearTimeout(timer));
-    req.end(body);
-  });
+  const timer = AbortSignal.timeout(timeoutMs);
+  return fetch(url, { method: "POST", headers, body, signal: timer }).then(
+    async (response) => ({ status: response.status, text: await response.text() }),
+    (error: unknown) => {
+      const name = error instanceof Error ? error.name : "";
+      if (name === "TimeoutError" || name === "AbortError") throw new Error(timeoutMessage);
+      throw error;
+    },
+  );
 }
