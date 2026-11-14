@@ -3,7 +3,7 @@ import ezdxf
 from ezdxf import bbox as dxf_bbox
 from pathlib import Path
 
-from schema import Document, Page
+from schema.extractor_schema import Document, Page
 
 
 def extract_dxf(file_path):

@@ -3,7 +3,7 @@ import ifcopenshell.util.element
 import ifcopenshell.util.unit
 
 from pathlib import Path
-from schema import Document, Page
+from schema.extractor_schema import Document, Page
 
 
 def extract_ifc(file_path):

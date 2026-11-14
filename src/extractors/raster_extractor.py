@@ -4,7 +4,7 @@ import pytesseract
 import numpy as np
 
 from pytesseract import Output
-from schema import Document, Page
+from schema.extractor_schema import Document, Page
 
 OCR_LANGUAGES = {
     "english": "eng",

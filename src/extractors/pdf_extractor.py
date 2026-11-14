@@ -1,10 +1,9 @@
-import fitz
 import cv2
 from pathlib import Path
 import multiprocessing
-import fitz
+import pymupdf
 
-from schema import Document, Page
+from schema.extractor_schema import Document, Page
 from extractors.raster_extractor import extract_ocr, OCR_CONFIG, MAX_IMAGE_PIXELS, MAX_DETECTED_LINES, MAX_DRAWINGS
 
 def is_scanned_page(pdf_page, native_text):
@@ -26,7 +25,7 @@ def is_scanned_page(pdf_page, native_text):
 
     for info in image_info:
 
-        bbox = fitz.Rect(info["bbox"])
+        bbox = pymupdf.Rect(info["bbox"])
         image_area += bbox.intersect(
             pdf_page.rect
         ).get_area()
@@ -126,7 +125,7 @@ def extract_pdf_geometry(pdf_page):
 
 def extract_pdf_ocr(pdf_page, languages=None):
 
-    matrix = fitz.Matrix(
+    matrix = pymupdf.Matrix(
         OCR_CONFIG["zoom"],
         OCR_CONFIG["zoom"]
     )
@@ -169,7 +168,7 @@ def _pdf_page_worker(
 ):
 
     try:
-        with fitz.open(file_path) as pdf:
+        with pymupdf.open(file_path) as pdf:
 
             pdf_page = pdf[page_index]
 
@@ -295,7 +294,7 @@ def extract_pdf(
 
     file_path = Path(file_path)
 
-    with fitz.open(file_path) as pdf:
+    with pymupdf.open(file_path) as pdf:
         page_count = pdf.page_count
 
     document = Document(

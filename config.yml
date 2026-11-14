@@ -1,0 +1,14 @@
+# config.yaml
+# input_dir: "data_folder/junction-dataset-preview/data"
+input_dir: "C:/Users/DV285061/Desktop/project/hackjunction-nov26/data_folder/junction-dataset-preview/data/swiss_dwellings"
+output_dir: "C:/Users/DV285061/Desktop/project/hackjunction-nov26/data_folder/output"
+tesseract: "C:/Users/DV285061/AppData/Local/Tesseract-OCR/tesseract.exe"
+supported_extensions:
+  - ".pdf"
+  - ".png"
+  - ".jpg"
+  - ".jpeg"
+  - ".dxf"
+  - ".dwg"
+  - ".ifc"
+  - ".svg"

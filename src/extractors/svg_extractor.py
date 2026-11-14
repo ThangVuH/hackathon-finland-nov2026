@@ -1,7 +1,7 @@
 from lxml import etree
 
 from pathlib import Path
-from schema import Document, Page
+from schema.extractor_schema import Document, Page
 
 
 def extract_svg(file_path):
