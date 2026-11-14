@@ -31,6 +31,30 @@ export function detectionKind(tag: string): string {
   return tagType(tag) || "object";
 }
 
+const ADD_KINDS = ["door", "window", "room", "column", "stair"] as const;
+
+/** Put a missed box with the others of its kind, then number that kind from 1 again. */
+export function insertDetection(detections: Detection[], kind: string, box: Box): { detections: Detection[]; index: number } {
+  const name = ADD_KINDS.includes(kind as (typeof ADD_KINDS)[number]) ? kind : "door";
+  const item: Detection = { tag: `${titleCase(name)} #0`, label: "", box };
+  const last = detections.reduce((found, entry, index) => (detectionKind(entry.tag) === name ? index : found), -1);
+  const next = [...detections];
+  const index = last === -1 ? next.length : last + 1;
+  next.splice(index, 0, item);
+  return { detections: renumberDetections(next), index };
+}
+
+/** Close gaps after a box is removed. Door #1, #3 becomes Door #1, #2. Each kind keeps its own count. */
+export function renumberDetections(detections: Detection[]): Detection[] {
+  const seen = new Map<string, number>();
+  return detections.map((item) => {
+    const kind = detectionKind(item.tag);
+    const next = (seen.get(kind) ?? 0) + 1;
+    seen.set(kind, next);
+    return { ...item, tag: `${titleCase(kind)} #${next}` };
+  });
+}
+
 export function kindSummary(detections: Detection[]): string {
   const counts = new Map<string, number>();
   for (const item of detections) {
@@ -154,6 +178,47 @@ function labelsMatch(a: string, b: string): boolean {
   const right = b.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   if (!left || !right) return false;
   return left === right || left.includes(right) || right.includes(left);
+}
+
+export type BoxCorner = "nw" | "ne" | "sw" | "se";
+
+/** Pull one corner. The opposite corner stays put, and the box cannot flip or leave the sheet. */
+export function resizeBox(box: Box, corner: BoxCorner, dx: number, dy: number): Box {
+  const min = 8;
+  let top = box[0];
+  let left = box[1];
+  let bottom = box[2];
+  let right = box[3];
+  if (corner === "nw" || corner === "ne") top += dy;
+  if (corner === "sw" || corner === "se") bottom += dy;
+  if (corner === "nw" || corner === "sw") left += dx;
+  if (corner === "ne" || corner === "se") right += dx;
+  if (corner === "nw" || corner === "sw") left = Math.min(left, right - min);
+  else right = Math.max(right, left + min);
+  if (corner === "nw" || corner === "ne") top = Math.min(top, bottom - min);
+  else bottom = Math.max(bottom, top + min);
+  top = Math.max(0, top);
+  left = Math.max(0, left);
+  bottom = Math.min(1000, bottom);
+  right = Math.min(1000, right);
+  if (right - left < min) {
+    if (corner === "nw" || corner === "sw") left = Math.max(0, right - min);
+    else right = Math.min(1000, left + min);
+  }
+  if (bottom - top < min) {
+    if (corner === "nw" || corner === "ne") top = Math.max(0, bottom - min);
+    else bottom = Math.min(1000, top + min);
+  }
+  return [Math.round(top), Math.round(left), Math.round(bottom), Math.round(right)];
+}
+
+/** Slide a box by dx, dy on the 0-1000 sheet and keep it inside the page. */
+export function moveBox(box: Box, dx: number, dy: number): Box {
+  const height = box[2] - box[0];
+  const width = box[3] - box[1];
+  const top = Math.min(1000 - height, Math.max(0, Math.round(box[0] + dy)));
+  const left = Math.min(1000 - width, Math.max(0, Math.round(box[1] + dx)));
+  return [top, left, top + height, left + width];
 }
 
 function centerDistance(a: Box, b: Box): number {

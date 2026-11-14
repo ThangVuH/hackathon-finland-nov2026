@@ -2,7 +2,7 @@ import { useCallback, useEffect, useImperativeHandle, useRef, useState, type Ref
 import { Crosshair, Maximize, Minus, Plus, Upload, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { detectionKind, kindSummary, type Detection } from "@/lib/detections";
+import { detectionKind, kindSummary, moveBox, resizeBox, type Box, type BoxCorner, type Detection } from "@/lib/detections";
 import { markPaint } from "@/lib/mark-style";
 import { ACCEPTED_TYPES } from "@/lib/image-prep";
 
@@ -23,6 +23,13 @@ interface View {
   z: number;
 }
 
+const BOX_HANDLES: { corner: BoxCorner; place: string; cursor: string; shift: string }[] = [
+  { corner: "nw", place: "top-0 left-0", cursor: "cursor-nwse-resize", shift: "-50%, -50%" },
+  { corner: "ne", place: "top-0 right-0", cursor: "cursor-nesw-resize", shift: "50%, -50%" },
+  { corner: "sw", place: "bottom-0 left-0", cursor: "cursor-nesw-resize", shift: "-50%, 50%" },
+  { corner: "se", place: "bottom-0 right-0", cursor: "cursor-nwse-resize", shift: "50%, 50%" },
+];
+
 const MIN_ZOOM = 0.05;
 const MAX_ZOOM = 12;
 const clampZoom = (z: number) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, z));
@@ -38,6 +45,9 @@ interface Props {
   sourceToggle?: { showingOriginal: boolean; onToggle: () => void } | null;
   onHoverDetection: (index: number | null) => void;
   onSelectDetection: (index: number) => void;
+  onMoveDetection?: (index: number, box: Box) => void;
+  onDeleteDetection?: (index: number) => void;
+  onAddDetection?: (kind: string, box: Box) => void;
   onFiles: (files: FileList | File[]) => void;
   onClose?: () => void;
   handleRef?: Ref<DrawingCanvasHandle>;
@@ -54,6 +64,9 @@ export function DrawingCanvas({
   sourceToggle,
   onHoverDetection,
   onSelectDetection,
+  onMoveDetection,
+  onDeleteDetection,
+  onAddDetection,
   onFiles,
   onClose,
   handleRef,
@@ -66,8 +79,14 @@ export function DrawingCanvas({
   const [animate, setAnimate] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [dropActive, setDropActive] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
   const pan = useRef<{ id: number; sx: number; sy: number; vx: number; vy: number; moved: boolean } | null>(null);
+  const boxDrag = useRef<{ id: number; index: number; sx: number; sy: number; box: Box; moved: boolean; corner: BoxCorner | null } | null>(null);
+  const moveDetectionRef = useRef(onMoveDetection);
+  const selectDetectionRef = useRef(onSelectDetection);
+  moveDetectionRef.current = onMoveDetection;
+  selectDetectionRef.current = onSelectDetection;
 
   const withAnimation = useCallback((next: View) => {
     setAnimate(true);
@@ -130,6 +149,19 @@ export function DrawingCanvas({
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
+  const addDetection = (kind: string) => {
+    if (!onAddDetection || !natural) return;
+    const el = containerRef.current;
+    const viewNow = viewRef.current;
+    const centerX = el ? (el.clientWidth / 2 - viewNow.x) / viewNow.z : natural.w / 2;
+    const centerY = el ? (el.clientHeight / 2 - viewNow.y) / viewNow.z : natural.h / 2;
+    const width = 80;
+    const height = 80;
+    const left = Math.min(1000 - width, Math.max(0, Math.round((centerX / natural.w) * 1000 - width / 2)));
+    const top = Math.min(1000 - height, Math.max(0, Math.round((centerY / natural.h) * 1000 - height / 2)));
+    onAddDetection(kind, [top, left, top + height, left + width]);
+  };
+
   const zoomButton = (factor: number) => {
     const el = containerRef.current;
     if (!el) return;
@@ -155,6 +187,37 @@ export function DrawingCanvas({
     }),
     [detections, natural, withAnimation],
   );
+
+  useEffect(() => {
+    const move = (event: PointerEvent) => {
+      const drag = boxDrag.current;
+      if (!drag || drag.id !== event.pointerId || !natural) return;
+      const dx = event.clientX - drag.sx;
+      const dy = event.clientY - drag.sy;
+      if (!drag.moved && Math.hypot(dx, dy) <= 3) return;
+      drag.moved = true;
+      setDragging(true);
+      const scale = viewRef.current.z;
+      const du = (dx / scale / natural.w) * 1000;
+      const dv = (dy / scale / natural.h) * 1000;
+      moveDetectionRef.current?.(drag.index, drag.corner ? resizeBox(drag.box, drag.corner, du, dv) : moveBox(drag.box, du, dv));
+    };
+    const end = (event: PointerEvent) => {
+      const drag = boxDrag.current;
+      if (!drag || drag.id !== event.pointerId) return;
+      boxDrag.current = null;
+      setDragging(false);
+      if (!drag.moved) selectDetectionRef.current(drag.index);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+    };
+  }, [natural]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0) return;
@@ -219,6 +282,44 @@ export function DrawingCanvas({
           )}
         </div>
         <div className="flex items-center gap-1">
+          {onAddDetection && showBoxes && (
+            <div className="relative mr-1">
+              <button
+                type="button"
+                disabled={analyzing}
+                onClick={() => {
+                  const kinds = [...new Set(detections.map((item) => detectionKind(item.tag)))].filter((kind) => kind !== "object");
+                  if (kinds.length <= 1) {
+                    addDetection(kinds[0] ?? "door");
+                    setAddOpen(false);
+                    return;
+                  }
+                  setAddOpen((open) => !open);
+                }}
+                className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border px-2 font-mono text-[0.68rem] text-foreground hover:border-safety hover:text-safety disabled:opacity-40"
+              >
+                <Plus className="size-3.5" />
+                Add box
+              </button>
+              {addOpen && (
+                <div className="absolute right-0 top-full z-40 mt-1 flex min-w-28 flex-col rounded-sm border border-border bg-panel p-1">
+                  {["door", "window", "room", "column", "stair"].map((kind) => (
+                    <button
+                      key={kind}
+                      type="button"
+                      onClick={() => {
+                        addDetection(kind);
+                        setAddOpen(false);
+                      }}
+                      className="rounded-sm px-2 py-1 text-left font-mono text-[0.68rem] text-foreground capitalize hover:bg-safety/10 hover:text-safety"
+                    >
+                      {kind}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           {onClose && (
             <button
               type="button"
@@ -308,15 +409,20 @@ export function DrawingCanvas({
               const paint = markPaint(d.tag);
               const weight = detectionKind(d.tag) === "room" ? 3 : 2;
               return (
-                <button
+                <div
                   key={i}
-                  type="button"
+                  role="group"
                   aria-label={`${d.tag}${d.label ? `: ${d.label}` : ""}`}
+                  title="Drag to move"
                   onPointerEnter={() => onHoverDetection(i)}
                   onPointerLeave={() => onHoverDetection(null)}
-                  onClick={() => onSelectDetection(i)}
+                  onPointerDown={(event) => {
+                    if (analyzing || event.button !== 0 || !onMoveDetection) return;
+                    event.stopPropagation();
+                    boxDrag.current = { id: event.pointerId, index: i, sx: event.clientX, sy: event.clientY, box: d.box, moved: false, corner: null };
+                  }}
                   className={cn(
-                    "absolute cursor-pointer rounded-[1px] transition-colors",
+                    "group absolute cursor-grab rounded-[1px]",
                     paint.box,
                     paint.dashed ? "border-dashed" : "border-solid",
                     active ? "z-20 animate-box-pulse" : "z-10",
@@ -342,7 +448,55 @@ export function DrawingCanvas({
                   >
                     {d.tag}
                   </span>
-                </button>
+                  {onMoveDetection &&
+                    BOX_HANDLES.map((handle) => (
+                      <button
+                        key={handle.corner}
+                        type="button"
+                        aria-label={`Resize ${d.tag} ${handle.corner}`}
+                        title="Drag to resize"
+                        onPointerDown={(event) => {
+                          if (analyzing || event.button !== 0) return;
+                          event.stopPropagation();
+                          boxDrag.current = {
+                            id: event.pointerId,
+                            index: i,
+                            sx: event.clientX,
+                            sy: event.clientY,
+                            box: d.box,
+                            moved: false,
+                            corner: handle.corner,
+                          };
+                        }}
+                        className={cn(
+                          "absolute z-30 size-2.5 rounded-[1px] border border-foreground bg-background opacity-0 group-hover:opacity-100",
+                          handle.place,
+                          handle.cursor,
+                          active && "opacity-100",
+                        )}
+                        style={{ transform: `translate(${handle.shift}) scale(calc(1 / var(--z)))` }}
+                      />
+                    ))}
+                  {onDeleteDetection && (
+                    <button
+                      type="button"
+                      aria-label={`Remove ${d.tag}`}
+                      title="Remove this box"
+                      onPointerDown={(event) => event.stopPropagation()}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onDeleteDetection(i);
+                      }}
+                      className={cn(
+                        "absolute top-0 right-0 z-30 inline-flex size-5 origin-top-right items-center justify-center rounded-sm bg-background text-foreground opacity-0 group-hover:opacity-100",
+                        active && "opacity-100",
+                      )}
+                      style={{ transform: "translate(40%, -40%) scale(calc(1 / var(--z)))" }}
+                    >
+                      <X className="size-3" />
+                    </button>
+                  )}
+                </div>
               );
             })}
 
@@ -359,6 +513,12 @@ export function DrawingCanvas({
             <p className="font-display text-xl text-foreground">Drop drawing to load</p>
             <p className="label-tech">PNG · JPG · WEBP</p>
           </div>
+        )}
+
+        {showBoxes && detections.length > 0 && (
+          <p className="pointer-events-none absolute top-3 left-1/2 z-20 max-w-[70%] -translate-x-1/2 rounded-sm border border-border bg-panel/90 px-2.5 py-1.5 text-center text-xs leading-relaxed text-muted-foreground backdrop-blur">
+            If we got one wrong, drag the box, pull a corner, or remove it.
+          </p>
         )}
 
         {/* Status readout */}

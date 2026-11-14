@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeAnalysis, stabilizeDetections, type Detection } from "./detections";
+import { insertDetection, moveBox, renumberDetections, resizeBox, normalizeAnalysis, stabilizeDetections, type Detection } from "./detections";
 
 const base = { answer: "There are 2 doors.", object_type: "door", count: 2 };
 
@@ -47,6 +47,48 @@ describe("normalizeAnalysis", () => {
       items: [{ label: "", ymin: 0, xmin: 0, ymax: 10, xmax: 10 }],
     });
     expect(r.count).toBe(1);
+  });
+});
+
+describe("insertDetection", () => {
+  it("adds the next number in that kind and leaves the other kind", () => {
+    const existing: Detection[] = [
+      { tag: "Door #1", label: "Bedroom 1 door", box: [0, 0, 10, 10] },
+      { tag: "Window #1", label: "Kitchen window", box: [20, 20, 40, 40] },
+    ];
+    const added = insertDetection(existing, "door", [50, 50, 80, 80]);
+    expect(added.index).toBe(1);
+    expect(added.detections.map((item) => item.tag)).toEqual(["Door #1", "Door #2", "Window #1"]);
+  });
+});
+
+describe("renumberDetections", () => {
+  it("closes the gap in one kind and leaves the other kind alone", () => {
+    const doors: Detection[] = [
+      { tag: "Door #1", label: "Bedroom 1 door", box: [0, 0, 10, 10] },
+      { tag: "Door #3", label: "Bath door", box: [20, 20, 30, 30] },
+      { tag: "Window #2", label: "Kitchen window", box: [40, 40, 50, 50] },
+    ];
+    expect(renumberDetections(doors).map((item) => item.tag)).toEqual(["Door #1", "Door #2", "Window #1"]);
+  });
+});
+
+describe("resizeBox", () => {
+  it("grows from the dragged corner and keeps the opposite corner", () => {
+    expect(resizeBox([100, 100, 200, 200], "se", 40, 30)).toEqual([100, 100, 230, 240]);
+    expect(resizeBox([100, 100, 200, 200], "nw", -20, -15)).toEqual([85, 80, 200, 200]);
+  });
+
+  it("does not flip the box when a corner is pulled past the other side", () => {
+    expect(resizeBox([100, 100, 200, 200], "se", -150, -150)).toEqual([100, 100, 108, 108]);
+  });
+});
+
+describe("moveBox", () => {
+  it("slides a box and keeps it on the sheet", () => {
+    expect(moveBox([100, 200, 180, 260], 40, -30)).toEqual([70, 240, 150, 300]);
+    expect(moveBox([10, 20, 40, 50], -100, -100)).toEqual([0, 0, 30, 30]);
+    expect(moveBox([900, 950, 980, 990], 80, 80)).toEqual([920, 960, 1000, 1000]);
   });
 });
 

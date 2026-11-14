@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { ChatPanel, type ChatMessage } from "@/components/stoa/ChatPanel";
 import { DrawingCanvas, isAcceptedFile, type Drawing, type DrawingCanvasHandle } from "@/components/stoa/DrawingCanvas";
-import { normalizeAnalysis, stabilizeDetections } from "@/lib/detections";
+import { detectionKind, insertDetection, normalizeAnalysis, renumberDetections, stabilizeDetections, type Box } from "@/lib/detections";
 import { prepareImageForAnalysis, type PreparedImage } from "@/lib/image-prep";
 import { detectSheetMarks } from "@/lib/sketch-mark";
 import { selectDrawingTargets } from "@/lib/file-target";
@@ -293,6 +293,52 @@ function StoaVision() {
     }
   };
 
+  const shownId = resultMessage?.role === "assistant" && resultMessage.status === "done" ? resultMessage.id : null;
+
+  const moveShownBox = (index: number, box: Box) => {
+    if (!shownId) return;
+    setMessages((current) =>
+      current.map((message) => {
+        if (message.id !== shownId || message.role !== "assistant" || message.status !== "done") return message;
+        const detections = message.result.detections.map((item, itemIndex) => (itemIndex === index ? { ...item, box } : item));
+        return { ...message, result: { ...message.result, detections, count: detections.length } };
+      }),
+    );
+  };
+
+  const addShownBox = (kind: string, box: Box) => {
+    if (!shownId) return;
+    let added = 0;
+    setMessages((current) =>
+      current.map((message) => {
+        if (message.id !== shownId || message.role !== "assistant" || message.status !== "done") return message;
+        const inserted = insertDetection(message.result.detections, kind, box);
+        added = inserted.index;
+        const kinds = new Set(inserted.detections.map((item) => detectionKind(item.tag)));
+        const objectType = kinds.size === 1 ? inserted.detections[0]!.tag.replace(/\s*#\d+\s*$/, "") : "Object";
+        return { ...message, result: { ...message.result, detections: inserted.detections, count: inserted.detections.length, objectType } };
+      }),
+    );
+    setActiveMessageId(shownId);
+    setPinned(added);
+    setHovered(null);
+    requestAnimationFrame(() => canvasRef.current?.focusDetection(added));
+  };
+
+  const deleteShownBox = (index: number) => {
+    if (!shownId) return;
+    setMessages((current) =>
+      current.map((message) => {
+        if (message.id !== shownId || message.role !== "assistant" || message.status !== "done") return message;
+        const detections = renumberDetections(message.result.detections.filter((_, itemIndex) => itemIndex !== index));
+        return { ...message, result: { ...message.result, detections, count: detections.length } };
+      }),
+    );
+    const keep = (value: number | null) => (value === null ? null : value === index ? null : value > index ? value - 1 : value);
+    setPinned(keep);
+    setHovered(keep);
+  };
+
   const selectItem = (messageId: string, index: number) => {
     const message = messages.find((item) => item.id === messageId);
     if (message?.role === "assistant") setActiveId(message.fileId);
@@ -346,6 +392,9 @@ function StoaVision() {
                 onClose={chatOpen ? () => setShowBlueprint(false) : undefined}
                 onHoverDetection={setHovered}
                 onSelectDetection={(index) => activeMessageId && selectItem(activeMessageId, index)}
+                onMoveDetection={moveShownBox}
+                onDeleteDetection={deleteShownBox}
+                onAddDetection={shownId ? addShownBox : undefined}
                 onFiles={handleFiles}
               />
             ) : (
