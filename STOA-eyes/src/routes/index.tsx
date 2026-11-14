@@ -1,21 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FolderUp, ImagePlus } from "lucide-react";
+import { ImagePlus } from "lucide-react";
 import { toast } from "sonner";
 
 import sampleApartment from "@/assets/sample-apartment.jpg";
 import sampleOffice from "@/assets/sample-office.jpg";
-import sampleSchedule from "../../sample-project/schedule.csv?raw";
-import sampleNotes from "../../sample-project/site-meeting.txt?raw";
-import sampleBlueprint from "../../sample-project/A-201 Office 1.jpg";
 import { ChatPanel, type ChatMessage } from "@/components/stoa/ChatPanel";
 import { DrawingCanvas, isAcceptedFile, type Drawing, type DrawingCanvasHandle } from "@/components/stoa/DrawingCanvas";
-import { ProjectCheckPanel } from "@/components/stoa/ProjectCheckPanel";
-import { checkProject, type ProjectReport } from "@/lib/project-check";
-import { readProjectFiles } from "@/lib/project-files";
-import { normalizeAnalysis } from "@/lib/detections";
+import { normalizeAnalysis, stabilizeDetections } from "@/lib/detections";
 import { prepareImageForAnalysis, type PreparedImage } from "@/lib/image-prep";
-import { analyzeDrawing, backendStatus } from "@/lib/vision.functions";
+import { detectSheetMarks } from "@/lib/sketch-mark";
+import { analyzeDrawing, backendStatus, simplifyDrawing } from "@/lib/vision.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -45,6 +40,13 @@ const SAMPLES: Drawing[] = [
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
+type SheetPhase = "reading" | "simplifying" | "original" | "simplified";
+interface SheetView {
+  phase: SheetPhase;
+  src?: string;
+  note?: string;
+}
+
 function StoaVision() {
   const [drawings, setDrawings] = useState<Drawing[]>(SAMPLES);
   const [drawingId, setDrawingId] = useState(SAMPLES[0]!.id);
@@ -62,15 +64,18 @@ function StoaVision() {
   };
   const [showBoxes, setShowBoxes] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [mode, setMode] = useState<"check" | "qa">("qa");
-  const [report, setReport] = useState<ProjectReport | null>(null);
-  const [checking, setChecking] = useState(false);
   const [backendNote, setBackendNote] = useState("Backend starting");
+  const [sheets, setSheets] = useState<Record<string, SheetView>>({});
+  const [showOriginal, setShowOriginal] = useState(false);
 
   const canvasRef = useRef<DrawingCanvasHandle>(null);
   const fileInput = useRef<HTMLInputElement>(null);
-  const projectInput = useRef<HTMLInputElement>(null);
   const prepared = useRef<Map<string, PreparedImage>>(new Map());
+  const ready = useRef<Map<string, Promise<void>>>(new Map());
+
+  const sheet = sheets[drawing.id];
+  const simplifiedSrc = sheet?.phase === "simplified" ? sheet.src : undefined;
+  const displaySrc = !showOriginal && simplifiedSrc ? simplifiedSrc : drawing.src;
 
   const activeMessage = messages.find((m) => m.id === activeMessageId);
   const detections = activeMessage?.role === "assistant" && activeMessage.status === "done" ? activeMessage.result.detections : [];
@@ -83,56 +88,59 @@ function StoaVision() {
 
   useEffect(() => {
     setHighlighted(null);
+    setShowOriginal(false);
     const last = [...(threads[drawing.id] ?? [])].reverse().find((m) => m.role === "assistant" && m.status === "done");
     setActiveMessageId(last?.id ?? null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drawing.id]);
 
+  useEffect(() => {
+    let cancel = false;
+    const id = drawing.id;
+    const src = drawing.src;
+    const job = (async () => {
+      setSheets((current) => ({ ...current, [id]: { phase: "reading" } }));
+      try {
+        const marks = await detectSheetMarks(src);
+        if (cancel) return;
+        const original = await prepareImageForAnalysis(src);
+        if (!marks.complicated) {
+          prepared.current.set(id, original);
+          if (!cancel) setSheets((current) => ({ ...current, [id]: { phase: "original" } }));
+          return;
+        }
+        if (!cancel) setSheets((current) => ({ ...current, [id]: { phase: "simplifying" } }));
+        const simplified = await simplifyDrawing({
+          data: { imageDataUrl: original.dataUrl, imageWidth: original.width, imageHeight: original.height },
+        });
+        if (cancel) return;
+        if (!simplified.ok) {
+          prepared.current.set(id, original);
+          setSheets((current) => ({ ...current, [id]: { phase: "original" } }));
+          return;
+        }
+        const redraw = await prepareImageForAnalysis(simplified.imageDataUrl);
+        prepared.current.set(id, redraw);
+        if (!cancel) setSheets((current) => ({ ...current, [id]: { phase: "simplified", src: redraw.dataUrl, note: simplified.note } }));
+      } catch (error) {
+        console.error(error);
+        if (cancel) return;
+        try {
+          prepared.current.set(id, await prepareImageForAnalysis(src));
+        } catch {
+          prepared.current.delete(id);
+        }
+        setSheets((current) => ({ ...current, [id]: { phase: "original" } }));
+      }
+    })();
+    ready.current.set(id, job);
+    return () => {
+      cancel = true;
+    };
+  }, [drawing.id, drawing.src]);
+
   const updateThread = (id: string, fn: (msgs: ChatMessage[]) => ChatMessage[]) =>
     setThreads((t) => ({ ...t, [id]: fn(t[id] ?? []) }));
-
-  const handleProject = useCallback(async (list: FileList | File[]) => {
-    const files = Array.from(list);
-    if (!files.length) return;
-    const images = files.filter(isAcceptedFile);
-    const known = new Set(drawings.map((item) => item.name));
-    const created: Drawing[] = images
-      .filter((file) => !known.has(file.name))
-      .map((file) => ({
-        id: `upload-${uid()}`,
-        name: file.name,
-        src: URL.createObjectURL(file),
-        kind: "upload",
-      }));
-    if (created.length) {
-      setDrawings((ds) => [...ds, ...created]);
-      setDrawingId(created[0]!.id);
-    }
-    setMode("check");
-    setChecking(true);
-    try {
-      setReport(checkProject(await readProjectFiles(files)));
-    } catch (error) {
-      console.error(error);
-      toast.error("Project check failed", { description: "One of the files could not be read." });
-    } finally {
-      setChecking(false);
-    }
-  }, [drawings]);
-
-  const loadSampleProject = useCallback(async () => {
-    const image = await fetch(sampleBlueprint).then((response) => response.blob());
-    await handleProject([
-      new File([sampleSchedule], "schedule.csv", { type: "text/csv" }),
-      new File([sampleNotes], "site-meeting.txt", { type: "text/plain" }),
-      new File([image], "A-201 Office 1.jpg", { type: "image/jpeg" }),
-    ]);
-  }, [handleProject]);
-
-  const openBlueprint = (filename: string) => {
-    const found = drawings.find((item) => item.name === filename);
-    if (found) setDrawingId(found.id);
-  };
 
   const handleFiles = useCallback((files: FileList | File[]) => {
     const file = Array.from(files)[0];
@@ -163,6 +171,7 @@ function StoaVision() {
     ]);
     setBusy(true);
     try {
+      await ready.current.get(target.id);
       let img = prepared.current.get(target.id);
       if (!img) {
         img = await prepareImageForAnalysis(target.src);
@@ -184,7 +193,10 @@ function StoaVision() {
         );
         return;
       }
-      const result = normalizeAnalysis(res.raw);
+      const known = messages.flatMap((message) =>
+        message.role === "assistant" && message.status === "done" ? message.result.detections : [],
+      );
+      const result = stabilizeDetections(known, normalizeAnalysis(res.raw));
       updateThread(target.id, (msgs) =>
         msgs.map((m) => (m.id === pendingId ? { id: pendingId, role: "assistant", status: "done", result } : m)),
       );
@@ -247,31 +259,12 @@ function StoaVision() {
         </nav>
         <button
           type="button"
-          onClick={() => projectInput.current?.click()}
-          className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-safety bg-safety/10 px-3 py-1.5 font-display text-sm font-semibold text-foreground transition-colors hover:bg-safety/20"
-        >
-          <FolderUp className="size-4 text-safety" />
-          Upload project
-        </button>
-        <button
-          type="button"
           onClick={() => fileInput.current?.click()}
           className="inline-flex shrink-0 items-center gap-2 rounded-sm bg-primary px-3 py-1.5 font-display text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           <ImagePlus className="size-4" />
           Upload drawing
         </button>
-        <input
-          ref={projectInput}
-          type="file"
-          multiple
-          accept=".png,.jpg,.jpeg,.webp,.pdf,.xlsx,.csv,.txt,.md,.docx,image/png,image/jpeg,image/webp,application/pdf,text/plain,text/csv"
-          className="hidden"
-          onChange={(e) => {
-            if (e.target.files) void handleProject(e.target.files);
-            e.target.value = "";
-          }}
-        />
         <input
           ref={fileInput}
           type="file"
@@ -288,43 +281,23 @@ function StoaVision() {
         <section className="h-[55vh] min-h-0 border-border lg:h-auto lg:w-[70%] lg:border-r" aria-label="Drawing canvas">
           <DrawingCanvas
             handleRef={canvasRef}
-            drawing={drawing}
-            detections={detections}
-            showBoxes={showBoxes}
+            drawing={{ ...drawing, src: displaySrc }}
+            detections={showOriginal ? [] : detections}
+            showBoxes={showBoxes && !showOriginal}
             highlighted={highlighted}
-            analyzing={busy}
+            analyzing={busy || sheet?.phase === "simplifying"}
+            sourceToggle={
+              simplifiedSrc
+                ? { showingOriginal: showOriginal, onToggle: () => setShowOriginal((value) => !value) }
+                : null
+            }
             onHoverDetection={setHovered}
             onSelectDetection={(i) => activeMessageId && selectDetection(activeMessageId, i)}
             onFiles={handleFiles}
           />
         </section>
-        <aside className="flex min-h-0 flex-1 flex-col border-t border-border lg:w-[30%] lg:flex-none lg:border-t-0" aria-label="Project tools">
-          <div className="flex h-10 shrink-0 border-b border-border bg-background">
-            <button
-              type="button"
-              onClick={() => setMode("check")}
-              className={cn(
-                "flex-1 font-display text-sm font-semibold tracking-wide",
-                mode === "check" ? "bg-safety/10 text-safety" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              Project Check
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("qa")}
-              className={cn(
-                "flex-1 border-l border-border font-display text-sm font-semibold tracking-wide",
-                mode === "qa" ? "bg-safety/10 text-safety" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              Drawing Q&A
-            </button>
-          </div>
+        <aside className="flex min-h-0 flex-1 flex-col border-t border-border lg:w-[30%] lg:flex-none lg:border-t-0" aria-label="Drawing Q&A">
           <div className="min-h-0 flex-1">
-          {mode === "check" ? (
-            <ProjectCheckPanel report={report} checking={checking} onOpenBlueprint={openBlueprint} onLoadSample={() => void loadSampleProject()} />
-          ) : (
           <ChatPanel
             messages={messages}
             busy={busy}
@@ -342,7 +315,6 @@ function StoaVision() {
             onHover={(_, i) => setHovered(i)}
             onSelect={selectDetection}
           />
-          )}
           </div>
         </aside>
       </main>

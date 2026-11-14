@@ -5,12 +5,12 @@ export interface PreparedImage {
   height: number;
 }
 
-const MAX_SIDE = 1280;
+const MAX_SIDE = 2048;
 
 export function prepareImageForAnalysis(src: string): Promise<PreparedImage> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    if (!src.startsWith("data:")) img.crossOrigin = "anonymous";
     img.onload = () => {
       const scale = Math.min(1, MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
       const width = Math.max(1, Math.round(img.naturalWidth * scale));
@@ -22,8 +22,10 @@ export function prepareImageForAnalysis(src: string): Promise<PreparedImage> {
       if (!ctx) return reject(new Error("Canvas unavailable"));
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, width, height);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, 0, 0, width, height);
-      resolve({ dataUrl: canvas.toDataURL("image/jpeg", 0.75), width, height });
+      resolve({ dataUrl: canvas.toDataURL("image/jpeg", 0.92), width, height });
     };
     img.onerror = () => reject(new Error("Could not read this image"));
     img.src = src;

@@ -24,3 +24,16 @@ export const analyzeDrawing = createServerFn({ method: "POST" })
     const { analyzeDrawingOnServer } = await import("./vision.server");
     return analyzeDrawingOnServer(data);
   });
+
+const simplifySchema = z.object({
+  imageDataUrl: z.string().startsWith("data:image/").max(12_000_000),
+  imageWidth: z.number().int().positive(),
+  imageHeight: z.number().int().positive(),
+});
+
+export const simplifyDrawing = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => simplifySchema.parse(data))
+  .handler(async ({ data }) => {
+    const { simplifyDrawingOnServer } = await import("./vision.server");
+    return simplifyDrawingOnServer(data);
+  });

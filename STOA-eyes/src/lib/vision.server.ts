@@ -6,27 +6,11 @@ import { APICallError, NoObjectGeneratedError, Output, jsonSchema, streamText, t
 import { createLovableAiGatewayRunIdFetch } from "./ai/run-id.server";
 import { answerSampleSheet, localMissError, selectBackend, type BackendInfo } from "./backend.server";
 import type { RawAnalysis } from "./detections";
+import { instructionsFor } from "./drawing-prompts";
+import { nearestAspectRatio, readBananaImage, SIMPLIFY_PROMPT } from "./simplify";
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1";
 const MODEL = "openai/gpt-6-astra";
-
-const INSTRUCTIONS = `You are Stoa Vision, an expert construction site engineer and quantity surveyor reading architectural and construction drawings (floor plans, elevations, sections, MEP and structural layouts).
-
-Answer the engineer's question about the attached drawing precisely and concisely.
-
-When the question asks to count, locate, identify or list elements (doors, windows, rooms, columns, stairs, fixtures, etc.):
-- Inspect the whole sheet systematically (left-to-right, top-to-bottom) and find EVERY instance.
-- Doors: look for door leaves with swing arcs, sliding doors and openings with door symbols. A double door is ONE door.
-- Windows: thin double/triple parallel lines set inside walls. Each separate window opening is one window.
-- Rooms: enclosed labelled or clearly bounded spaces; box the full interior extent.
-- Columns: small solid/hatched squares or circles on the structural grid.
-- Return one item per instance with a tight bounding box [ymin, xmin, ymax, xmax] normalized to 0-1000, where 0,0 is the top-left of the image and 1000,1000 is the bottom-right (y = vertical, x = horizontal).
-- "label" is a short location-aware descriptor, e.g. "Entry door, south wall" or "Bedroom 1".
-- "object_type" is the singular element name, e.g. "Door", "Window", "Room", "Column".
-- "count" equals the number of items. The "answer" must state the count and a one-line breakdown if useful.
-
-For questions that do not need locations, answer in "answer", set object_type to "" and items to [].
-Never invent elements that are not drawn. If the drawing is unreadable, say so.`;
 
 const analysisSchema = jsonSchema<RawAnalysis>({
   type: "object",
@@ -134,7 +118,7 @@ export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<Analy
   try {
     const result = streamText({
       model: provider.responses(MODEL),
-      instructions: INSTRUCTIONS,
+      instructions: instructionsFor(input.question),
       messages,
       output: Output.object({ schema: analysisSchema }),
       providerOptions: {
@@ -182,7 +166,7 @@ async function analyzeWithChatModel(input: AnalyzeInput, backend: BackendInfo): 
   try {
     const result = streamText({
       model: provider.chat(backend.model ?? "gpt-4o-mini"),
-      instructions: INSTRUCTIONS,
+      instructions: instructionsFor(input.question),
       messages,
       maxRetries: 1,
       timeout: 120_000,
@@ -199,6 +183,127 @@ async function analyzeWithChatModel(input: AnalyzeInput, backend: BackendInfo): 
     console.error("[stoa-vision] analysis failed", error);
     return { ok: false, error: describeError(error) };
   }
+}
+
+export interface SimplifyInput {
+  imageDataUrl: string;
+  imageWidth: number;
+  imageHeight: number;
+}
+
+export type SimplifyOutcome = { ok: true; imageDataUrl: string; note: string } | { ok: false; error: string };
+
+const BANANA_FALLBACKS = ["gemini-3.1-flash-lite-image", "gemini-2.5-flash-image", "gemini-3.1-flash-image"];
+let bananaBlocked: string | null = null;
+
+export async function simplifyDrawingOnServer(input: SimplifyInput): Promise<SimplifyOutcome> {
+  const key = googleImageKey(process.env);
+  if (!key) {
+    return { ok: false, error: "Nano Banana needs the Gemini key in STOA_API_KEY. This sheet is used as drawn." };
+  }
+  if (bananaBlocked) return { ok: false, error: bananaBlocked };
+  const image = dataUrlParts(input.imageDataUrl);
+  if (!image) return { ok: false, error: "The drawing couldn't be prepared. This sheet is used as drawn." };
+  const configured = process.env.STOA_IMAGE_MODEL?.trim();
+  const models = configured ? [configured] : [];
+  for (const fallback of BANANA_FALLBACKS) {
+    if (!models.includes(fallback)) models.push(fallback);
+  }
+  const withAspect = bananaBody(image, nearestAspectRatio(input.imageWidth, input.imageHeight));
+  const imageOnly = bananaBody(image, null);
+  try {
+    let response: { status: number; text: string } | undefined;
+    for (const candidate of models) {
+      let modelMissing = false;
+      for (const payload of [withAspect, imageOnly]) {
+        response = await postJson(
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(candidate)}:generateContent`,
+          { "Content-Type": "application/json", "x-goog-api-key": key },
+          payload,
+          90_000,
+          "Nano Banana took too long. This sheet is used as drawn.",
+        );
+        if (response.status >= 200 && response.status < 300) {
+          try {
+            const read = readBananaImage(JSON.parse(response.text) as unknown);
+            if (read) return { ok: true, imageDataUrl: read.imageDataUrl, note: read.note };
+          } catch {
+            console.error("[stoa-vision] banana returned no image", candidate);
+          }
+          continue;
+        }
+        console.error("[stoa-vision] banana status", response.status, candidate, safeMessage(response.text) ?? "");
+        if (response.status === 404 || response.status === 503 || response.status === 429) {
+          modelMissing = true;
+          break;
+        }
+        if (response.status !== 400) return { ok: false, error: bananaHttpError(response.status, response.text) };
+      }
+      if (!modelMissing && response && response.status !== 400 && (response.status < 200 || response.status >= 300)) break;
+    }
+    const error = bananaHttpError(response?.status ?? 0, response?.text ?? "");
+    if ((response?.status ?? 0) === 429) bananaBlocked = error;
+    return { ok: false, error };
+  } catch (error) {
+    console.error("[stoa-vision] banana failed", error instanceof Error ? error.message : error);
+    const message = error instanceof Error ? error.message : "";
+    if (/too long/i.test(message)) return { ok: false, error: message };
+    return { ok: false, error: "Nano Banana did not redraw this sheet. It is used as drawn." };
+  }
+}
+
+function googleImageKey(env: Record<string, string | undefined>): string | null {
+  const key = env.STOA_API_KEY?.trim();
+  if (!key) return null;
+  const base = env.STOA_API_BASE ?? "";
+  if (base && !base.includes("generativelanguage.googleapis.com")) return null;
+  return key;
+}
+
+function bananaBody(image: { mime: string; base64: string }, aspectRatio: string | null): string {
+  const generationConfig: Record<string, unknown> = {
+    responseModalities: aspectRatio ? ["TEXT", "IMAGE"] : ["IMAGE"],
+  };
+  if (aspectRatio) generationConfig.imageConfig = { aspectRatio };
+  return JSON.stringify({
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: SIMPLIFY_PROMPT }, { inlineData: { mimeType: image.mime, data: image.base64 } }],
+      },
+    ],
+    generationConfig,
+  });
+}
+
+function bananaHttpError(status: number, body: string): string {
+  if (status === 404) return "Nano Banana is not on this key. This sheet is used as drawn.";
+  if (status === 401 || status === 403) return "The Gemini key was rejected. This sheet is used as drawn.";
+  if (status === 429) {
+    const message = safeMessage(body) ?? "";
+    if (/limit:\s*0/.test(message)) return "Nano Banana is not included on this free key. This sheet is used as drawn.";
+    return "The free Gemini quota is used up for the moment. This sheet is used as drawn.";
+  }
+  if (status === 400) return safeMessage(body) ?? "Nano Banana could not redraw this sheet. It is used as drawn.";
+  return "Nano Banana did not redraw this sheet. It is used as drawn.";
+}
+
+const textCooldown = new Map<string, number>();
+
+function modelCooling(model: string): boolean {
+  return (textCooldown.get(model) ?? 0) > Date.now();
+}
+
+function holdModel(model: string, body: string) {
+  textCooldown.set(model, Date.now() + retryDelayMs(body));
+}
+
+function retryDelayMs(body: string): number {
+  const message = `${safeMessage(body) ?? ""} ${body}`;
+  const match = /retry in\s+(?:(\d+)h)?(?:(\d+)m)?(?:(\d+(?:\.\d+)?)s)?/i.exec(message);
+  if (!match || (!match[1] && !match[2] && !match[3])) return 60_000;
+  const ms = (Number(match[1] ?? 0) * 3600 + Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0)) * 1000;
+  return Math.min(Math.max(ms, 5_000), 24 * 60 * 60 * 1000);
 }
 
 const GEMINI_SCHEMA = {
@@ -231,8 +336,12 @@ async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Pro
   if (!image) return { ok: false, error: "The drawing couldn't be prepared for analysis." };
   const model = backend.model || "gemini-2.5-flash";
   const models = [model];
-  for (const fallback of ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"]) {
+  for (const fallback of ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.6-flash"]) {
     if (!models.includes(fallback)) models.push(fallback);
+  }
+  const usable = models.filter((candidate) => !modelCooling(candidate));
+  if (usable.length === 0) {
+    return { ok: false, error: "The free Gemini quota is used up for the moment. Wait a minute and try again." };
   }
   const contents = [
     ...input.history.slice(-8).map((message) => ({
@@ -248,7 +357,7 @@ async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Pro
     },
   ];
   const body = JSON.stringify({
-    systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
+    systemInstruction: { parts: [{ text: instructionsFor(input.question) }] },
     contents,
     generationConfig: {
       temperature: 0.2,
@@ -259,15 +368,23 @@ async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Pro
   });
   try {
     let response: { status: number; text: string } | undefined;
-    for (const candidate of models) {
+    for (const candidate of usable) {
       response = await postJson(
         `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(candidate)}:generateContent`,
         { "Content-Type": "application/json", "x-goog-api-key": backend.apiKey ?? "" },
         body,
         120_000,
       );
-      if (response.status !== 503 && response.status !== 404) break;
-      console.error("[stoa-vision] gemini status", response.status, candidate);
+      if (response.status === 429) {
+        holdModel(candidate, response.text);
+        console.error("[stoa-vision] gemini status", response.status, candidate, safeMessage(response.text) ?? "");
+        continue;
+      }
+      if (response.status === 503 || response.status === 404) {
+        console.error("[stoa-vision] gemini status", response.status, candidate);
+        continue;
+      }
+      break;
     }
     if (!response || response.status < 200 || response.status >= 300) {
       console.error("[stoa-vision] gemini status", response?.status ?? 0);
@@ -335,7 +452,13 @@ function geminiHttpError(status: number, body: string): string {
   return message ? `The vision model refused the drawing: ${message}` : "The vision model had a temporary problem. Please try again.";
 }
 
-function postJson(url: string, headers: Record<string, string>, body: string, timeoutMs: number): Promise<{ status: number; text: string }> {
+function postJson(
+  url: string,
+  headers: Record<string, string>,
+  body: string,
+  timeoutMs: number,
+  timeoutMessage = "The vision model took too long to answer. Try again.",
+): Promise<{ status: number; text: string }> {
   return new Promise((resolve, reject) => {
     const target = new URL(url);
     const req = https.request(
@@ -352,7 +475,7 @@ function postJson(url: string, headers: Record<string, string>, body: string, ti
       },
     );
     const timer = setTimeout(() => {
-      req.destroy(new Error("The vision model took too long to answer. Try again."));
+      req.destroy(new Error(timeoutMessage));
     }, timeoutMs);
     req.on("error", (error) => {
       clearTimeout(timer);

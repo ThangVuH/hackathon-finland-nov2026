@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeAnalysis } from "./detections";
+import { normalizeAnalysis, stabilizeDetections, type Detection } from "./detections";
 
 const base = { answer: "There are 2 doors.", object_type: "door", count: 2 };
 
@@ -32,5 +32,49 @@ describe("normalizeAnalysis", () => {
       items: [{ label: "", ymin: 0, xmin: 0, ymax: 10, xmax: 10 }],
     });
     expect(r.count).toBe(1);
+  });
+});
+
+describe("stabilizeDetections", () => {
+  const bedroom: Detection = { tag: "Door #1", label: "Bedroom 1 door", box: [400, 420, 520, 500] };
+  const bath: Detection = { tag: "Door #2", label: "Bath door", box: [600, 640, 700, 730] };
+
+  it("keeps Bedroom 1 door as #1 when a later answer lists it second", () => {
+    const again = normalizeAnalysis({
+      answer: "There are 2 doors.",
+      object_type: "door",
+      count: 2,
+      items: [
+        { label: "Bath door", ymin: 605, xmin: 645, ymax: 705, xmax: 735 },
+        { label: "Bedroom 1 door", ymin: 410, xmin: 430, ymax: 530, xmax: 510 },
+      ],
+    });
+    const stable = stabilizeDetections([bedroom, bath], again);
+    expect(stable.detections.map((item) => `${item.tag} ${item.label}`)).toEqual([
+      "Door #1 Bedroom 1 door",
+      "Door #2 Bath door",
+    ]);
+  });
+
+  it("does not give a new door a number already used by a door that is missing this time", () => {
+    const again = normalizeAnalysis({
+      answer: "There is 1 door.",
+      object_type: "door",
+      count: 1,
+      items: [{ label: "Entrance door", ymin: 800, xmin: 100, ymax: 900, xmax: 200 }],
+    });
+    const stable = stabilizeDetections([bedroom], again);
+    expect(stable.detections[0]!.tag).toBe("Door #2");
+  });
+
+  it("leaves a window number alone when matching doors", () => {
+    const window: Detection = { tag: "Window #1", label: "Bedroom 1 window", box: [100, 100, 140, 200] };
+    const again = normalizeAnalysis({
+      answer: "There is 1 door.",
+      object_type: "door",
+      count: 1,
+      items: [{ label: "Bedroom 1 door", ymin: 400, xmin: 420, ymax: 520, xmax: 500 }],
+    });
+    expect(stabilizeDetections([window], again).detections[0]!.tag).toBe("Door #1");
   });
 });

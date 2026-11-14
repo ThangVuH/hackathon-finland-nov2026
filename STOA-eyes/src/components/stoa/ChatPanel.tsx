@@ -202,6 +202,7 @@ function AssistantMessage({
 
   const { result } = message;
   const hasItems = result.detections.length > 0;
+  const direct = /^(yes|no)\b/i.test(result.answer.trim());
 
   return (
     <div
@@ -211,7 +212,7 @@ function AssistantMessage({
       )}
     >
       <div className="p-3">
-        {hasItems && (
+        {hasItems && !direct && (
           <div className="mb-2 flex items-baseline gap-2">
             <span className="font-mono text-3xl leading-none font-bold text-safety tabular-nums">{result.count}</span>
             <span className="label-tech">
@@ -220,7 +221,7 @@ function AssistantMessage({
             </span>
           </div>
         )}
-        <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground">{result.answer}</p>
+        <p className={direct ? "text-base leading-relaxed font-medium whitespace-pre-wrap text-foreground" : "text-sm leading-relaxed whitespace-pre-wrap text-foreground"}>{result.answer}</p>
       </div>
 
       {hasItems && (

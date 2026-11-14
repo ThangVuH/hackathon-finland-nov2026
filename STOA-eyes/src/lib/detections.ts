@@ -52,3 +52,84 @@ export function normalizeAnalysis(raw: RawAnalysis): AnalysisResult {
   const count = detections.length > 0 ? detections.length : Math.max(0, Math.round(raw.count || 0));
   return { answer: raw.answer.trim(), objectType, count, detections };
 }
+
+/** Keep the number and name an item received the first time it was found on this sheet. */
+export function stabilizeDetections(known: Detection[], result: AnalysisResult): AnalysisResult {
+  const type = result.objectType.trim().toLowerCase();
+  const prior = known.filter((item) => tagType(item.tag) === type);
+  const used = new Set<number>();
+  const pairs: { index: number; priorIndex: number; score: number }[] = [];
+  result.detections.forEach((item, index) => {
+    prior.forEach((earlier, priorIndex) => {
+      const overlap = iou(item.box, earlier.box);
+      const sameName = labelsMatch(item.label, earlier.label);
+      const close = centerDistance(item.box, earlier.box) <= 80;
+      if (overlap < 0.2 && !(sameName && (close || overlap >= 0.05))) return;
+      pairs.push({ index, priorIndex, score: overlap + (sameName ? 0.5 : 0) });
+    });
+  });
+  pairs.sort((a, b) => b.score - a.score);
+  const takenNew = new Set<number>();
+  const takenPrior = new Set<number>();
+  const matched = new Map<number, Detection>();
+  for (const pair of pairs) {
+    if (takenNew.has(pair.index) || takenPrior.has(pair.priorIndex)) continue;
+    const earlier = prior[pair.priorIndex]!;
+    const item = result.detections[pair.index]!;
+    takenNew.add(pair.index);
+    takenPrior.add(pair.priorIndex);
+    used.add(tagNumber(earlier.tag));
+    matched.set(pair.index, {
+      tag: earlier.tag,
+      label: earlier.label || item.label,
+      box: item.box,
+    });
+  }
+  let next = prior.reduce((max, item) => Math.max(max, tagNumber(item.tag)), 0);
+  const detections = result.detections.map((item, index) => {
+    const kept = matched.get(index);
+    if (kept) return kept;
+    next += 1;
+    while (used.has(next)) next += 1;
+    used.add(next);
+    return { ...item, tag: `${result.objectType} #${next}` };
+  });
+  detections.sort((a, b) => tagNumber(a.tag) - tagNumber(b.tag));
+  return { ...result, detections };
+}
+
+function tagNumber(tag: string): number {
+  const match = /#(\d+)\s*$/.exec(tag);
+  return match ? Number(match[1]) : 0;
+}
+
+function tagType(tag: string): string {
+  return tag.replace(/\s*#\d+\s*$/, "").trim().toLowerCase();
+}
+
+function labelsMatch(a: string, b: string): boolean {
+  const left = a.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const right = b.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  if (!left || !right) return false;
+  return left === right || left.includes(right) || right.includes(left);
+}
+
+function centerDistance(a: Box, b: Box): number {
+  const ay = (a[0] + a[2]) / 2;
+  const ax = (a[1] + a[3]) / 2;
+  const by = (b[0] + b[2]) / 2;
+  const bx = (b[1] + b[3]) / 2;
+  return Math.hypot(ax - bx, ay - by);
+}
+
+function iou(a: Box, b: Box): number {
+  const top = Math.max(a[0], b[0]);
+  const left = Math.max(a[1], b[1]);
+  const bottom = Math.min(a[2], b[2]);
+  const right = Math.min(a[3], b[3]);
+  const intersection = Math.max(0, bottom - top) * Math.max(0, right - left);
+  const areaA = Math.max(0, a[2] - a[0]) * Math.max(0, a[3] - a[1]);
+  const areaB = Math.max(0, b[2] - b[0]) * Math.max(0, b[3] - b[1]);
+  const union = areaA + areaB - intersection;
+  return union <= 0 ? 0 : intersection / union;
+}
