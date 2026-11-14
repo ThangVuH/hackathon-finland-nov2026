@@ -2,39 +2,42 @@ Swiss rules frozen before any look at the 15 holdout buildings.
 Split: counting/swiss_split.csv (50 train, 15 holdout, seed 13, by building).
 The holdout answers were not read.
 
-Text, train only. Definition is DXF room text. Inference is PDF text.
-On these templates the two columns match, because the PDF text matches the DXF text.
-That is one measurement, not two.
+Text reader. A room is a name, then a code, then an area line when one is printed.
+The code may have a letter prefix (2.09 or U1.01).
+Label count: 303/303. The digit-only pass was 297/303, all six on site897.
+Definition and inference match because the PDF text matches the DXF text.
 
-A room is a name line, then a code, then an area line when one is printed.
-The code is optional letters plus a number, a dot, and a number (2.09 or U1.01).
-The first pass accepted digits only and scored label counts 297/303.
-The six misses were one train plan, site897, whose codes are U1.01.
-The letter prefix was then accepted and the label count was scored once more.
+Area text is not hiding next to the label. Paired name-to-area distances have
+median 0.625 m and max 1.000 m. Area texts left unused by a triple: 0.
+Rooms with a code and no area line: 935. None has an unused area text within that max.
 
-Label count, exact name: 303/303. Baseline, most frequent training answer: 80/303.
-Room area, the printed area after that code, within 2%: 30/98.
-The other 68 questions have the code and no area line. None of the 30 printed areas is outside 2%.
-Baseline: 2/98.
-Apartment area, sum from the unit line (App. or Whg.) until the next unit line,
-outdoor names dropped: 7/86. Baseline: 2/86. Not revised.
-Total of one label, sum of printed areas of that name: 15/50. Baseline: 1/50.
-This is not the global indoor total.
-Global indoor total, the already frozen text sum: 12/50. Baseline: 1/50.
+Polygon check, before the fallback was scored. On the 30 questioned rooms that
+do have a printed area, the smallest ROOM_OUTLINE containing the label over the
+printed area has median ratio 1.0001 and is within 2% of 1 on 30/30.
 
-Door candidates, compared on the 50 only. The 15 are not scored.
-1. Count of door-layer arcs.
-   Definition 29/50. Inference, the frozen black stroke of width 0.85, 29/50.
-   The stroke count equals the arc count on 50/50, so the inference column is not independent.
-   Baseline, most frequent training answer 25: 4/50.
-   answer - arcs is 0 on 29 plans and negative on the other 21.
-   There is no positive constant, so arcs + 1 is not a rule.
-2. One count per arc centre: 8/50.
-3. arcs - 2, the most common non-zero gap: 10/50.
+Area rule, frozen from that check. Printed area if present, otherwise that
+polygon. Inclusion is the list already frozen.
+Definition only. The PDF is not given the DXF polygon.
+Room area: 98/98. Baseline 2/98.
+Total of one label: 50/50. Baseline 1/50.
+All numbered indoor rooms, outdoor names removed: 47/50. Baseline 1/50.
+Apartment, rooms from its unit line to the next, outdoor names removed: 10/86.
+Baseline 2/86. Filling the missing areas does not fix the apartment span.
+That span is not revised.
+Earlier, the sum of every outline with nothing dropped was 9/50. It mixed the
+geometry with the inclusion rule and is not this rule.
 
-An arc kept only when a door polyline point lies inside its circle
-equals the arc count on all 50 plans, so it is not a separate rule.
-Arcs plus polylines remains the rule already scored 0/50. It is not a candidate.
+Door rules tried on the 50. Six, one of them not distinct.
+1. Arcs plus polylines: 0/50.
+2. Door-layer arcs: 29/50. The frozen black stroke of width 0.85 equals the
+   arc count on 50/50, so the PDF column is not independent.
+   Baseline, answer 25: 4/50.
+   answer - arcs is 0 on 29 plans and negative on 21. arcs + 1 does not occur.
+3. One count per arc centre: 8/50.
+4. arcs - 2, the most common non-zero gap: 10/50.
+5. Arc kept when a door polyline point lies in its circle: same count as the
+   arcs on all 50 plans, so it is not a separate rule.
+6. Arcs whose swing midpoint is outside a room named outdoor, shaft, or void:
+   16/50. 129 arcs dropped. Worse than the arcs alone.
 
-If the 15 are scored later, the door rule is candidate 1.
-Candidates 2 and 3 are worse on the 50 and are not retried on the holdout.
+If the 15 are scored later, the door rule is 2. The others are not retried.
