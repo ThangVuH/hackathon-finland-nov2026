@@ -1,0 +1,40 @@
+Swiss rules frozen before any look at the 15 holdout buildings.
+Split: counting/swiss_split.csv (50 train, 15 holdout, seed 13, by building).
+The holdout answers were not read.
+
+Text, train only. Definition is DXF room text. Inference is PDF text.
+On these templates the two columns match, because the PDF text matches the DXF text.
+That is one measurement, not two.
+
+A room is a name line, then a code, then an area line when one is printed.
+The code is optional letters plus a number, a dot, and a number (2.09 or U1.01).
+The first pass accepted digits only and scored label counts 297/303.
+The six misses were one train plan, site897, whose codes are U1.01.
+The letter prefix was then accepted and the label count was scored once more.
+
+Label count, exact name: 303/303. Baseline, most frequent training answer: 80/303.
+Room area, the printed area after that code, within 2%: 30/98.
+The other 68 questions have the code and no area line. None of the 30 printed areas is outside 2%.
+Baseline: 2/98.
+Apartment area, sum from the unit line (App. or Whg.) until the next unit line,
+outdoor names dropped: 7/86. Baseline: 2/86. Not revised.
+Total of one label, sum of printed areas of that name: 15/50. Baseline: 1/50.
+This is not the global indoor total.
+Global indoor total, the already frozen text sum: 12/50. Baseline: 1/50.
+
+Door candidates, compared on the 50 only. The 15 are not scored.
+1. Count of door-layer arcs.
+   Definition 29/50. Inference, the frozen black stroke of width 0.85, 29/50.
+   The stroke count equals the arc count on 50/50, so the inference column is not independent.
+   Baseline, most frequent training answer 25: 4/50.
+   answer - arcs is 0 on 29 plans and negative on the other 21.
+   There is no positive constant, so arcs + 1 is not a rule.
+2. One count per arc centre: 8/50.
+3. arcs - 2, the most common non-zero gap: 10/50.
+
+An arc kept only when a door polyline point lies inside its circle
+equals the arc count on all 50 plans, so it is not a separate rule.
+Arcs plus polylines remains the rule already scored 0/50. It is not a candidate.
+
+If the 15 are scored later, the door rule is candidate 1.
+Candidates 2 and 3 are worse on the 50 and are not retried on the holdout.
