@@ -1,0 +1,15 @@
+Train buildings only. The stroke is chosen by count, not by area.
+Holdout answers were not read.
+closed paths equal DXF room polygons: 39/50  signature ('fs', (0.541, 0.541, 0.541), 0.37)
+other signatures at the top:
+  39/50  ('fs', (0.541, 0.541, 0.541), 0.37)
+plans calibrated from a printed area: 33
+plans with only the written scale: 17
+plans where printed factor and 1:N differ by more than 2%: 18
+PDF area against the DXF polygon, within 2%: 908/1279
+  rooms that had a printed area: 357/432
+  rooms with no printed area: 551/847
+  on plans whose stroke count matches: 742/989
+  on the other plans: 166/290
+example site1000 factor, written factor, printed rooms: (0.00497749622160254, 0.004978086419753086, 26)
+A disagreement of the two scales is a low-confidence flag. It does not change the factor.

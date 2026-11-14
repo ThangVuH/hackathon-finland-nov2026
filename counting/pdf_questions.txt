@@ -1,0 +1,11 @@
+Train buildings only. Holdout answers were not read.
+plans where the two factors differ: 18
+on those plans, against the DXF polygon, before any answer was read:
+  printed-area factor 0/371
+  written scale 371/371
+rule: when they differ, use the written factor.
+
+template                   n     inference  baseline
+room area                 98         97/98  2/98
+labelled total            50         42/50  1/50
+global indoor total       50         37/50  1/50

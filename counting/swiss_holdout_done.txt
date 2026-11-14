@@ -1,0 +1,7 @@
+predictions swiss-holdout-20261114T212550Z.jsonl
+apartment_count        15/15
+door                   8/15
+indoor_total           12/15
+label_count            93/93
+labelled_area          12/15
+room_area              29/30

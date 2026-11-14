@@ -14,8 +14,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-VECTOR_EXTENSIONS = {".ifc", ".dwg", ".dxf"}
-SHEET_EXTENSIONS = {".pdf"}
+VECTOR_EXTENSIONS = {".dwg", ".dxf"}
+SHEET_EXTENSIONS: set[str] = set()
 SOURCE_MARKERS = (
     "/habs/",
     "/finna/",
@@ -37,7 +37,7 @@ def name_reason(filename: str) -> str | None:
     text = _path_text(filename or "drawing.png")
     extension = Path(text).suffix
     if extension in VECTOR_EXTENSIONS:
-        return "IFC or CAD file. The checker reads a floor-plan image, and it will not invent a count for this file."
+        return "CAD file. The checker reads a floor-plan image or an IFC file, and it will not invent a count for this file."
     if extension in SHEET_EXTENSIONS:
         return "Drawing sheet (PDF). The checker reads one floor plan, not a title-block sheet, and it will not invent a count."
     padded = f"/{text}"

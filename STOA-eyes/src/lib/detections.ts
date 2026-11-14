@@ -10,6 +10,12 @@ export interface Detection {
   /** Model's short descriptor, e.g. "Entry door" or "Bedroom 1". */
   label: string;
   box: Box;
+  /** Closed path in the same 0-1000 space, as [x, y] pairs. */
+  polygon?: [number, number][];
+  /** Which sheet page this mark sits on. */
+  page?: number;
+  /** How the value was obtained, for example "printed area" or "polygon". */
+  note?: string;
   /** The two engines disagree on this rectangle. A click keeps or drops it. */
   disputed?: boolean;
   /** Dropped rectangles stay on the sheet but leave the count. */
@@ -34,6 +40,9 @@ export interface RawItem {
   ymax: number;
   xmax: number;
   kind?: string;
+  polygon?: [number, number][];
+  page?: number;
+  note?: string;
   disputed?: boolean;
   included?: boolean;
   source?: Detection["source"];
@@ -68,7 +77,9 @@ export function normalizeAnalysis(raw: RawAnalysis): AnalysisResult {
     let xmax = clamp(item.xmax);
     if (ymin > ymax) [ymin, ymax] = [ymax, ymin];
     if (xmin > xmax) [xmin, xmax] = [xmax, xmin];
-    if (ymax - ymin < 1 || xmax - xmin < 1) continue;
+    const located = ymax - ymin >= 1 && xmax - xmin >= 1;
+    const listed = Boolean(item.note) || (item.polygon?.length ?? 0) > 2;
+    if (!located && !listed) continue;
     const itemType = titleCase(item.kind || raw.object_type || "Item");
     const next = (perType.get(itemType) ?? 0) + 1;
     perType.set(itemType, next);
@@ -79,6 +90,9 @@ export function normalizeAnalysis(raw: RawAnalysis): AnalysisResult {
       disputed: item.disputed === true,
       included: item.included !== false,
       source: item.source,
+      polygon: item.polygon,
+      page: item.page,
+      note: item.note,
     });
   }
   const included = detections.filter((detection) => detection.included !== false).length;

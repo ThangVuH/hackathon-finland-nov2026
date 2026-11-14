@@ -2,6 +2,8 @@
 
 import { Buffer } from "node:buffer";
 
+import type { RawAnalysis } from "./detections";
+
 const DETECTOR_URL = process.env["DETECTOR_URL"] ?? "http://127.0.0.1:8765";
 
 export interface DetectorBody {
@@ -56,4 +58,27 @@ export async function callDetector(input: {
   const body = (await response.json()) as DetectorBody;
   if (!body.ok) return { ok: false, unavailable: false, error: body.error || body.reason || "The counting service could not read this drawing." };
   return { ok: true, body };
+}
+
+export async function callFileReader(input: {
+  imageDataUrl: string;
+  question: string;
+  filename?: string;
+}): Promise<{ ok: true; body: RawAnalysis & { preview?: string; ok?: boolean } } | { ok: false; error: string }> {
+  const form = new FormData();
+  form.set("file", dataUrlToBlob(input.imageDataUrl), input.filename || "drawing.pdf");
+  form.set("question", input.question);
+  try {
+    const response = await fetch(`${DETECTOR_URL}/file`, {
+      method: "POST",
+      body: form,
+      signal: AbortSignal.timeout(180_000),
+    });
+    if (!response.ok) return { ok: false, error: "The file reader rejected this drawing." };
+    const body = (await response.json()) as RawAnalysis & { preview?: string; ok?: boolean };
+    if (body.ok === false) return { ok: false, error: body.answer || "The file reader could not read this drawing." };
+    return { ok: true, body };
+  } catch {
+    return { ok: false, error: "The counting service is not running, so this file was not read." };
+  }
 }

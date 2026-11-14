@@ -1,0 +1,36 @@
+Swiss train, English questions. Router then solver. Holdout not read.
+Definition is the DXF rule already frozen. Inference reads the PDF.
+Baseline: most frequent answer of a sentence that repeats, otherwise the most frequent answer of the template. A tie keeps the smaller.
+
+template                   n    definition     inference  baseline
+apartment_area            86         10/86     no solver  4/86
+apartment_count           50          text         50/50  14/50
+basin                     50             —     no solver  9/50
+bath                      43             —     no solver  16/43
+door                      50         29/50         29/50  4/50
+indoor_total              50         47/50         37/50  1/50
+label_count              303       303/303       303/303  117/303
+labelled_area             50         50/50         42/50  6/50
+room_area                 98         98/98         97/98  2/98
+toilet                    50             —     no solver  13/50
+unverified                15             —     no solver  7/15
+window                    50             —     no solver  5/50
+
+Routed here, but not the frozen sentence. Counted in the table above only when no frozen sentence exists.
+label_count      How many rooms labelled 'Cage d'escalier' are there on this floor?
+room_area        What is the net floor area of room U1.09 ('Küche') in m²?
+room_area        What is the net floor area of room U1.15 ('Korridor') in m²?
+
+
+CubiCasa train and val. The 27 test plans were not read.
+Definition is the SVG. Inference is the single read after the epoch is frozen.
+
+template                   n    definition     inference  baseline
+door                     157       157/157      not read  24/157
+floor                    214       214/214      not read  178/214
+kitchen                  147       147/147      not read  139/147
+sauna                    152       147/152      not read  84/152
+shower                   200       200/200      not read  151/200
+sink                     212       212/212      not read  123/212
+toilet_bowl              214       214/214      not read  140/214
+window                   214       214/214      not read  33/214

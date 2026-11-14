@@ -1,0 +1,26 @@
+Declared before the calls below. This measurement reports. It does not choose a method.
+The 27 CubiCasa plans were already scored by the detector. Nothing here moves a cutoff.
+
+Model: gemini-3.6-flash
+Temperature: 0
+Response: JSON
+
+Prompt, frozen, sent as the only text part beside the image:
+Count only. Reply with JSON {"count": integer, "items": [{"ymin":0,"xmin":0,"ymax":1,"xmax":1}]}. Boxes are 0-1000. Question: {question}
+
+Calls:
+- one English window question on each of the 27 test plans
+- eight English questions on Swiss training plans only
+- the 15 holdout plans are not in the sample
+
+A call that fails, including HTTP 429, is a missing answer. It is not a wrong answer.
+Precision and badge coverage are computed on the successful calls only.
+The number of successes is reported beside both.
+
+Badge: reliable only when the vision count equals the cached detector count
+and every detector box has a vision box at IoU 0.3.
+Precision of the badge: among reliable answers, how many equal the answer.
+Coverage of the badge: reliable answers divided by successful calls.
+
+The detector boxes are read from the epoch22 cache. The plans are not predicted again.
+Results are appended to counting/vlm_alone_result.txt after each call.

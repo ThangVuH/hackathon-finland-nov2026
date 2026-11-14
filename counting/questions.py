@@ -28,6 +28,15 @@ def asked_kinds(question: str) -> list[str]:
 
 
 def question_type(question: str) -> QuestionType:
+    text = fold(question)
+    if re.search(r"\bshowers?\b", text) or "suihku" in text:
+        return "shower"
+    if re.search(r"\bsinks?\b", text) or "tiskiallas" in text:
+        return "sink"
+    if re.search(r"\btoilets?\b", text) or re.search(r"\bwc\b", text):
+        return "toilet"
+    if "sauna" in text:
+        return "sauna_stove"
     kinds = asked_kinds(question)
     if len(kinds) == 2:
         return "both"

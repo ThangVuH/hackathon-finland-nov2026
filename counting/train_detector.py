@@ -1,29 +1,40 @@
-"""Train the window and door detector on the CPU.
+"""Train the multi-class detector.
 
-The checkpoint is written to counting/runs/window-door. Validation during
-training uses the tiled val split, so it does not see the held-out plans.
+The run is counting/runs/multiclass. It does not replace the window-door
+weights. Ultralytics still writes best.pt by mAP. select_exact.py chooses
+the epoch by exact validation counts and writes best_exact.pt.
 """
 
+import sys
 from pathlib import Path
 
+import torch
 from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parent
+LAST = ROOT / "runs" / "multiclass" / "weights" / "last.pt"
 
 
 def main() -> None:
+    if "--resume" in sys.argv:
+        if not LAST.is_file():
+            raise SystemExit(f"nothing to resume at {LAST}")
+        YOLO(str(LAST)).train(resume=True)
+        return
+    device = "0" if torch.cuda.is_available() else "cpu"
     model = YOLO("yolo11n.pt")
     model.train(
-        data=str(ROOT / "yolo" / "dataset.yaml"),
+        data=str(ROOT / "yolo-multiclass" / "dataset.yaml"),
         epochs=30,
         imgsz=640,
         batch=8,
-        device="cpu",
+        device=device,
         workers=0,
-        patience=8,
-        cache="ram",
+        patience=100,
+        save_period=1,
+        cache="ram" if device == "cpu" else False,
         project=str(ROOT / "runs"),
-        name="window-door",
+        name="multiclass",
         exist_ok=True,
         plots=False,
         hsv_h=0.0,

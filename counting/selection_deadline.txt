@@ -1,0 +1,9 @@
+Epoch choice is fixed to 22:00 Europe/Paris on 14 Nov 2026.
+If all 30 epoch files exist before that, the choice runs then.
+The hour is not moved after seeing a validation score or a loss curve.
+Only epoch files whose size was stable before training is stopped are eligible.
+Among those, the candidates are even indexes at or after 10.
+If none exist, the even indexes that do exist are used.
+Each candidate is predicted once at confidence 0.05 and cached.
+The cutoff sweep reads that cache and does not predict again.
+Kitchen is not in the choice or in the global total.

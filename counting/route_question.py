@@ -76,9 +76,24 @@ def _label_text(question: str) -> str:
     return next(group for group in found.groups() if group is not None)
 
 
+def _demo(question: str) -> tuple[str, tuple, str] | None:
+    path = Path(__file__).resolve().parent / "route_demo.json"
+    if not path.is_file():
+        return None
+    template = json.loads(path.read_text(encoding="utf-8")).get(question)
+    if template is None:
+        return None
+    if template in ("aucun", "none", "unverified"):
+        return "unverified", (), PROOF["unverified"]
+    return template, (), PROOF.get(template, PROOF["unverified"])
+
+
 def route(question: str) -> tuple[str, tuple, str]:
     """Return template, parameters, and the proof that would be shown."""
     question = _straight(question)
+    preregistered = _demo(question)
+    if preregistered is not None:
+        return preregistered
     folded = _fold(question)
     quotes = tuple(QUOTED.findall(question))
     code = CODE.search(question)

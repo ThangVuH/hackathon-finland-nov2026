@@ -60,7 +60,7 @@ DXF polygon on 371/371 rooms and the printed factor on 0/371.
 When the two factors differ, the written scale is the one used.
 Question inference, label centre inside the closed path: room area 97/98,
 labelled total 42/50, indoor total 37/50.
-The 15 are not read.
+The 15 were unread when these rules were frozen. They were read once afterwards. The score is counting/swiss_holdout.txt. Do not read them again.
 
 Apostrophes and room codes, corrected before any reading of the 15.
 Curly apostrophes (’ and ‘) are read as the straight apostrophe.

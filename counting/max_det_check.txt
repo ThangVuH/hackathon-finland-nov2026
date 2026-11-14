@@ -1,0 +1,7 @@
+weights epoch9.pt
+plan high_quality_architectural-12617  2480x1748  tiles 20
+confidence 0.05  max_det 2000
+busiest tile 11
+default cap 300 reached: no
+max_det reached: no
+Cross-tile merge stays after the confidence cutoff, in the selector and in the live keeper.

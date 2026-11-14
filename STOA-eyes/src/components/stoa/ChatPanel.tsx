@@ -297,6 +297,7 @@ function AssistantMessage({
                         {d.disputed ? (dropped ? " · dropped" : " · check") : ""}
                       </span>
                       {d.label && <span className="block truncate text-xs text-muted-foreground">{d.label}</span>}
+                      {d.note && <span className="block truncate text-xs text-muted-foreground">{d.note}</span>}
                     </span>
                     <span className="shrink-0 font-mono text-[0.62rem] text-muted-foreground tabular-nums">
                       [{d.box.join(", ")}]

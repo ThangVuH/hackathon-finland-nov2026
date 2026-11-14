@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { arbitrate, nameReason, questionType, recognizedTemplate, withoutDetector, type CheckerItem, type VisionPayload } from "./checker";
+import { arbitrate, measuredSentence, nameReason, questionType, recognizedTemplate, routeQuestion, withoutDetector, type CheckerItem, type VisionPayload } from "./checker";
 
 function box(kind: string, xmin: number, ymin: number, xmax: number, ymax: number, score = 0.9): CheckerItem {
   return { kind, label: kind, xmin, ymin, xmax, ymax, score };
@@ -19,8 +19,9 @@ describe("questionType", () => {
 
 describe("nameReason", () => {
   it("refuses IFC, PDF, archive sheets, and archive sources", () => {
-    expect(nameReason("block.ifc")).toContain("IFC");
-    expect(nameReason("level.pdf")).toContain("PDF");
+    expect(nameReason("block.ifc")).toBeNull();
+    expect(nameReason("level.pdf")).toBeNull();
+    expect(nameReason("plan.dwg")).toContain("CAD");
     expect(nameReason("al1276_sheet_00001.jpg")?.toLowerCase()).toContain("sheet");
     expect(nameReason("data/habs/plan.jpg")).toContain("Archive");
     expect(nameReason("high_quality-11459.png")).toBeNull();
@@ -36,6 +37,21 @@ describe("recognizedTemplate", () => {
     expect(result?.count).toBe(0);
     expect(result?.answer).toContain("text boxes");
     expect(recognizedTemplate("How many windows?")).toBeNull();
+  });
+
+  it("asks for the IFC file instead of a score", () => {
+    const result = recognizedTemplate("What is the net floor area of the room 'KORIDOR (119)' on '1.korrus', in m²?");
+    expect(result?.count).toBe(0);
+    expect(result?.answer).toContain("GlobalId");
+    expect(result?.answer).not.toContain("215/225");
+  });
+
+  it("states the measured shower count as a weak result", () => {
+    expect(routeQuestion("Hur många dörrar finns inritade på den här ritningen?").cached).toBe(true);
+    expect(routeQuestion("How many rooms labelled 'Zimmer' are there on this floor?").cached).toBe(false);
+    expect(measuredSentence("shower")).toContain("4 exact");
+    expect(measuredSentence("shower")).toContain("14/27");
+    expect(recognizedTemplate("How many showers and bathtubs are shown?")).toBeNull();
   });
 });
 

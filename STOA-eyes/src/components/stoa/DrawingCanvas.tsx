@@ -9,6 +9,8 @@ export interface Drawing {
   id: string;
   name: string;
   src: string;
+  /** Original upload, kept when src is only a preview image. */
+  fileUrl?: string;
   kind: "sample" | "upload";
 }
 
@@ -268,9 +270,25 @@ export function DrawingCanvas({
             style={natural ? { width: natural.w, height: natural.h } : undefined}
           />
 
+          {natural && showBoxes && detections.some((d) => (d.polygon?.length ?? 0) > 2) && (
+            <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+              {detections.map((d, i) =>
+                d.polygon && d.polygon.length > 2 ? (
+                  <polygon
+                    key={i}
+                    points={d.polygon.map(([x, y]) => `${x},${y}`).join(" ")}
+                    className={highlighted === i ? "fill-safety/30 stroke-safety" : "fill-scan/15 stroke-scan"}
+                    strokeWidth={1.5}
+                  />
+                ) : null,
+              )}
+            </svg>
+          )}
+
           {natural && showBoxes &&
             detections.map((d, i) => {
               const [ymin, xmin, ymax, xmax] = d.box;
+              if (ymax - ymin < 1 || xmax - xmin < 1) return null;
               const active = highlighted === i;
               const dropped = d.included === false;
               const disputed = d.disputed === true && !dropped;
@@ -365,5 +383,5 @@ function ToolButton({ label, onClick, children }: { label: string; onClick: () =
 }
 
 export function isAcceptedFile(file: File) {
-  return ACCEPTED_TYPES.includes(file.type);
+  return ACCEPTED_TYPES.includes(file.type) || /\.(pdf|ifc)$/i.test(file.name);
 }

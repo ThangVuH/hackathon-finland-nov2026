@@ -1,0 +1,91 @@
+The constant is the most frequent training answer. A tie keeps the smaller answer.
+Test and validation use that frozen constant. They do not choose it.
+Ceiling = SVG rule. Non-modal = answer different from the training constant.
+The constant scores 0 on every non-modal plan.
+
+Boxes in the exported tiles. A plan is counted once per class.
+  train plans 182
+    window boxes 3045  plans 181/182
+    door boxes 3756  plans 182/182
+    sink boxes 914  plans 178/182
+    toilet boxes 484  plans 175/182
+    shower boxes 455  plans 172/182
+    kitchen boxes 336  plans 157/182
+    sauna_stove boxes 198  plans 103/182
+  val plans 32
+    window boxes 432  plans 32/32
+    door boxes 571  plans 32/32
+    sink boxes 157  plans 32/32
+    toilet boxes 80  plans 30/32
+    shower boxes 68  plans 30/32
+    kitchen boxes 61  plans 30/32
+    sauna_stove boxes 40  plans 21/32
+  test plans 27
+    window boxes 452  plans 27/27
+    door boxes 499  plans 27/27
+    sink boxes 124  plans 25/27
+    toilet boxes 67  plans 25/27
+    shower boxes 72  plans 25/27
+    kitchen boxes 46  plans 24/27
+    sauna_stove boxes 26  plans 16/27
+
+window   train_mode 4  train_share 26/182
+         val  constant 7/32  definition 32/32  nonmodal 25  definition_on_nonmodal 25/25
+         test constant 1/27  definition 27/27  nonmodal 26  definition_on_nonmodal 26/26
+door     train_mode 6  train_share 20/131
+         val  constant 4/26  definition 26/26  nonmodal 22  definition_on_nonmodal 22/22
+         test constant 0/19  definition 19/19  nonmodal 19  definition_on_nonmodal 19/19
+sink     train_mode 2  train_share 105/180
+         val  constant 18/32  definition 32/32  nonmodal 14  definition_on_nonmodal 14/14
+         test constant 10/27  definition 27/27  nonmodal 17  definition_on_nonmodal 17/17
+toilet   train_mode 1  train_share 119/182
+         val  constant 21/32  definition 32/32  nonmodal 11  definition_on_nonmodal 11/11
+         test constant 12/26  definition 26/26  nonmodal 14  definition_on_nonmodal 14/14
+shower   train_mode 1  train_share 127/171
+         val  constant 24/29  definition 29/29  nonmodal 5  definition_on_nonmodal 5/5
+         test constant 14/27  definition 27/27  nonmodal 13  definition_on_nonmodal 13/13
+kitchen  train_mode 1  train_share 114/121
+         val  constant 25/26  definition 26/26  nonmodal 1  definition_on_nonmodal 1/1
+         test constant 14/14  definition 14/14  nonmodal 0  definition_on_nonmodal 0/0
+         UNMEASURABLE. Not in any global detector score.
+         test nonmodal 0/14, val nonmodal 1/26.
+floor    train_mode 1  train_share 149/182
+         val  constant 29/32  definition 32/32  nonmodal 3  definition_on_nonmodal 3/3
+         test constant 16/27  definition 27/27  nonmodal 11  definition_on_nonmodal 11/11
+sauna    train_mode 1  train_share 67/126
+         val  constant 17/26  definition 26/26  nonmodal 9  definition_on_nonmodal 9/9
+         test constant 7/13  definition 12/13  nonmodal 6  definition_on_nonmodal 6/6
+         train answers equal to 0: 57/126 (not the mode)
+
+LIMIT. The official test is not an exchangeable draw from the training answers.
+Eight templates were looked at. One tail near 1% can still be chance.
+Validation thresholds can transfer worse, and a train or validation score is optimistic.
+nonmodal counts. expected = training nonmodal rate times the split size. tail = one-sided binomial.
+  window   train_nonmodal 156/182
+           val  25/32  expected 27.4  tail 0.163
+           test 26/27  expected 23.1  tail 0.086
+  door     train_nonmodal 111/131
+           val  22/26  expected 22.0  tail 0.576
+           test 19/19  expected 16.1  tail 0.043
+  sink     train_nonmodal 75/180
+           val  14/32  expected 13.3  tail 0.472
+           test 17/27  expected 11.2  tail 0.021
+  toilet   train_nonmodal 63/182
+           val  11/32  expected 11.1  tail 0.570
+           test 14/26  expected 9.0  tail 0.034
+  shower   train_nonmodal 44/171
+           val  5/29  expected 7.5  tail 0.206
+           test 13/27  expected 6.9  tail 0.010
+  kitchen  train_nonmodal 7/121
+           val  1/26  expected 1.5  tail 0.551
+           test 0/14  expected 0.8  tail 0.434
+  floor    train_nonmodal 33/182
+           val  3/32  expected 5.8  tail 0.143
+           test 11/27  expected 4.9  tail 0.005
+  sauna    train_nonmodal 59/126
+           val  9/26  expected 12.2  tail 0.146
+           test 6/13  expected 6.1  tail 0.592
+
+Public model on the 27, against the training constant, not against the test mode.
+  window constant 1/27  model 5/27  model_on_nonmodal 5/26
+  door   constant 0/19  model 3/19  model_on_nonmodal 3/19

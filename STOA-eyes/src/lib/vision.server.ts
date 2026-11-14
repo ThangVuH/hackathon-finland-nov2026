@@ -5,8 +5,8 @@ import { APICallError, NoObjectGeneratedError, Output, jsonSchema, streamText, t
 
 import { createLovableAiGatewayRunIdFetch } from "./ai/run-id.server";
 import { answerSampleSheet, localMissError, selectBackend, type BackendInfo } from "./backend.server";
-import { arbitrate, nameReason, questionType, recognizedTemplate, withoutDetector, type VisionPayload } from "./checker";
-import { callDetector } from "./detector.server";
+import { arbitrate, measuredSentence, nameReason, questionType, recognizedTemplate, routeQuestion, withoutDetector, type VisionPayload } from "./checker";
+import { callDetector, callFileReader } from "./detector.server";
 import type { RawAnalysis } from "./detections";
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1";
@@ -65,7 +65,7 @@ export interface AnalyzeInput {
   history: { role: "user" | "assistant"; text: string }[];
 }
 
-export type AnalyzeOutcome = { ok: true; raw: RawAnalysis } | { ok: false; error: string };
+export type AnalyzeOutcome = { ok: true; raw: RawAnalysis; previewDataUrl?: string } | { ok: false; error: string };
 
 function describeError(error: unknown): string {
   if (APICallError.isInstance(error)) {
@@ -177,12 +177,80 @@ function refused(reason: string): RawAnalysis {
   };
 }
 
+const COUNTED = new Set(["sink", "toilet", "toilet_bowl", "shower", "sauna"]);
+
+function countedName(template: string): string {
+  if (template === "toilet_bowl") return "toilet";
+  return template;
+}
+
+function countedClass(template: string, items: RawAnalysis["items"]): RawAnalysis {
+  const sentence = measuredSentence(template);
+  const weak = template === "shower";
+  return {
+    answer: `${items.length} ${template === "sauna" ? "sauna stoves" : template + "s"}. ${sentence}`,
+    object_type: template === "sauna" ? "Sauna stove" : template[0]!.toUpperCase() + template.slice(1),
+    count: items.length,
+    items,
+    verdict: weak ? "review" : "unverified",
+    warning: weak ? `${sentence} Shown with a weak badge: this is under the constant.` : sentence,
+  };
+}
+
 export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<AnalyzeOutcome> {
+  if (/\.(pdf|ifc)$/i.test(input.filename || "")) {
+    const read = await callFileReader(input);
+    if (!read.ok) {
+      return {
+        ok: true,
+        raw: {
+          answer: read.error,
+          object_type: "",
+          count: 0,
+          items: [],
+          verdict: "unverified",
+          warning: "No count was invented.",
+        },
+      };
+    }
+    const preview = read.body.preview ? `data:image/png;base64,${read.body.preview}` : undefined;
+    const { preview: _preview, ok: _ok, ...raw } = read.body;
+    return { ok: true, raw, previewDataUrl: preview };
+  }
+
   const refusedName = nameReason(input.filename);
   if (refusedName) return { ok: true, raw: refused(refusedName) };
 
+  const routed = routeQuestion(input.question);
+  const cachedNote = routed.cached ? "Route en cache. This route was stored for the demo and was not classified live." : "";
+  if (COUNTED.has(routed.template)) {
+    const detected = await callDetector(input);
+    if (!detected.ok) {
+      return {
+        ok: true,
+        raw: {
+          answer: "The counting service is not running, so this class was not counted.",
+          object_type: routed.template,
+          count: 0,
+          items: [],
+          verdict: "unverified",
+          warning: [measuredSentence(countedName(routed.template)), cachedNote].filter(Boolean).join(" "),
+        },
+      };
+    }
+    const counted = countedName(routed.template);
+    const kind = counted === "sauna" ? "sauna_stove" : counted;
+    const items = detected.body.items.filter((item) => item.kind === kind || item.kind === counted);
+    const raw = countedClass(counted, items);
+    if (cachedNote) raw.warning = [raw.warning, cachedNote].filter(Boolean).join(" ");
+    return { ok: true, raw };
+  }
+
   const known = recognizedTemplate(input.question);
-  if (known) return { ok: true, raw: known };
+  if (known) {
+    if (cachedNote) known.warning = [known.warning, cachedNote].filter(Boolean).join(" ");
+    return { ok: true, raw: known };
+  }
 
   const detected = await callDetector(input);
   if (detected.ok && detected.body.scope === "out_of_scope") return { ok: true, raw: refused(detected.body.reason) };
@@ -201,10 +269,13 @@ export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<Analy
 
   if (detected.body.question_type === "other" && !vision.ok) return vision;
 
-  return {
-    ok: true,
-    raw: arbitrate(detected.body.question_type, detected.body.items, detected.body.confidence, visionPayload),
-  };
+  const raw = arbitrate(detected.body.question_type, detected.body.items, detected.body.confidence, visionPayload);
+  const note = (routed.template === "both" ? ["window", "door"] : [routed.template])
+    .map((template) => measuredSentence(template))
+    .filter(Boolean)
+    .join(" ");
+  if (note || cachedNote) raw.warning = [raw.warning, note, cachedNote].filter(Boolean).join(" ");
+  return { ok: true, raw };
 }
 
 async function analyzeWithChatModel(input: AnalyzeInput, backend: BackendInfo): Promise<AnalyzeOutcome> {

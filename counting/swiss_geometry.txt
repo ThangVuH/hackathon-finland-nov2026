@@ -1,0 +1,12 @@
+Split by building. The preview has one floor per building.
+train 50  holdout 15  holdout answers were not read
+Buildings already opened are in train. Seed 13 picks the other fifteen.
+
+Area rule, fixed before the score: sum of ROOM_OUTLINE polylines, metres, nothing dropped.
+definition on train, within 2%: 9/50
+
+Door definition, fixed before the score: arcs plus polylines on the DOOR layer.
+train door entities arcs 1492 polylines 2919
+definition on train 0/50
+constant, most frequent training answer 12: 4/50
+The holdout is not scored.

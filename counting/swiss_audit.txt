@@ -1,0 +1,65 @@
+Swiss preview. Definition = DXF. Inference = PDF. No DXF value is copied into the inference column.
+Optional content groups: checked with doc.get_ocgs() and drawing['layer'].
+
+pdfs 65  with_ocg 0  drawings_with_layer 0
+The PDF does not keep door, window, or fixture as a layer.
+
+Stroke signatures equal to a DXF entity count on all 65 plans:
+  door_arc full_matches 1
+    frozen ('s', (0.0, 0.0, 0.0), None, 0.85)
+  door_polyline full_matches 0
+  window_polyline full_matches 0
+  fixture_circle full_matches 0
+  fixture_polyline full_matches 0
+
+Room names in the DXF text, before the score is used to change the rule:
+   102 Pièce  indoor
+    52 Bain  indoor
+    49 Stanza  indoor
+    45 Couloir  indoor
+    41 Cuisine  indoor
+    34 Balcon  outdoor
+    25 Corridoio  indoor
+    24 Bagno  indoor
+    19 Séjour/repas  indoor
+    17 Cucina  indoor
+    14 Balcone  outdoor
+    14 Zimmer  indoor
+    12 Cage d'escalier  indoor
+    10 Ripostiglio  indoor
+    10 Camera da letto  indoor
+     8 Soggiorno/pranzo  indoor
+     8 Chambre à coucher  indoor
+     8 Séjour  indoor
+     7 Korridor  indoor
+     7 Ascenseur  indoor
+     7 Loggia  outdoor
+     6 Küche  indoor
+     6 Vano scala  indoor
+     6 Réduit  indoor
+     4 Pranzo  indoor
+     4 Ascensore  indoor
+     3 Wohnen/Essen  indoor
+     2 Bad  indoor
+     2 Treppenhaus  indoor
+     2 Reduit  indoor
+     2 Soggiorno  indoor
+
+total net area, within 2%: definition 20/65  inference 20/65
+apartment count, App. lines: definition 43/65  inference 43/65  pdf_equals_dxf 65/65
+doors, one black stroke of width 0.85: definition 37/65  inference 37/65
+That stroke was frozen because it matches the DXF door-arc count on every plan. It is not revised.
+area rows that miss, not used to edit the rule:
+  ('site11692_bldg18240_floor48820', 278.1, 0, 0)
+  ('site1088_bldg2216_floor10132', 309.32, 0, 0)
+  ('site421_bldg1097_floor4796', 311.65, 0, 0)
+  ('site11711_bldg18268_floor48991', 152.58, 0, 0)
+  ('site3421_bldg5295_floor23605', 140.6, 0, 0)
+  ('site1138_bldg2292_floor10584', 1275.14, 0, 0)
+  ('site2152_bldg3002_floor13692', 98.24, 0, 0)
+  ('site719_bldg1540_floor6678', 173.09, 0, 0)
+  ('site1000_bldg2082_floor9385', 341.45, 320.11, 320.11)
+  ('site2150_bldg3001_floor13690', 220.29, 0, 0)
+  ('site1040_bldg2136_floor9659', 312.71, 0, 0)
+  ('site248_bldg456_floor1800', 219.86, 0, 0)
+Frozen stroke rules were identical to a DXF count. They are not an answer score yet.

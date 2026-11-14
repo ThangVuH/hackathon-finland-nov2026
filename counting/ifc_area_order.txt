@@ -1,0 +1,15 @@
+Decision order fixed before this file was opened for quantities.
+1 Qto_SpaceBaseQuantities.NetFloorArea or BaseQuantities.NetFloorArea.
+2 else NetFloorArea, NetArea, or Area, or the single area-named property.
+3 else geometry. Several custom names are not ranked.
+120_Pindala is not a preferred name.
+
+file bsc-clinic_clinic-plumbing.ifc
+spaces 0
+questions on this file:
+  count  How many sanitary fixtures are there in the model 'Medical-Dental Clinic - plumbing'?
+order result, not compared with an answer:
+  no space, so the area order does not apply
+
+Length and volume are a separate audit. They are not scored here.
+In the preview they are not on this plumbing model.

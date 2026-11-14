@@ -1,0 +1,19 @@
+PASS predictions swiss-train-20261114T212535Z.jsonl
+label_count            previous 303/303  expected 303/303  ok  added 9/9
+room_area              previous 97/98  expected 97/98  ok  added 2/2
+labelled_area          previous 42/50  expected 42/50  ok  added 0/0
+indoor_total           previous 37/50  expected 37/50  ok  added 0/0
+apartment_count        previous 50/50  expected 50/50  ok  added 0/0
+door                   previous 29/50  expected 29/50  ok  added 0/0
+added sentences:
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?
+  room_area  hit  What is the net floor area of room U1.15 ('Korridor') in m²?
+  room_area  hit  What is the net floor area of room U1.09 ('Küche') in m²?
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?
+  label_count  hit  How many rooms labelled 'Cage d'escalier' are there on this floor?

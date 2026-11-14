@@ -1,0 +1,20 @@
+Keyword miss, then the model. Languages are not in the preview.
+
+es  keyword unverified    model HTTPError         expected window
+    ¿Cuántas ventanas se ven en esta planta?
+sv  keyword unverified    model door              expected door
+    Hur många dörrar finns inritade på den här ritningen?
+nl  keyword unverified    model HTTPError         expected door
+    Hoeveel deuren staan er op deze plattegrond?
+pl  keyword unverified    model HTTPError         expected window
+    Ile okien widać na tym rzucie kondygnacji?
+es  keyword unverified    model HTTPError         expected room_area
+    ¿Cuál es la superficie neta de la habitación 2.10?
+sv  keyword unverified    model HTTPError         expected labelled_area
+    Hur stor är den sammanlagda ytan för rum märkta Zimmer?
+nl  keyword unverified    model apartment_area    expected apartment_area
+    Wat is de netto-oppervlakte van appartement A?
+pl  keyword unverified    model aucun             expected aucun
+    Jaki jest numer telefonu architekta?
+
+model matches the expected template 3/8

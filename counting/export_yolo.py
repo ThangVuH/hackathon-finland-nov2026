@@ -1,6 +1,7 @@
-"""Export window and door boxes as a tiled YOLO dataset.
+"""Export detector boxes as a tiled YOLO dataset.
 
-Symbol coordinates are converted from F1_scaled pixels to the preview image.
+The 27 official CubiCasa test plans are held out of train and validation.
+Symbol coordinates are converted from SVG space to the preview image.
 Plans larger than the tile are cut into overlapping tiles so a thin window
 is not reduced to a couple of pixels. A box is assigned to the tile that
 contains its center.
@@ -10,26 +11,90 @@ from __future__ import annotations
 
 import csv
 import os
-from collections import Counter
+import random
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from PIL import Image
 
-from audit_svg import SVG_ROOT, read_svg
+from audit_svg import SVG_ROOT
+from label_rules import CLASS_ID, boxes_in
 
 ROOT = Path(__file__).resolve().parent
-PREVIEW = ROOT.parent / "junction-dataset-preview" / "data" / "cubicasa5k"
-EVAL = ROOT / "eval_split.csv"
 SCALES = ROOT / "scaled_size.csv"
-OUT = ROOT / "yolo"
+OFFICIAL = ROOT / "preview_cubicasa_split.csv"
+SPLIT_CSV = ROOT / "detector_split.csv"
+OUT = ROOT / "yolo-multiclass"
 TILE = 640
 OVERLAP = 128
-CLASS_ID = {"window": 0, "door": 1}
+VAL_FRACTION = 0.15
+SEED = 13
+
+
+def preview_dir() -> Path:
+    candidates = [
+        ROOT.parent / "junction-dataset-preview" / "data" / "cubicasa5k",
+        ROOT.parent.parent / "stoa-preview" / "junction-dataset-preview" / "data" / "cubicasa5k",
+    ]
+    for candidate in candidates:
+        if candidate.is_dir():
+            return candidate
+    raise FileNotFoundError("CubiCasa preview images were not found next to the repo.")
+
+
+PREVIEW = preview_dir()
+
+
+def questions_path() -> Path:
+    candidates = [
+        ROOT.parent / "junction-dataset-preview" / "questions.jsonl",
+        ROOT.parent.parent / "stoa-preview" / "junction-dataset-preview" / "questions.jsonl",
+    ]
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    raise FileNotFoundError("questions.jsonl was not found next to the repo.")
+
+
+def write_detector_split() -> dict[tuple[str, str], str]:
+    """Train and val exclude the official CubiCasa test plans."""
+    official = {}
+    with OFFICIAL.open(encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            official[(row["style"], row["sample_id"])] = row["cubicasa_split"]
+    rest: dict[str, list[str]] = defaultdict(list)
+    test: list[tuple[str, str]] = []
+    for style_dir in sorted(path for path in SVG_ROOT.iterdir() if path.is_dir()):
+        for sample_dir in sorted(path for path in style_dir.iterdir() if path.is_dir()):
+            key = (style_dir.name, sample_dir.name)
+            if official.get(key) == "test":
+                test.append(key)
+            else:
+                rest[key[0]].append(key[1])
+    rng = random.Random(SEED)
+    splits: dict[tuple[str, str], str] = {key: "test" for key in test}
+    for style, sample_ids in sorted(rest.items()):
+        ordered = sorted(sample_ids)
+        rng.shuffle(ordered)
+        n_val = max(1, round(len(ordered) * VAL_FRACTION))
+        if n_val >= len(ordered):
+            n_val = 1
+        held = set(ordered[:n_val])
+        for sample_id in sample_ids:
+            splits[(style, sample_id)] = "val" if sample_id in held else "train"
+    with SPLIT_CSV.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["style", "sample_id", "split"])
+        for (style, sample_id), split in sorted(splits.items()):
+            writer.writerow([style, sample_id, split])
+    return splits
 
 
 def load_splits() -> dict[tuple[str, str], str]:
+    if not SPLIT_CSV.exists():
+        return write_detector_split()
     splits = {}
-    with EVAL.open(encoding="utf-8") as handle:
+    with SPLIT_CSV.open(encoding="utf-8") as handle:
         for row in csv.DictReader(handle):
             splits[(row["style"], row["sample_id"])] = row["split"]
     return splits
@@ -51,18 +116,15 @@ def load_scales() -> dict[tuple[str, str], tuple[int, int, float, float]]:
 
 
 def boxes_for(style: str, sample_id: str, scale_x: float, scale_y: float) -> list[tuple[int, float, float, float, float]]:
-    icons, _vocabulary, _width, _height = read_svg(SVG_ROOT / style / sample_id / "model.svg")
     boxes = []
-    for icon in icons:
-        if icon["x0"] is None:
+    for kind, x0, y0, x1, y1 in boxes_in(SVG_ROOT / style / sample_id / "model.svg"):
+        left = min(x0, x1) * scale_x
+        right = max(x0, x1) * scale_x
+        top = min(y0, y1) * scale_y
+        bottom = max(y0, y1) * scale_y
+        if right - left < 1 or bottom - top < 1:
             continue
-        x0 = min(icon["x0"], icon["x1"]) * scale_x
-        x1 = max(icon["x0"], icon["x1"]) * scale_x
-        y0 = min(icon["y0"], icon["y1"]) * scale_y
-        y1 = max(icon["y0"], icon["y1"]) * scale_y
-        if x1 - x0 < 1 or y1 - y0 < 1:
-            continue
-        boxes.append((CLASS_ID[icon["kind"]], x0, y0, x1, y1))
+        boxes.append((CLASS_ID[kind], left, top, right, bottom))
     return boxes
 
 
@@ -115,7 +177,7 @@ def link_or_copy(source: Path, destination: Path) -> None:
 
 
 def main() -> None:
-    splits = load_splits()
+    splits = write_detector_split()
     scales = load_scales()
     counts = Counter()
     for split in ("train", "val", "test"):
@@ -161,8 +223,7 @@ def main() -> None:
         "val: images/val\n"
         "test: images/test\n"
         "names:\n"
-        "  0: window\n"
-        "  1: door\n"
+        + "".join(f"  {index}: {name}\n" for name, index in sorted(CLASS_ID.items(), key=lambda item: item[1]))
     )
     (OUT / "dataset.yaml").write_text(yaml, encoding="utf-8")
     print("samples", dict(counts))

@@ -1,0 +1,22 @@
+Epoch chosen on validation at a global cutoff of 0.40. A tie keeps the earlier epoch.
+Kitchen is unmeasurable and is not part of this choice or of the total.
+Class cutoffs are then the middle of the validation plateau on 0.15, 0.30, 0.45, 0.60.
+checkpoint epoch22.pt ultralytics_epoch 22 val_exact_at_0.40 64
+cutoffs
+  door 0.45
+  sauna_stove 0.15
+  shower 0.15
+  sink 0.60
+  toilet 0.45
+  window 0.30
+test, scored once after the choice
+counts are exact/n, not percentages
+  door 5/19  nonmodal 5/19  train_mode 6
+  kitchen unmeasurable 14 questions, not in the total
+  sauna_stove 8/13  nonmodal 6/6  train_mode 1
+  shower 4/27  nonmodal 4/13  train_mode 1
+  sink 10/27  nonmodal 5/17  train_mode 2
+  toilet 16/26  nonmodal 7/14  train_mode 1
+  window 5/27  nonmodal 5/26  train_mode 4
+  all 48/139
+  nonmodal 32/95

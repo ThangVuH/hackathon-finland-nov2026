@@ -1,0 +1,4 @@
+Train buildings only. Two candidates, then stop. Holdout answers were not read.
+questions 86  baseline 2/86
+1 outline containing the unit label: 16/86
+2 sum of room areas inside that outline: 25/86

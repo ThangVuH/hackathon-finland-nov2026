@@ -1,0 +1,10 @@
+Development scores. No IFC file was held out.
+The selector was written after Esplanades. It compares properties to geometry, not to answers.
+
+file bsc-esplanades_1807-ep-ar-v18.ifc
+spaces 285  with footprint 285
+selector: AR_Ruum / 120_Pindala  matches footprint 177/285
+second: AR_Ruum / 722_Eluruumi_number  matches footprint 2/285
+margin: only the first property clears half.
+room questions 215/225  missing 1  ambiguous 0
+storey sums 2/4

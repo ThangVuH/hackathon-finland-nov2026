@@ -1,0 +1,11 @@
+Train buildings only. Holdout answers were not read.
+paired name-to-area distances: n=362  median 0.625 m  max 1.000 m
+area texts not consumed by a triple: 0
+rooms with a code and no area line: 935
+  nearest unused area text inside that max radius: 0
+  no unused area text that close: 935
+printed rooms asked by a question, polygon over printed area: n=30  no polygon 0
+  median ratio 1.0001  within 2% of 1: 30/30
+  ratio counts:
+    1.00  30
+door candidate, arcs whose swing is not in an excluded room: 16/50  arcs dropped 129

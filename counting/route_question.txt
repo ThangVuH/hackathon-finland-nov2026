@@ -1,0 +1,15 @@
+Preview questions. A pair agrees when every translation has the same template and parameters.
+groups 3838  translation lines 3838  agree 3838/3838
+groups whose English question has a template 3535/3838
+  Kuinka  2135/2135
+  Wie  422/422
+  Kui  290/290
+  Combien  269/269
+  Quanti  187/187
+  Hvad  154/154
+  Quelle  126/126
+  Qual  119/119
+  Quante  68/68
+  Hvor  43/43
+  Mitu  25/25
+largest disagreements:

@@ -22,6 +22,8 @@ EVAL = ROOT / "eval_split.csv"
 WEIGHTS = ROOT / "runs" / "window-door" / "weights" / "best.pt"
 NAMES = {index: name for name, index in CLASS_ID.items()}
 CONF_GRID = (0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5)
+# Above the default of 300 so a low confidence cutoff cannot drop a higher box.
+MAX_DET = 2000
 
 
 def load_answers() -> dict[tuple[str, str, str], tuple[str, int]]:
@@ -63,7 +65,9 @@ def predict_plan(model: YOLO, style: str, sample_id: str, scale) -> list[tuple[s
     collected: list[tuple[str, float, list[float]]] = []
     for ox, oy, tile_w, tile_h in tile_origins(preview_w, preview_h):
         crop = image.crop((ox, oy, ox + tile_w, oy + tile_h))
-        result = model.predict(crop, imgsz=TILE, conf=min(CONF_GRID), iou=0.5, verbose=False, device="cpu")[0]
+        result = model.predict(
+            crop, imgsz=TILE, conf=min(CONF_GRID), iou=0.5, max_det=MAX_DET, verbose=False, device="cpu"
+        )[0]
         if result.boxes is None or len(result.boxes) == 0:
             continue
         for box, score, class_id in zip(

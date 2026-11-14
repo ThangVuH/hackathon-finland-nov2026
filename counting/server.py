@@ -21,6 +21,7 @@ from PIL import Image
 
 from arbitrate import arbitrate
 from engine import detect_openings
+from file_question import answer_file
 from questions import question_type
 from scope import assess, name_reason
 
@@ -83,7 +84,8 @@ async def detect(file: UploadFile = File(...), question: str = Form(...)) -> dic
             "confidence": 0,
             "items": [],
         }
-    found = detect_openings(image)
+    kinds = ("window", "door") if kind == "both" else (kind,)
+    found = detect_openings(image, kinds)
     return {
         "ok": True,
         "scope": "floor_plan",
@@ -91,6 +93,14 @@ async def detect(file: UploadFile = File(...), question: str = Form(...)) -> dic
         "reason": "",
         **found,
     }
+
+
+@app.post("/file")
+async def read_file(file: UploadFile = File(...), question: str = Form(...)) -> dict:
+    data = await file.read()
+    result = answer_file(file.filename or "drawing", data, question)
+    result["ok"] = True
+    return result
 
 
 @app.post("/arbitrate")

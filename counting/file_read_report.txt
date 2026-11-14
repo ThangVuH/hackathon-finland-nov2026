@@ -1,0 +1,41 @@
+File reading only. No comparison with preview answers.
+A PDF question is not answered from its DXF twin.
+An IFC PDF render is not answered from the IFC.
+
+swiss dxf files 65  paired pdf 65
+dxf entities by layer
+  door 5513
+  fixture 5009
+  wall 4334
+  room_text 3878
+  window 3120
+  room_outline 2959
+  annotation 260
+  unit_outline 199
+dxf entities by layer and type
+  annotation text 260
+  door arc 1868
+  door lwpolyline 3645
+  fixture circle 1505
+  fixture lwpolyline 3504
+  room_outline lwpolyline 2959
+  room_text text 3878
+  unit_outline lwpolyline 199
+  wall hatch 1966
+  wall lwpolyline 2368
+  window lwpolyline 3120
+room lines parsed as name + number + area: dxf 550 (orphans 0), pdf 550 (orphans 0)
+lines matching 'App. X': dxf 132, pdf 132
+Fixture circles and door arcs are not toilets, basins, or doors until a rule is checked.
+
+ifc_models
+  bsc-clinic_clinic-plumbing.ifc [ifcopenshell] storeys 2  IfcBuildingStorey 3, IfcFlowTerminal 119
+  bsc-esplanades_1807-ep-ar-v18.ifc [ifcopenshell] storeys 7  IfcBeam 37, IfcBuildingStorey 7, IfcColumn 37, IfcDoor 211, IfcSlab 15, IfcSpace 285, IfcStair 4, IfcWall 99, IfcWallStandardCase 1494, IfcWindow 297
+  bsc-molio_molio-with-uris.ifc [ifcopenshell] storeys 8  IfcBeam 7, IfcBuildingStorey 10, IfcColumn 14, IfcDoor 119, IfcFlowTerminal 42, IfcSlab 53, IfcSpace 117, IfcStair 579, IfcWall 189, IfcWindow 119
+  resbim-388_model.ifc [ifcopenshell] storeys 0  IfcBuildingStorey 2
+ifc_bench
+  ac20_arc.ifc [ifcopenshell] storeys 5  IfcBuildingStorey 5, IfcColumn 2, IfcDoor 77, IfcSlab 26, IfcSpace 82, IfcStair 4, IfcWallStandardCase 242, IfcWindow 206
+  digital_hub_arc.ifc [ifcopenshell] storeys 3  IfcBeam 14, IfcBuildingStorey 3, IfcColumn 62, IfcDoor 64, IfcSlab 23, IfcSpace 64, IfcStair 5, IfcWall 178, IfcWindow 47
+  duplex_arc.ifc [ifcopenshell] storeys 4  IfcBeam 8, IfcBuildingStorey 4, IfcDoor 14, IfcSlab 21, IfcSpace 21, IfcStair 2, IfcWall 1, IfcWallStandardCase 112, IfcWindow 24
+  fantasy_office_building_3_arc.ifc [ifcopenshell] storeys 6  IfcBeam 60, IfcBuildingStorey 6, IfcColumn 20, IfcDoor 75, IfcFlowTerminal 115, IfcSlab 17, IfcSpace 87, IfcStair 10, IfcWall 223, IfcWindow 167
+  hitos_arc.ifc [ifcopenshell] storeys 6  IfcBeam 86, IfcBuildingStorey 7, IfcColumn 208, IfcDoor 198, IfcFlowTerminal 69, IfcSlab 363, IfcSpace 243, IfcStair 14, IfcWall 4, IfcWallStandardCase 1690, IfcWindow 226

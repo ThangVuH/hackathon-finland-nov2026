@@ -1,0 +1,13 @@
+One file only: bsc-esplanades_1807-ep-ar-v18.ifc. PDF renders and other IFC models are not scored.
+length unit: MILLI METRE
+spaces 285
+Qto area quantities found: none
+room net area, property 120_Pindala: 215/225
+room net area, convex lowest footprint: 151/225
+ambiguous or missing label matches: 0
+spaces missing 120_Pindala among matched rooms: 1
+storey total, same property sum: 2/4
+storey total, same footprint sum: 3/4
+No third convention is tried on the misses.
+resbim-388 products {'IfcDoor': 0, 'IfcWindow': 0, 'IfcSpace': 0, 'IfcWall': 0, 'IfcBuildingStorey': 2}
+resbim-388 preview questions 0. It cannot test a 'none' answer until a question asks one.

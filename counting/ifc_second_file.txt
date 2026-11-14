@@ -1,0 +1,8 @@
+Second file only: bsc-molio_molio-with-uris.ifc. The esplanades property name is not used.
+Chosen before the score, from the quantity name: BaseQuantities.NetFloorArea.
+unit: area  SQUARE_METRE  scale 1.0
+spaces 117  with NetFloorArea 117
+room net area: 103/103
+label mismatches 0  missing quantity on a matched room 0
+storey sum of the same quantity: 7/7
+Misses are not repaired on this file.

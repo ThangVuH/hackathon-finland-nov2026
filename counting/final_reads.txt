@@ -1,0 +1,20 @@
+The 27-plan detector reading is done. It is in counting/exact_selection.txt.
+The 15 Swiss buildings were read once, after the 50-plan rehearsal passed. The score is counting/swiss_holdout.txt. A second pass is refused.
+counting/swiss_holdout_once.py is that reading. It now refuses a second pass.
+
+1. CubiCasa official test, 27 plans.
+   Wait until counting/exact_selection.txt exists.
+   The epoch and the cutoffs in that file stay frozen.
+   Score each class once on those 27 plans.
+   Do not read the plans again to move a cutoff.
+   Kitchen stays out of the total.
+   Report the count next to the train-frozen baseline and the SVG ceiling.
+
+2. Swiss holdout, 15 buildings in counting/swiss_split.csv.
+   Read the answers once, with the rules already frozen:
+   label count from the text;
+   room area, labelled total and indoor total from the PDF closed path
+   and the written scale when it disagrees with the printed factor;
+   door count from the door arcs.
+   Apartment area has no rule. It is not given a new one for this reading.
+   Do not open those 15 files before that single run.

@@ -1,0 +1,24 @@
+CubiCasa test, read once after the epoch was frozen. Counts, not percentages.
+
+The constant on the same 139 questions is 44/139
+(windows 1, doors 0, sinks 10, toilets 12, showers 14, saunas 7).
+The detector is 48/139. Those two totals are equivalent.
+
+The constant is 0 on every non-modal plan, by construction.
+The detector is 32/95 on those plans. That is where it differs.
+
+Per template, against the training constant:
+  toilets 16/26 against 12/26
+  sauna   8/13 against 7/13, and 6/6 on the non-modal plans (six plans)
+  sinks   10/27 against 10/27
+  windows 5/27 against 1/27, the same 5/27 as the public model
+  doors   5/19 against 0/19
+  showers 4/27 against 14/27
+
+Showers are under the constant. The count is shown with a weak badge.
+Kitchen is unmeasurable and is not in the 139.
+
+Where the file is structured, the answer comes from the PDF or the IFC and the proof is the element.
+Where the input is only pixels, exact counting stays hard (48/139) and the badge states the measured count for that template.
+
+The 15 Swiss holdout plans were read once after the rehearsal. Labels 93/93, one room 29/30, labelled total 12/15, indoor total 12/15, apartments 15/15, doors 8/15. A second pass is refused. Say: measured on 50 revision plans, 15 read once.

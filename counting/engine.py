@@ -10,11 +10,30 @@ from pathlib import Path
 
 from PIL import Image
 
-from arbitrate import LABEL, to_milli
+from arbitrate import to_milli
 
 ROOT = Path(__file__).resolve().parent
-WEIGHTS = ROOT / "runs" / "window-door" / "weights" / "best.pt"
+# The live window-door weights were trained with 21 of the 27 test plans.
+# epoch22 is the checkpoint chosen on validation, then scored once.
+WEIGHTS = ROOT / "runs" / "multiclass" / "weights" / "epoch22.pt"
 THRESHOLD_PATH = ROOT / "detector_threshold.txt"
+# Frozen in exact_selection.txt. The old single 0.40 cutoff is not applied here.
+CUTOFF = {
+    "window": 0.30,
+    "door": 0.45,
+    "sink": 0.60,
+    "toilet": 0.45,
+    "shower": 0.15,
+    "sauna_stove": 0.15,
+}
+LABELS = {
+    "window": "Window",
+    "door": "Door",
+    "sink": "Sink",
+    "toilet": "Toilet",
+    "shower": "Shower",
+    "sauna_stove": "Sauna stove",
+}
 _model = None
 
 
@@ -42,7 +61,7 @@ def get_model():
 
 def predict_tiles(image: Image.Image) -> list[tuple[str, float, list[float]]]:
     """Raw boxes in pixels, before the confidence cutoff. Includes weak scores."""
-    from evaluate_counts import CONF_GRID, NAMES
+    from evaluate_counts import CONF_GRID, MAX_DET, NAMES
     from export_yolo import TILE, tile_origins
 
     width, height = image.size
@@ -51,7 +70,9 @@ def predict_tiles(image: Image.Image) -> list[tuple[str, float, list[float]]]:
     floor = min(CONF_GRID)
     for origin_x, origin_y, tile_w, tile_h in tile_origins(width, height):
         crop = image.crop((origin_x, origin_y, origin_x + tile_w, origin_y + tile_h))
-        result = model.predict(crop, imgsz=TILE, conf=floor, iou=0.5, verbose=False, device="cpu")[0]
+        result = model.predict(
+            crop, imgsz=TILE, conf=floor, iou=0.5, max_det=MAX_DET, verbose=False, device="cpu"
+        )[0]
         if result.boxes is None or len(result.boxes) == 0:
             continue
         for box, score, class_id in zip(
@@ -72,19 +93,20 @@ def predict_tiles(image: Image.Image) -> list[tuple[str, float, list[float]]]:
 
 def keep(
     detections: list[tuple[str, float, list[float]]],
-    threshold: float,
     width: int,
     height: int,
+    kinds: tuple[str, ...] | None = None,
 ) -> dict:
     from evaluate_counts import nms
 
-    grouped: dict[str, list[list[float]]] = {"window": [], "door": []}
-    scores: dict[str, list[float]] = {"window": [], "door": []}
+    wanted = kinds or ("window", "door")
+    grouped: dict[str, list[list[float]]] = {name: [] for name in wanted}
+    scores: dict[str, list[float]] = {name: [] for name in wanted}
     rejected = 0.0
     for name, score, box in detections:
         if name not in grouped:
             continue
-        if score < threshold:
+        if score < CUTOFF[name]:
             rejected = max(rejected, score)
             continue
         grouped[name].append(box)
@@ -92,7 +114,7 @@ def keep(
 
     items = []
     kept_scores = []
-    for name in ("window", "door"):
+    for name in wanted:
         chosen = nms(grouped[name], scores[name])
         for index in chosen:
             milli = to_milli(grouped[name][index], width, height)
@@ -102,7 +124,7 @@ def keep(
                 {
                     **milli,
                     "kind": name,
-                    "label": LABEL[name],
+                    "label": LABELS[name],
                     "score": round(scores[name][index], 4),
                 }
             )
@@ -111,7 +133,6 @@ def keep(
     return {"confidence": round(confidence, 4), "items": items}
 
 
-def detect_openings(image: Image.Image, threshold: float | None = None) -> dict:
-    cutoff = load_threshold() if threshold is None else threshold
+def detect_openings(image: Image.Image, kinds: tuple[str, ...] | None = None) -> dict:
     width, height = image.size
-    return keep(predict_tiles(image), cutoff, width, height)
+    return keep(predict_tiles(image), width, height, kinds)

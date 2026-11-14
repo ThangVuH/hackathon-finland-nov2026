@@ -5,6 +5,8 @@ import { toast } from "sonner";
 
 import sampleApartment from "@/assets/sample-apartment.jpg";
 import sampleOffice from "@/assets/sample-office.jpg";
+import swissFloor from "@/proofs/swiss-floor.png";
+import swissProof from "@/proofs/swiss-floor.json";
 import sampleSchedule from "../../sample-project/schedule.csv?raw";
 import sampleNotes from "../../sample-project/site-meeting.txt?raw";
 import sampleBlueprint from "../../sample-project/A-201 Office 1.jpg";
@@ -13,7 +15,8 @@ import { DrawingCanvas, isAcceptedFile, type Drawing, type DrawingCanvasHandle }
 import { ProjectCheckPanel } from "@/components/stoa/ProjectCheckPanel";
 import { checkProject, type ProjectReport } from "@/lib/project-check";
 import { readProjectFiles } from "@/lib/project-files";
-import { normalizeAnalysis } from "@/lib/detections";
+import { normalizeAnalysis, type RawAnalysis } from "@/lib/detections";
+import { routeQuestion } from "@/lib/checker";
 import { prepareImageForAnalysis, type PreparedImage } from "@/lib/image-prep";
 import { analyzeDrawing, backendStatus } from "@/lib/vision.functions";
 import { cn } from "@/lib/utils";
@@ -39,9 +42,49 @@ export const Route = createFileRoute("/")({
 });
 
 const SAMPLES: Drawing[] = [
+  { id: "proof-swiss", name: "Swiss · site 1000", src: swissFloor, kind: "sample" },
   { id: "sample-apartment", name: "A-101 · 2BR Apartment", src: sampleApartment, kind: "sample" },
   { id: "sample-office", name: "A-201 · Office Level 1", src: sampleOffice, kind: "sample" },
 ];
+
+function swissSheetProof(question: string): RawAnalysis | null {
+  const routed = routeQuestion(question);
+  if (routed.template === "label_count") {
+    return {
+      answer: `${swissProof.value} labels on this sheet. Each box is the printed word.`,
+      object_type: "Label",
+      count: swissProof.value,
+      verdict: "unverified",
+      warning: swissProof.note,
+      items: swissProof.items.map((item) => ({ ...item, note: "text box" })),
+    };
+  }
+  if (routed.template === "room_area") {
+    const polygon = swissProof.room.polygon as [number, number][];
+    const xs = polygon.map((point) => point[0]);
+    const ys = polygon.map((point) => point[1]);
+    return {
+      answer: "Room 2.10. Polygon. The warning says whether the written scale and the printed areas agree.",
+      object_type: "Room",
+      count: 1,
+      verdict: "unverified",
+      warning: swissProof.scale === "agrees" ? "The written scale and the printed areas agree." : "Low confidence: the two scale factors disagree.",
+      items: [
+        {
+          label: swissProof.room.label,
+          note: "polygon",
+          page: swissProof.room.page,
+          polygon,
+          xmin: Math.min(...xs),
+          ymin: Math.min(...ys),
+          xmax: Math.max(...xs),
+          ymax: Math.max(...ys),
+        },
+      ],
+    };
+  }
+  return null;
+}
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
@@ -138,10 +181,18 @@ function StoaVision() {
     const file = Array.from(files)[0];
     if (!file) return;
     if (!isAcceptedFile(file)) {
-      toast.error("Unsupported file", { description: "Upload a PNG, JPG or WebP drawing." });
+      toast.error("Unsupported file", { description: "Upload a PNG, JPG, WebP, PDF or IFC drawing." });
       return;
     }
-    const d: Drawing = { id: `upload-${uid()}`, name: file.name, src: URL.createObjectURL(file), kind: "upload" };
+    const objectUrl = URL.createObjectURL(file);
+    const structured = /\.(pdf|ifc)$/i.test(file.name);
+    const d: Drawing = {
+      id: `upload-${uid()}`,
+      name: file.name,
+      src: structured ? "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" : objectUrl,
+      fileUrl: objectUrl,
+      kind: "upload",
+    };
     setDrawings((ds) => [...ds, d]);
     setDrawingId(d.id);
   }, []);
@@ -163,16 +214,33 @@ function StoaVision() {
     ]);
     setBusy(true);
     try {
-      let img = prepared.current.get(target.id);
-      if (!img) {
-        img = await prepareImageForAnalysis(target.src);
-        prepared.current.set(target.id, img);
+      const structured = /\.(pdf|ifc)$/i.test(target.name);
+      let dataUrl: string;
+      let imageWidth = 1;
+      let imageHeight = 1;
+      if (structured) {
+        const blob = await fetch(target.fileUrl || target.src).then((response) => response.blob());
+        dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(blob);
+        });
+      } else {
+        let img = prepared.current.get(target.id);
+        if (!img) {
+          img = await prepareImageForAnalysis(target.src);
+          prepared.current.set(target.id, img);
+        }
+        dataUrl = img.dataUrl;
+        imageWidth = img.width;
+        imageHeight = img.height;
       }
       const res = await analyzeDrawing({
         data: {
-          imageDataUrl: img.dataUrl,
-          imageWidth: img.width,
-          imageHeight: img.height,
+          imageDataUrl: dataUrl,
+          imageWidth,
+          imageHeight,
           question,
           filename: target.name,
           history,
@@ -184,7 +252,11 @@ function StoaVision() {
         );
         return;
       }
-      const result = normalizeAnalysis(res.raw);
+      const sheet = target.id === "proof-swiss" ? swissSheetProof(question) : null;
+      const result = normalizeAnalysis(sheet ?? res.raw);
+      if (res.previewDataUrl) {
+        setDrawings((ds) => ds.map((item) => (item.id === target.id ? { ...item, src: res.previewDataUrl! } : item)));
+      }
       updateThread(target.id, (msgs) =>
         msgs.map((m) => (m.id === pendingId ? { id: pendingId, role: "assistant", status: "done", result } : m)),
       );

@@ -1,0 +1,9 @@
+Train buildings only. Rule frozen after 30/30 polygon ratios of 1.
+Definition only. PDF inference is not this column.
+rooms without a printed area that received a polygon: 935  still without an area: 0
+
+template                   n    definition  baseline
+room area                 98         98/98  2/98
+labelled total            50         50/50  1/50
+apartment area            86         10/86  2/86
+global indoor total       50         47/50  1/50

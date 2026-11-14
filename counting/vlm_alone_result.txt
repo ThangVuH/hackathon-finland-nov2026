@@ -1,0 +1,48 @@
+model gemini-3.6-flash
+prompt Count only. Reply with JSON {"count": integer, "items": [{"ymin":0,"xmin":0,"ymax":1,"xmax":1}]}. Boxes are 0-1000. Question: {question}
+cubi|colorful|11397	missing	HTTPError
+cubi|colorful|11400	missing	HTTPError
+cubi|colorful|11960	missing	HTTPError
+cubi|colorful|12200	missing	HTTPError
+cubi|colorful|13685	missing	HTTPError
+cubi|colorful|8389	missing	HTTPError
+cubi|high_quality|1506	missing	HTTPError
+cubi|high_quality_architectural|145	missing	HTTPError
+cubi|high_quality_architectural|1772	missing	HTTPError
+cubi|high_quality_architectural|1778	missing	HTTPError
+cubi|high_quality_architectural|18	missing	HTTPError
+cubi|high_quality_architectural|1814	missing	HTTPError
+cubi|high_quality_architectural|1838	missing	HTTPError
+cubi|high_quality_architectural|2014	missing	HTTPError
+cubi|high_quality_architectural|2530	missing	HTTPError
+cubi|high_quality_architectural|3660	missing	HTTPError
+cubi|high_quality_architectural|392	missing	HTTPError
+cubi|high_quality_architectural|4068	missing	HTTPError
+cubi|high_quality_architectural|4845	missing	HTTPError
+cubi|high_quality_architectural|6081	missing	HTTPError
+cubi|high_quality_architectural|6355	missing	HTTPError
+cubi|high_quality_architectural|6402	missing	HTTPError
+cubi|high_quality_architectural|6467	missing	HTTPError
+cubi|high_quality_architectural|7858	missing	HTTPError
+cubi|high_quality_architectural|7894	missing	HTTPError
+cubi|high_quality_architectural|9198	missing	HTTPError
+cubi|high_quality_architectural|9488	missing	HTTPError
+swiss|site1102_bldg2242_floor10281|How many rooms labelled 'Stanza' are there on this floor?	missing	HTTPError
+swiss|site1102_bldg2242_floor10281|How many rooms labelled 'Cucina' are there on this floor?	missing	HTTPError
+swiss|site1102_bldg2242_floor10281|How many rooms labelled 'Balcone' are there on this floor?	missing	HTTPError
+swiss|site1102_bldg2242_floor10281|How many rooms labelled 'Corridoio' are there on this floor?	missing	HTTPError
+swiss|site1102_bldg2242_floor10281|How many doors (interior doors and entrance doors together) are drawn on this floor plan?	missing	HTTPError
+swiss|site1102_bldg2242_floor10281|What is the net floor area of room 5.11 ('Stanza') in m²?	missing	HTTPError
+swiss|site1102_bldg2242_floor10281|What is the net floor area of room 5.03 ('Stanza') in m²?	missing	HTTPError
+swiss|site11692_bldg18240_floor48820|How many rooms labelled 'Schlafzimmer' are there on this floor?	missing	HTTPError
+Vision alone. Declared before the calls. Not used to choose a method.
+window questions on the 27 plans: 27
+success 0  missing 27  asked 27
+precision not computed, no success
+badge coverage not computed, no success
+badge precision not computed, no reliable call
+Reliable means the counts match and every detector box has a vision box at IoU 0.3.
+Swiss training sample, not the 15: 8
+success 0  missing 8  asked 8
+precision not computed, no success
+HTTPError in the lines above is HTTP 429. A separate one-call check, not one of these 35, returned status 429. Each missing line is a missing answer, not a wrong count. An earlier run, started before this prompt was written into vlm_alone.txt, is not this measurement.

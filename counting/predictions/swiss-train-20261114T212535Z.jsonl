@@ -1,0 +1,612 @@
+{"stem": "site1102_bldg2242_floor10281", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site1102_bldg2242_floor10281", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 9}
+{"stem": "site1102_bldg2242_floor10281", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site1102_bldg2242_floor10281", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site1102_bldg2242_floor10281", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site1102_bldg2242_floor10281", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 21}
+{"stem": "site1102_bldg2242_floor10281", "question": "What is the net floor area of room 5.11 ('Stanza') in m\u00b2?", "template": "room_area", "predicted": 13.616234965097476}
+{"stem": "site1102_bldg2242_floor10281", "question": "What is the net floor area of room 5.03 ('Stanza') in m\u00b2?", "template": "room_area", "predicted": 10.151450960504588}
+{"stem": "site1102_bldg2242_floor10281", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 124.49093717583898}
+{"stem": "site1102_bldg2242_floor10281", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 193.4743682310153}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many rooms labelled 'Schlafzimmer' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many rooms labelled 'Wohnen' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site11692_bldg18240_floor48820", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 23}
+{"stem": "site11692_bldg18240_floor48820", "question": "What is the net floor area of room 5.09 ('Bad') in m\u00b2?", "template": "room_area", "predicted": 1.5143427309519502}
+{"stem": "site11692_bldg18240_floor48820", "question": "What is the net floor area of room 5.11 ('B\u00fcrofl\u00e4che') in m\u00b2?", "template": "room_area", "predicted": 36.21605127039527}
+{"stem": "site11692_bldg18240_floor48820", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Schlafzimmer' on this floor?", "template": "labelled_area", "predicted": 45.583290724505}
+{"stem": "site11692_bldg18240_floor48820", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 259.168998266324}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 4}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 8}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many rooms labelled 'Wohnen' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 7}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many rooms labelled 'Loggia' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site1088_bldg2216_floor10132", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 42}
+{"stem": "site1088_bldg2216_floor10132", "question": "What is the net floor area of room 1.13 ('Bad') in m\u00b2?", "template": "room_area", "predicted": 4.356688321982772}
+{"stem": "site1088_bldg2216_floor10132", "question": "What is the net floor area of room 1.27 ('Korridor') in m\u00b2?", "template": "room_area", "predicted": 11.02953193887603}
+{"stem": "site1088_bldg2216_floor10132", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 117.48739954025098}
+{"stem": "site1088_bldg2216_floor10132", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 309.3182717349927}
+{"stem": "site421_bldg1097_floor4796", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site421_bldg1097_floor4796", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site421_bldg1097_floor4796", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site421_bldg1097_floor4796", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site421_bldg1097_floor4796", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site421_bldg1097_floor4796", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site421_bldg1097_floor4796", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site421_bldg1097_floor4796", "question": "How many rooms labelled 'Loggia' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site421_bldg1097_floor4796", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site421_bldg1097_floor4796", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 40}
+{"stem": "site421_bldg1097_floor4796", "question": "What is the net floor area of room 0.19 ('Korridor') in m\u00b2?", "template": "room_area", "predicted": 13.629051322742898}
+{"stem": "site421_bldg1097_floor4796", "question": "What is the net floor area of room 0.01 ('Loggia') in m\u00b2?", "template": "room_area", "predicted": 15.251210556139242}
+{"stem": "site421_bldg1097_floor4796", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 84.57758754987265}
+{"stem": "site421_bldg1097_floor4796", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 284.2239873499741}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many rooms labelled 'Camera da letto' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many rooms labelled 'Soggiorno' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site11711_bldg18268_floor48991", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 18}
+{"stem": "site11711_bldg18268_floor48991", "question": "What is the net floor area of room 3.03 ('Soggiorno') in m\u00b2?", "template": "room_area", "predicted": 16.58546883153092}
+{"stem": "site11711_bldg18268_floor48991", "question": "What is the net floor area of room 3.05 ('Camera da letto') in m\u00b2?", "template": "room_area", "predicted": 13.143012060290735}
+{"stem": "site11711_bldg18268_floor48991", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Camera da letto' on this floor?", "template": "labelled_area", "predicted": 0.0}
+{"stem": "site11711_bldg18268_floor48991", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 130.55573349217548}
+{"stem": "site4267_bldg7556_floor30516", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site4267_bldg7556_floor30516", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site4267_bldg7556_floor30516", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site4267_bldg7556_floor30516", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site4267_bldg7556_floor30516", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site4267_bldg7556_floor30516", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site4267_bldg7556_floor30516", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site4267_bldg7556_floor30516", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 16}
+{"stem": "site4267_bldg7556_floor30516", "question": "What is the net floor area of room 4.01 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 13.770909439280173}
+{"stem": "site4267_bldg7556_floor30516", "question": "What is the net floor area of room 4.02 ('Korridor') in m\u00b2?", "template": "room_area", "predicted": 2.1353579910314426}
+{"stem": "site4267_bldg7556_floor30516", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 32.50227835027759}
+{"stem": "site4267_bldg7556_floor30516", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 117.77779383488611}
+{"stem": "site294_bldg554_floor2233", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 5}
+{"stem": "site294_bldg554_floor2233", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 13}
+{"stem": "site294_bldg554_floor2233", "question": "How many rooms labelled 'Soggiorno/pranzo' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site294_bldg554_floor2233", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site294_bldg554_floor2233", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site294_bldg554_floor2233", "question": "How many rooms labelled 'Ripostiglio' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site294_bldg554_floor2233", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site294_bldg554_floor2233", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site294_bldg554_floor2233", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site294_bldg554_floor2233", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 26}
+{"stem": "site294_bldg554_floor2233", "question": "What is the net floor area of room 1.04 ('Bagno') in m\u00b2?", "template": "room_area", "predicted": 5.622200747463734}
+{"stem": "site294_bldg554_floor2233", "question": "What is the net floor area of room 1.18 ('Corridoio') in m\u00b2?", "template": "room_area", "predicted": 14.98105116650582}
+{"stem": "site294_bldg554_floor2233", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 176.94362584456286}
+{"stem": "site294_bldg554_floor2233", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 344.5536764400743}
+{"stem": "site3421_bldg5295_floor23605", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site3421_bldg5295_floor23605", "question": "How many rooms labelled 'Schlafzimmer' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site3421_bldg5295_floor23605", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3421_bldg5295_floor23605", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3421_bldg5295_floor23605", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3421_bldg5295_floor23605", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site3421_bldg5295_floor23605", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3421_bldg5295_floor23605", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 14}
+{"stem": "site3421_bldg5295_floor23605", "question": "What is the net floor area of room 3.09 ('K\u00fcche') in m\u00b2?", "template": "room_area", "predicted": 10.795841088818275}
+{"stem": "site3421_bldg5295_floor23605", "question": "What is the net floor area of room 3.02 ('Bad') in m\u00b2?", "template": "room_area", "predicted": 4.206499668687836}
+{"stem": "site3421_bldg5295_floor23605", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Schlafzimmer' on this floor?", "template": "labelled_area", "predicted": 87.61674001769843}
+{"stem": "site3421_bldg5295_floor23605", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 140.60375789264197}
+{"stem": "site644_bldg1390_floor6077", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 4}
+{"stem": "site644_bldg1390_floor6077", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 14}
+{"stem": "site644_bldg1390_floor6077", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site644_bldg1390_floor6077", "question": "How many rooms labelled 'Ripostiglio' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site644_bldg1390_floor6077", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site644_bldg1390_floor6077", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site644_bldg1390_floor6077", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site644_bldg1390_floor6077", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 36}
+{"stem": "site644_bldg1390_floor6077", "question": "What is the net floor area of room 3.32 ('Corridoio') in m\u00b2?", "template": "room_area", "predicted": 12.060007487374827}
+{"stem": "site644_bldg1390_floor6077", "question": "What is the net floor area of room 3.22 ('Stanza') in m\u00b2?", "template": "room_area", "predicted": 21.999855402977047}
+{"stem": "site644_bldg1390_floor6077", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 226.79392611287201}
+{"stem": "site644_bldg1390_floor6077", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 420.0064672255027}
+{"stem": "site1138_bldg2292_floor10584", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 10}
+{"stem": "site1138_bldg2292_floor10584", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 22}
+{"stem": "site1138_bldg2292_floor10584", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 10}
+{"stem": "site1138_bldg2292_floor10584", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 118}
+{"stem": "site1138_bldg2292_floor10584", "question": "What is the net floor area of room 3.71 ('Ripostiglio') in m\u00b2?", "template": "room_area", "predicted": 16.56146125917826}
+{"stem": "site1138_bldg2292_floor10584", "question": "What is the net floor area of room 3.40 ('Bagno') in m\u00b2?", "template": "room_area", "predicted": 3.4725967871459207}
+{"stem": "site1138_bldg2292_floor10584", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 482.1942678819566}
+{"stem": "site1138_bldg2292_floor10584", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 1269.9654674504159}
+{"stem": "site2152_bldg3002_floor13692", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site2152_bldg3002_floor13692", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site2152_bldg3002_floor13692", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2152_bldg3002_floor13692", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2152_bldg3002_floor13692", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2152_bldg3002_floor13692", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2152_bldg3002_floor13692", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 7}
+{"stem": "site2152_bldg3002_floor13692", "question": "What is the net floor area of room 5.01 ('Bad') in m\u00b2?", "template": "room_area", "predicted": 9.520623197368671}
+{"stem": "site2152_bldg3002_floor13692", "question": "What is the net floor area of room 5.04 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 13.627993953254874}
+{"stem": "site2152_bldg3002_floor13692", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 13.627993953254874}
+{"stem": "site2152_bldg3002_floor13692", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 83.8114090930542}
+{"stem": "site719_bldg1540_floor6678", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site719_bldg1540_floor6678", "question": "How many rooms labelled 'Camera da letto' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site719_bldg1540_floor6678", "question": "How many rooms labelled 'Soggiorno/pranzo' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site719_bldg1540_floor6678", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site719_bldg1540_floor6678", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site719_bldg1540_floor6678", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site719_bldg1540_floor6678", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site719_bldg1540_floor6678", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site719_bldg1540_floor6678", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 20}
+{"stem": "site719_bldg1540_floor6678", "question": "What is the net floor area of room 2.01 ('Balcone') in m\u00b2?", "template": "room_area", "predicted": 6.201894149448325}
+{"stem": "site719_bldg1540_floor6678", "question": "What is the net floor area of room 2.02 ('Soggiorno/pranzo') in m\u00b2?", "template": "room_area", "predicted": 16.572058313900524}
+{"stem": "site719_bldg1540_floor6678", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Camera da letto' on this floor?", "template": "labelled_area", "predicted": 0.0}
+{"stem": "site719_bldg1540_floor6678", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 173.09486981883285}
+{"stem": "site1000_bldg2082_floor9385", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 4}
+{"stem": "site1000_bldg2082_floor9385", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 12}
+{"stem": "site1000_bldg2082_floor9385", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site1000_bldg2082_floor9385", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site1000_bldg2082_floor9385", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site1000_bldg2082_floor9385", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site1000_bldg2082_floor9385", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 36}
+{"stem": "site1000_bldg2082_floor9385", "question": "What is the net floor area of room 2.10 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 16.77481922851571}
+{"stem": "site1000_bldg2082_floor9385", "question": "What is the net floor area of room 2.09 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 15.894851680074103}
+{"stem": "site1000_bldg2082_floor9385", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 184.9080154882859}
+{"stem": "site1000_bldg2082_floor9385", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 341.4063071217471}
+{"stem": "site2150_bldg3001_floor13690", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site2150_bldg3001_floor13690", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 8}
+{"stem": "site2150_bldg3001_floor13690", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site2150_bldg3001_floor13690", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site2150_bldg3001_floor13690", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site2150_bldg3001_floor13690", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2150_bldg3001_floor13690", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 32}
+{"stem": "site2150_bldg3001_floor13690", "question": "What is the net floor area of room 2.21 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 16.314035250089713}
+{"stem": "site2150_bldg3001_floor13690", "question": "What is the net floor area of room 2.08 ('Cuisine') in m\u00b2?", "template": "room_area", "predicted": 8.320111583197122}
+{"stem": "site2150_bldg3001_floor13690", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 135.8149011568664}
+{"stem": "site2150_bldg3001_floor13690", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 225.6788279722531}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 7}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many rooms labelled 'Soggiorno/pranzo' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site1040_bldg2136_floor9659", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 23}
+{"stem": "site1040_bldg2136_floor9659", "question": "What is the net floor area of room 1.19 ('Corridoio') in m\u00b2?", "template": "room_area", "predicted": 3.6746293786106885}
+{"stem": "site1040_bldg2136_floor9659", "question": "What is the net floor area of room 1.22 ('Soggiorno/pranzo') in m\u00b2?", "template": "room_area", "predicted": 20.62913321086325}
+{"stem": "site1040_bldg2136_floor9659", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 104.75645705868628}
+{"stem": "site1040_bldg2136_floor9659", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 312.7055623892694}
+{"stem": "site248_bldg456_floor1800", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site248_bldg456_floor1800", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site248_bldg456_floor1800", "question": "How many rooms labelled 'Wohnen' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site248_bldg456_floor1800", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site248_bldg456_floor1800", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site248_bldg456_floor1800", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site248_bldg456_floor1800", "question": "How many rooms labelled 'Loggia' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site248_bldg456_floor1800", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 7}
+{"stem": "site248_bldg456_floor1800", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site248_bldg456_floor1800", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 45}
+{"stem": "site248_bldg456_floor1800", "question": "What is the net floor area of room 4.17 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 14.626026067859243}
+{"stem": "site248_bldg456_floor1800", "question": "What is the net floor area of room 4.28 ('Korridor') in m\u00b2?", "template": "room_area", "predicted": 2.209362560082018}
+{"stem": "site248_bldg456_floor1800", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 89.16317178065836}
+{"stem": "site248_bldg456_floor1800", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 219.8594722625769}
+{"stem": "site897_bldg1970_floor8690", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site897_bldg1970_floor8690", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site897_bldg1970_floor8690", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site897_bldg1970_floor8690", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site897_bldg1970_floor8690", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 7}
+{"stem": "site897_bldg1970_floor8690", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site897_bldg1970_floor8690", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site897_bldg1970_floor8690", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 25}
+{"stem": "site897_bldg1970_floor8690", "question": "What is the net floor area of room U1.15 ('Korridor') in m\u00b2?", "template": "room_area", "predicted": 15.359748066088429}
+{"stem": "site897_bldg1970_floor8690", "question": "What is the net floor area of room U1.09 ('K\u00fcche') in m\u00b2?", "template": "room_area", "predicted": 6.082624605199421}
+{"stem": "site897_bldg1970_floor8690", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 62.84024190422038}
+{"stem": "site897_bldg1970_floor8690", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 300.3111667276467}
+{"stem": "site610_bldg1324_floor50793", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site610_bldg1324_floor50793", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 8}
+{"stem": "site610_bldg1324_floor50793", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site610_bldg1324_floor50793", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site610_bldg1324_floor50793", "question": "How many rooms labelled 'R\u00e9duit' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site610_bldg1324_floor50793", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site610_bldg1324_floor50793", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site610_bldg1324_floor50793", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site610_bldg1324_floor50793", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 25}
+{"stem": "site610_bldg1324_floor50793", "question": "What is the net floor area of room 2.02 ('S\u00e9jour/repas') in m\u00b2?", "template": "room_area", "predicted": 23.61112171528772}
+{"stem": "site610_bldg1324_floor50793", "question": "What is the net floor area of room 2.04 ('R\u00e9duit') in m\u00b2?", "template": "room_area", "predicted": 1.5284944280096995}
+{"stem": "site610_bldg1324_floor50793", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 173.03824490112268}
+{"stem": "site610_bldg1324_floor50793", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 240.20432795976583}
+{"stem": "site383_bldg846_floor3730", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 4}
+{"stem": "site383_bldg846_floor3730", "question": "How many rooms labelled 'Schlafzimmer' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site383_bldg846_floor3730", "question": "How many rooms labelled 'Wohnen' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site383_bldg846_floor3730", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site383_bldg846_floor3730", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site383_bldg846_floor3730", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site383_bldg846_floor3730", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site383_bldg846_floor3730", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site383_bldg846_floor3730", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site383_bldg846_floor3730", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 47}
+{"stem": "site383_bldg846_floor3730", "question": "What is the net floor area of room 4.13 ('Wohnen') in m\u00b2?", "template": "room_area", "predicted": 13.777330651089924}
+{"stem": "site383_bldg846_floor3730", "question": "What is the net floor area of room 4.27 ('Wohnen/Essen') in m\u00b2?", "template": "room_area", "predicted": 14.948609664947798}
+{"stem": "site383_bldg846_floor3730", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Schlafzimmer' on this floor?", "template": "labelled_area", "predicted": 66.12506246318684}
+{"stem": "site383_bldg846_floor3730", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 227.4617726250131}
+{"stem": "site3238_bldg4922_floor22515", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site3238_bldg4922_floor22515", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site3238_bldg4922_floor22515", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3238_bldg4922_floor22515", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3238_bldg4922_floor22515", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3238_bldg4922_floor22515", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 14}
+{"stem": "site3238_bldg4922_floor22515", "question": "What is the net floor area of room 1.04 ('Corridoio') in m\u00b2?", "template": "room_area", "predicted": 26.733592381441586}
+{"stem": "site3238_bldg4922_floor22515", "question": "What is the net floor area of room 1.06 ('Cucina') in m\u00b2?", "template": "room_area", "predicted": 13.858980838492892}
+{"stem": "site3238_bldg4922_floor22515", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 105.2879551400122}
+{"stem": "site3238_bldg4922_floor22515", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 182.96871264997296}
+{"stem": "site157_bldg323_floor1313", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 7}
+{"stem": "site157_bldg323_floor1313", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 22}
+{"stem": "site157_bldg323_floor1313", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 7}
+{"stem": "site157_bldg323_floor1313", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 80}
+{"stem": "site157_bldg323_floor1313", "question": "What is the net floor area of room 1.33 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 11.126835417214322}
+{"stem": "site157_bldg323_floor1313", "question": "What is the net floor area of room 1.06 ('Couloir') in m\u00b2?", "template": "room_area", "predicted": 8.982766577836458}
+{"stem": "site157_bldg323_floor1313", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 338.93402457217263}
+{"stem": "site157_bldg323_floor1313", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 565.3380489075302}
+{"stem": "site120_bldg55_floor209", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site120_bldg55_floor209", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site120_bldg55_floor209", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site120_bldg55_floor209", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site120_bldg55_floor209", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site120_bldg55_floor209", "question": "How many rooms labelled 'R\u00e9duit' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site120_bldg55_floor209", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site120_bldg55_floor209", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site120_bldg55_floor209", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site120_bldg55_floor209", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 11}
+{"stem": "site120_bldg55_floor209", "question": "What is the net floor area of room 3.01 ('Balcon') in m\u00b2?", "template": "room_area", "predicted": 18.704709883904865}
+{"stem": "site120_bldg55_floor209", "question": "What is the net floor area of room 3.03 ('S\u00e9jour/repas') in m\u00b2?", "template": "room_area", "predicted": 31.928824124823777}
+{"stem": "site120_bldg55_floor209", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 46.666591291024034}
+{"stem": "site120_bldg55_floor209", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 130.03369323657418}
+{"stem": "site65_bldg3_floor5", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site65_bldg3_floor5", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 8}
+{"stem": "site65_bldg3_floor5", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site65_bldg3_floor5", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site65_bldg3_floor5", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site65_bldg3_floor5", "question": "How many rooms labelled 'Loggia' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site65_bldg3_floor5", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site65_bldg3_floor5", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site65_bldg3_floor5", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 29}
+{"stem": "site65_bldg3_floor5", "question": "What is the net floor area of room 4.17 ('Bain') in m\u00b2?", "template": "room_area", "predicted": 3.396099103470869}
+{"stem": "site65_bldg3_floor5", "question": "What is the net floor area of room 4.03 ('Cuisine') in m\u00b2?", "template": "room_area", "predicted": 8.77950170015617}
+{"stem": "site65_bldg3_floor5", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 109.13037294124763}
+{"stem": "site65_bldg3_floor5", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 234.8752951179092}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 7}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site4237_bldg7396_floor29509", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 27}
+{"stem": "site4237_bldg7396_floor29509", "question": "What is the net floor area of room 2.10 ('Bad') in m\u00b2?", "template": "room_area", "predicted": 1.6555183480005282}
+{"stem": "site4237_bldg7396_floor29509", "question": "What is the net floor area of room 2.15 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 14.792711026014187}
+{"stem": "site4237_bldg7396_floor29509", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 106.89344386672535}
+{"stem": "site4237_bldg7396_floor29509", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 205.3797920750628}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 4}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many rooms labelled 'Schlafzimmer' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2293_bldg3380_floor15055", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 28}
+{"stem": "site2293_bldg3380_floor15055", "question": "What is the net floor area of room 4.23 ('Bad') in m\u00b2?", "template": "room_area", "predicted": 4.322159572672637}
+{"stem": "site2293_bldg3380_floor15055", "question": "What is the net floor area of room 4.21 ('Balkon') in m\u00b2?", "template": "room_area", "predicted": 19.696710688173006}
+{"stem": "site2293_bldg3380_floor15055", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Schlafzimmer' on this floor?", "template": "labelled_area", "predicted": 59.180196335083636}
+{"stem": "site2293_bldg3380_floor15055", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 281.6236934654947}
+{"stem": "site424_bldg1074_floor4711", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site424_bldg1074_floor4711", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site424_bldg1074_floor4711", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site424_bldg1074_floor4711", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site424_bldg1074_floor4711", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site424_bldg1074_floor4711", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 14}
+{"stem": "site424_bldg1074_floor4711", "question": "What is the net floor area of room 3.06 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 12.929176578343212}
+{"stem": "site424_bldg1074_floor4711", "question": "What is the net floor area of room 3.14 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 14.484582187162015}
+{"stem": "site424_bldg1074_floor4711", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 71.39328200370686}
+{"stem": "site424_bldg1074_floor4711", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 98.34601469517747}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many rooms labelled 'Soggiorno/pranzo' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2294_bldg3383_floor15064", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 12}
+{"stem": "site2294_bldg3383_floor15064", "question": "What is the net floor area of room 5.04 ('Cucina') in m\u00b2?", "template": "room_area", "predicted": 12.025737274410783}
+{"stem": "site2294_bldg3383_floor15064", "question": "What is the net floor area of room 5.09 ('Stanza') in m\u00b2?", "template": "room_area", "predicted": 17.548628843575713}
+{"stem": "site2294_bldg3383_floor15064", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 17.548628843575713}
+{"stem": "site2294_bldg3383_floor15064", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 118.35266062921353}
+{"stem": "site285_bldg527_floor51568", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 4}
+{"stem": "site285_bldg527_floor51568", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site285_bldg527_floor51568", "question": "How many rooms labelled 'Chambre \u00e0 coucher' are there on this floor?", "template": "label_count", "predicted": 7}
+{"stem": "site285_bldg527_floor51568", "question": "How many rooms labelled 'S\u00e9jour' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site285_bldg527_floor51568", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site285_bldg527_floor51568", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site285_bldg527_floor51568", "question": "How many rooms labelled 'Loggia' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site285_bldg527_floor51568", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site285_bldg527_floor51568", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site285_bldg527_floor51568", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 26}
+{"stem": "site285_bldg527_floor51568", "question": "What is the net floor area of room 2.18 ('Chambre \u00e0 coucher') in m\u00b2?", "template": "room_area", "predicted": 16.148955342460678}
+{"stem": "site285_bldg527_floor51568", "question": "What is the net floor area of room 2.10 ('Couloir') in m\u00b2?", "template": "room_area", "predicted": 6.783343174531594}
+{"stem": "site285_bldg527_floor51568", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Chambre \u00e0 coucher' on this floor?", "template": "labelled_area", "predicted": 0.0}
+{"stem": "site285_bldg527_floor51568", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 270.06897785065365}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many rooms labelled 'Schlafzimmer' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site11704_bldg18258_floor48967", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 18}
+{"stem": "site11704_bldg18258_floor48967", "question": "What is the net floor area of room 1.04 ('Bad') in m\u00b2?", "template": "room_area", "predicted": 3.346156442922643}
+{"stem": "site11704_bldg18258_floor48967", "question": "What is the net floor area of room 1.02 ('Wohnen/Essen') in m\u00b2?", "template": "room_area", "predicted": 24.75603951051725}
+{"stem": "site11704_bldg18258_floor48967", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Schlafzimmer' on this floor?", "template": "labelled_area", "predicted": 32.292379026702804}
+{"stem": "site11704_bldg18258_floor48967", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 149.49204737256238}
+{"stem": "site52_bldg298_floor1183", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site52_bldg298_floor1183", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site52_bldg298_floor1183", "question": "How many rooms labelled 'S\u00e9jour' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site52_bldg298_floor1183", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site52_bldg298_floor1183", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site52_bldg298_floor1183", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site52_bldg298_floor1183", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site52_bldg298_floor1183", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site52_bldg298_floor1183", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 23}
+{"stem": "site52_bldg298_floor1183", "question": "What is the net floor area of room 3.06 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 19.0834170375317}
+{"stem": "site52_bldg298_floor1183", "question": "What is the net floor area of room 3.10 ('Couloir') in m\u00b2?", "template": "room_area", "predicted": 26.39070521448756}
+{"stem": "site52_bldg298_floor1183", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 50.143176470277595}
+{"stem": "site52_bldg298_floor1183", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 167.63891378993188}
+{"stem": "site3434_bldg5310_floor23630", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site3434_bldg5310_floor23630", "question": "How many rooms labelled 'Chambre \u00e0 coucher' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3434_bldg5310_floor23630", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3434_bldg5310_floor23630", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3434_bldg5310_floor23630", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3434_bldg5310_floor23630", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3434_bldg5310_floor23630", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3434_bldg5310_floor23630", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 7}
+{"stem": "site3434_bldg5310_floor23630", "question": "What is the net floor area of room 1.04 ('Bain') in m\u00b2?", "template": "room_area", "predicted": 4.9580914510776735}
+{"stem": "site3434_bldg5310_floor23630", "question": "What is the net floor area of room 1.01 ('Balcon') in m\u00b2?", "template": "room_area", "predicted": 8.508753977707634}
+{"stem": "site3434_bldg5310_floor23630", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Chambre \u00e0 coucher' on this floor?", "template": "labelled_area", "predicted": 0.0}
+{"stem": "site3434_bldg5310_floor23630", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 74.23278841552384}
+{"stem": "site936_bldg1976_floor8706", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site936_bldg1976_floor8706", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site936_bldg1976_floor8706", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site936_bldg1976_floor8706", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site936_bldg1976_floor8706", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site936_bldg1976_floor8706", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site936_bldg1976_floor8706", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site936_bldg1976_floor8706", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 14}
+{"stem": "site936_bldg1976_floor8706", "question": "What is the net floor area of room 4.02 ('Wohnen/Essen') in m\u00b2?", "template": "room_area", "predicted": 33.71034512372495}
+{"stem": "site936_bldg1976_floor8706", "question": "What is the net floor area of room 4.12 ('Korridor') in m\u00b2?", "template": "room_area", "predicted": 11.003921276461416}
+{"stem": "site936_bldg1976_floor8706", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 40.293669976991225}
+{"stem": "site936_bldg1976_floor8706", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 177.673796312057}
+{"stem": "site799_bldg1747_floor18743", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site799_bldg1747_floor18743", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site799_bldg1747_floor18743", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site799_bldg1747_floor18743", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site799_bldg1747_floor18743", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site799_bldg1747_floor18743", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site799_bldg1747_floor18743", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site799_bldg1747_floor18743", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 32}
+{"stem": "site799_bldg1747_floor18743", "question": "What is the net floor area of room 2.18 ('Cuisine') in m\u00b2?", "template": "room_area", "predicted": 12.484014229770326}
+{"stem": "site799_bldg1747_floor18743", "question": "What is the net floor area of room 2.11 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 11.286231680522972}
+{"stem": "site799_bldg1747_floor18743", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 83.49760425895167}
+{"stem": "site799_bldg1747_floor18743", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 266.2427622685259}
+{"stem": "site1015_bldg2113_floor9557", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 15}
+{"stem": "site1015_bldg2113_floor9557", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 22}
+{"stem": "site1015_bldg2113_floor9557", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 9}
+{"stem": "site1015_bldg2113_floor9557", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 24}
+{"stem": "site1015_bldg2113_floor9557", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 19}
+{"stem": "site1015_bldg2113_floor9557", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 114}
+{"stem": "site1015_bldg2113_floor9557", "question": "What is the net floor area of room 1.51 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 10.716738379018576}
+{"stem": "site1015_bldg2113_floor9557", "question": "What is the net floor area of room 1.19 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 11.551766193319922}
+{"stem": "site1015_bldg2113_floor9557", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 332.41794204362554}
+{"stem": "site1015_bldg2113_floor9557", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 928.9568141899485}
+{"stem": "site892_bldg1902_floor8415", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site892_bldg1902_floor8415", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site892_bldg1902_floor8415", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site892_bldg1902_floor8415", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site892_bldg1902_floor8415", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site892_bldg1902_floor8415", "question": "How many rooms labelled 'Loggia' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site892_bldg1902_floor8415", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site892_bldg1902_floor8415", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 11}
+{"stem": "site892_bldg1902_floor8415", "question": "What is the net floor area of room 2.06 ('Couloir') in m\u00b2?", "template": "room_area", "predicted": 8.540404223053416}
+{"stem": "site892_bldg1902_floor8415", "question": "What is the net floor area of room 2.02 ('Loggia') in m\u00b2?", "template": "room_area", "predicted": 118.23935181227779}
+{"stem": "site892_bldg1902_floor8415", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 20.898904432576067}
+{"stem": "site892_bldg1902_floor8415", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 34.082854667315694}
+{"stem": "site3259_bldg4943_floor22529", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site3259_bldg4943_floor22529", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3259_bldg4943_floor22529", "question": "How many rooms labelled 'Wohnen' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3259_bldg4943_floor22529", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3259_bldg4943_floor22529", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3259_bldg4943_floor22529", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3259_bldg4943_floor22529", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 9}
+{"stem": "site3259_bldg4943_floor22529", "question": "What is the net floor area of room 3.07 ('Wohnen') in m\u00b2?", "template": "room_area", "predicted": 17.803848972733803}
+{"stem": "site3259_bldg4943_floor22529", "question": "What is the net floor area of room 3.01 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": 12.674058772487223}
+{"stem": "site3259_bldg4943_floor22529", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 12.674058772487223}
+{"stem": "site3259_bldg4943_floor22529", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 49.104112627171624}
+{"stem": "site339_bldg710_floor3024", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site339_bldg710_floor3024", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site339_bldg710_floor3024", "question": "How many rooms labelled 'Soggiorno' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site339_bldg710_floor3024", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site339_bldg710_floor3024", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site339_bldg710_floor3024", "question": "How many rooms labelled 'Ripostiglio' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site339_bldg710_floor3024", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site339_bldg710_floor3024", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site339_bldg710_floor3024", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site339_bldg710_floor3024", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 38}
+{"stem": "site339_bldg710_floor3024", "question": "What is the net floor area of room 0.17 ('Cucina') in m\u00b2?", "template": "room_area", "predicted": 10.791231352742342}
+{"stem": "site339_bldg710_floor3024", "question": "What is the net floor area of room 0.19 ('Bagno') in m\u00b2?", "template": "room_area", "predicted": 1.8134452249254474}
+{"stem": "site339_bldg710_floor3024", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 81.8263465028495}
+{"stem": "site339_bldg710_floor3024", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 277.4166820296962}
+{"stem": "site926_bldg1958_floor8576", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site926_bldg1958_floor8576", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site926_bldg1958_floor8576", "question": "How many rooms labelled 'Soggiorno/pranzo' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site926_bldg1958_floor8576", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site926_bldg1958_floor8576", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site926_bldg1958_floor8576", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site926_bldg1958_floor8576", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 20}
+{"stem": "site926_bldg1958_floor8576", "question": "What is the net floor area of room 1.04 ('Stanza') in m\u00b2?", "template": "room_area", "predicted": 10.214010468782861}
+{"stem": "site926_bldg1958_floor8576", "question": "What is the net floor area of room 1.18 ('Stanza') in m\u00b2?", "template": "room_area", "predicted": 9.742987973610088}
+{"stem": "site926_bldg1958_floor8576", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 71.47467896124516}
+{"stem": "site926_bldg1958_floor8576", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 181.42546380800917}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many rooms labelled 'Soggiorno/pranzo' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many rooms labelled 'Ripostiglio' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site1047_bldg2154_floor9740", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 23}
+{"stem": "site1047_bldg2154_floor9740", "question": "What is the net floor area of room 4.02 ('Cucina') in m\u00b2?", "template": "room_area", "predicted": 12.521418669405}
+{"stem": "site1047_bldg2154_floor9740", "question": "What is the net floor area of room 4.09 ('Cucina') in m\u00b2?", "template": "room_area", "predicted": 9.292466977197753}
+{"stem": "site1047_bldg2154_floor9740", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 74.16356097081322}
+{"stem": "site1047_bldg2154_floor9740", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 182.956920494631}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many rooms labelled 'Chambre \u00e0 coucher' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many rooms labelled 'S\u00e9jour' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site3863_bldg6018_floor25218", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 19}
+{"stem": "site3863_bldg6018_floor25218", "question": "What is the net floor area of room 0.03 ('Cuisine') in m\u00b2?", "template": "room_area", "predicted": 8.977470341936378}
+{"stem": "site3863_bldg6018_floor25218", "question": "What is the net floor area of room 0.09 ('Balcon') in m\u00b2?", "template": "room_area", "predicted": 2.924657875383831}
+{"stem": "site3863_bldg6018_floor25218", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Chambre \u00e0 coucher' on this floor?", "template": "labelled_area", "predicted": 0.0}
+{"stem": "site3863_bldg6018_floor25218", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 146.4837765730488}
+{"stem": "site604_bldg1319_floor5779", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site604_bldg1319_floor5779", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site604_bldg1319_floor5779", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site604_bldg1319_floor5779", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site604_bldg1319_floor5779", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site604_bldg1319_floor5779", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 6}
+{"stem": "site604_bldg1319_floor5779", "question": "What is the net floor area of room 4.05 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 34.01709346827109}
+{"stem": "site604_bldg1319_floor5779", "question": "What is the net floor area of room 4.04 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 17.895822301248483}
+{"stem": "site604_bldg1319_floor5779", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 51.91291576951957}
+{"stem": "site604_bldg1319_floor5779", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 71.333768863726}
+{"stem": "site1098_bldg2234_floor10334", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 6}
+{"stem": "site1098_bldg2234_floor10334", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 16}
+{"stem": "site1098_bldg2234_floor10334", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site1098_bldg2234_floor10334", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 53}
+{"stem": "site1098_bldg2234_floor10334", "question": "What is the net floor area of room 1.02 ('Stanza') in m\u00b2?", "template": "room_area", "predicted": 12.242232583800082}
+{"stem": "site1098_bldg2234_floor10334", "question": "What is the net floor area of room 1.41 ('Corridoio') in m\u00b2?", "template": "room_area", "predicted": 11.726414395054329}
+{"stem": "site1098_bldg2234_floor10334", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 249.34826631357126}
+{"stem": "site1098_bldg2234_floor10334", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 421.85557567035613}
+{"stem": "site261_bldg473_floor1873", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 6}
+{"stem": "site261_bldg473_floor1873", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 14}
+{"stem": "site261_bldg473_floor1873", "question": "How many rooms labelled 'S\u00e9jour' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site261_bldg473_floor1873", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site261_bldg473_floor1873", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site261_bldg473_floor1873", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 8}
+{"stem": "site261_bldg473_floor1873", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site261_bldg473_floor1873", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 46}
+{"stem": "site261_bldg473_floor1873", "question": "What is the net floor area of room 1.06 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 10.963578398319825}
+{"stem": "site261_bldg473_floor1873", "question": "What is the net floor area of room 1.15 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 25.327867852993187}
+{"stem": "site261_bldg473_floor1873", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 221.8670239185251}
+{"stem": "site261_bldg473_floor1873", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 441.8971902481496}
+{"stem": "site418_bldg1080_floor4724", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site418_bldg1080_floor4724", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site418_bldg1080_floor4724", "question": "How many rooms labelled 'Wohnen' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site418_bldg1080_floor4724", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site418_bldg1080_floor4724", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site418_bldg1080_floor4724", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site418_bldg1080_floor4724", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site418_bldg1080_floor4724", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site418_bldg1080_floor4724", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site418_bldg1080_floor4724", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 37}
+{"stem": "site418_bldg1080_floor4724", "question": "What is the net floor area of room 0.22 ('Balkon') in m\u00b2?", "template": "room_area", "predicted": 8.20074375502253}
+{"stem": "site418_bldg1080_floor4724", "question": "What is the net floor area of room 0.08 ('K\u00fcche') in m\u00b2?", "template": "room_area", "predicted": 7.537509238559809}
+{"stem": "site418_bldg1080_floor4724", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 81.1587742965783}
+{"stem": "site418_bldg1080_floor4724", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 235.25475466295342}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 3}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many rooms labelled 'Camera da letto' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many rooms labelled 'Soggiorno/pranzo' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many rooms labelled 'Ripostiglio' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many rooms labelled 'Balcone' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many rooms labelled 'Vano scala' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site11861_bldg18508_floor50415", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 45}
+{"stem": "site11861_bldg18508_floor50415", "question": "What is the net floor area of room 0.07 ('Corridoio') in m\u00b2?", "template": "room_area", "predicted": 8.640990911753683}
+{"stem": "site11861_bldg18508_floor50415", "question": "What is the net floor area of room 0.13 ('Corridoio') in m\u00b2?", "template": "room_area", "predicted": 8.277937462639084}
+{"stem": "site11861_bldg18508_floor50415", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Camera da letto' on this floor?", "template": "labelled_area", "predicted": 0.0}
+{"stem": "site11861_bldg18508_floor50415", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 248.69818383622024}
+{"stem": "site208_bldg397_floor1579", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site208_bldg397_floor1579", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 7}
+{"stem": "site208_bldg397_floor1579", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site208_bldg397_floor1579", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site208_bldg397_floor1579", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site208_bldg397_floor1579", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site208_bldg397_floor1579", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site208_bldg397_floor1579", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site208_bldg397_floor1579", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 27}
+{"stem": "site208_bldg397_floor1579", "question": "What is the net floor area of room 0.06 ('Bad') in m\u00b2?", "template": "room_area", "predicted": 1.9803312683159053}
+{"stem": "site208_bldg397_floor1579", "question": "What is the net floor area of room 0.19 ('Treppenhaus') in m\u00b2?", "template": "room_area", "predicted": 14.778747784794344}
+{"stem": "site208_bldg397_floor1579", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 106.42194231885478}
+{"stem": "site208_bldg397_floor1579", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 189.4833166029182}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many rooms labelled 'Zimmer' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many rooms labelled 'Wohnen/Essen' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many rooms labelled 'K\u00fcche' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many rooms labelled 'Bad' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many rooms labelled 'Reduit' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many rooms labelled 'Balkon' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many rooms labelled 'Korridor' are there on this floor?", "template": "label_count", "predicted": 3}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many rooms labelled 'Treppenhaus' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2146_bldg2990_floor13636", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 12}
+{"stem": "site2146_bldg2990_floor13636", "question": "What is the net floor area of room 3.02 ('Zimmer') in m\u00b2?", "template": "room_area", "predicted": null}
+{"stem": "site2146_bldg2990_floor13636", "question": "What is the net floor area of room 3.01 ('Reduit') in m\u00b2?", "template": "room_area", "predicted": 2.164226833427361}
+{"stem": "site2146_bldg2990_floor13636", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Zimmer' on this floor?", "template": "labelled_area", "predicted": 14.653419321597212}
+{"stem": "site2146_bldg2990_floor13636", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 122.16712841796043}
+{"stem": "site2292_bldg3379_floor15050", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 1}
+{"stem": "site2292_bldg3379_floor15050", "question": "How many rooms labelled 'Stanza' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site2292_bldg3379_floor15050", "question": "How many rooms labelled 'Soggiorno/pranzo' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2292_bldg3379_floor15050", "question": "How many rooms labelled 'Cucina' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2292_bldg3379_floor15050", "question": "How many rooms labelled 'Bagno' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2292_bldg3379_floor15050", "question": "How many rooms labelled 'Ripostiglio' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site2292_bldg3379_floor15050", "question": "How many rooms labelled 'Corridoio' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site2292_bldg3379_floor15050", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 12}
+{"stem": "site2292_bldg3379_floor15050", "question": "What is the net floor area of room 5.06 ('Soggiorno/pranzo') in m\u00b2?", "template": "room_area", "predicted": 32.0070295769067}
+{"stem": "site2292_bldg3379_floor15050", "question": "What is the net floor area of room 5.11 ('Vano scala') in m\u00b2?", "template": "room_area", "predicted": 21.07570507045809}
+{"stem": "site2292_bldg3379_floor15050", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Stanza' on this floor?", "template": "labelled_area", "predicted": 91.53223660756099}
+{"stem": "site2292_bldg3379_floor15050", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 178.03081473034584}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 6}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 9}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many rooms labelled 'Bain' are there on this floor?", "template": "label_count", "predicted": 9}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many rooms labelled 'Loggia' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 6}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many rooms labelled 'Cage d'escalier' are there on this floor?", "template": "label_count", "predicted": 1}
+{"stem": "site1869_bldg2903_floor13293", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 50}
+{"stem": "site1869_bldg2903_floor13293", "question": "What is the net floor area of room 1.09 ('Balcon') in m\u00b2?", "template": "room_area", "predicted": 18.798224320670894}
+{"stem": "site1869_bldg2903_floor13293", "question": "What is the net floor area of room 1.41 ('Cuisine') in m\u00b2?", "template": "room_area", "predicted": 5.629924882821841}
+{"stem": "site1869_bldg2903_floor13293", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 129.39532254679648}
+{"stem": "site1869_bldg2903_floor13293", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 455.12637847426555}
+{"stem": "site303_bldg598_floor2434", "question": "How many apartments (residential units) are shown on this floor plan?", "template": "apartment_count", "predicted": 2}
+{"stem": "site303_bldg598_floor2434", "question": "How many rooms labelled 'Pi\u00e8ce' are there on this floor?", "template": "label_count", "predicted": 5}
+{"stem": "site303_bldg598_floor2434", "question": "How many rooms labelled 'S\u00e9jour/repas' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site303_bldg598_floor2434", "question": "How many rooms labelled 'Cuisine' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site303_bldg598_floor2434", "question": "How many rooms labelled 'Balcon' are there on this floor?", "template": "label_count", "predicted": 4}
+{"stem": "site303_bldg598_floor2434", "question": "How many rooms labelled 'Couloir' are there on this floor?", "template": "label_count", "predicted": 2}
+{"stem": "site303_bldg598_floor2434", "question": "How many doors (interior doors and entrance doors together) are drawn on this floor plan?", "template": "door", "predicted": 21}
+{"stem": "site303_bldg598_floor2434", "question": "What is the net floor area of room 0.17 ('Pi\u00e8ce') in m\u00b2?", "template": "room_area", "predicted": 14.44309348096571}
+{"stem": "site303_bldg598_floor2434", "question": "What is the net floor area of room 0.01 ('Balcon') in m\u00b2?", "template": "room_area", "predicted": 12.20288758539282}
+{"stem": "site303_bldg598_floor2434", "question": "What is the total net area in m\u00b2 of all rooms labelled 'Pi\u00e8ce' on this floor?", "template": "labelled_area", "predicted": 56.9472988615889}
+{"stem": "site303_bldg598_floor2434", "question": "What is the total net floor area in m\u00b2 of all numbered indoor rooms on this floor (excluding balconies, loggias, terraces and other outdoor spaces, shafts and voids)?", "template": "indoor_total", "predicted": 153.28405227461357}

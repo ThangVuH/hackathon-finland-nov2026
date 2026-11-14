@@ -1,0 +1,161 @@
+Development audit. Molio was already opened for areas. Not a held-out score.
+units length x0.001  area x1.0  volume x1.0
+quantity names present:
+     53  IfcSlab  ArchiCADQuantities.Area  area
+     53  IfcSlab  ArchiCADQuantities.Bottom Elevation To First Reference Level  length
+     53  IfcSlab  ArchiCADQuantities.Bottom Elevation To Home Story  length
+     53  IfcSlab  ArchiCADQuantities.Bottom Elevation To Project Zero  length
+     53  IfcSlab  ArchiCADQuantities.Bottom Elevation To Sea Level  length
+     53  IfcSlab  ArchiCADQuantities.Bottom Elevation To Second Reference Level  length
+     53  IfcSlab  ArchiCADQuantities.Bottom Surface Area (Conditional)  area
+     53  IfcSlab  ArchiCADQuantities.Bottom Surface Area (Gross)  area
+     53  IfcSlab  ArchiCADQuantities.Bottom Surface Area (Net)  area
+     53  IfcSlab  ArchiCADQuantities.Edge Surface Area (Gross)  area
+     53  IfcSlab  ArchiCADQuantities.Edge Surface Area (Net)  area
+     53  IfcSlab  ArchiCADQuantities.Elevation Bottom  length
+     53  IfcSlab  ArchiCADQuantities.Elevation Top  length
+     53  IfcSlab  ArchiCADQuantities.Elevation to 1. Reference højde  length
+     53  IfcSlab  ArchiCADQuantities.Elevation to 2. Reference højde  length
+     53  IfcSlab  ArchiCADQuantities.Elevation to Linked/Home Story  length
+     53  IfcSlab  ArchiCADQuantities.Elevation to Project Zero  length
+     53  IfcSlab  ArchiCADQuantities.Elevation to Sea Level  length
+     53  IfcSlab  ArchiCADQuantities.Floor Plan Holes Perimeter  length
+     53  IfcSlab  ArchiCADQuantities.Floor Plan Perimeter  length
+     53  IfcSlab  ArchiCADQuantities.Height  length
+     53  IfcSlab  ArchiCADQuantities.Holes Surface Area  area
+     53  IfcSlab  ArchiCADQuantities.Home Offset  length
+     53  IfcSlab  ArchiCADQuantities.Surface Area  area
+     53  IfcSlab  ArchiCADQuantities.Surface Area of the Slab Bottom (Gross)  area
+     53  IfcSlab  ArchiCADQuantities.Surface Area of the Slab Bottom (Gross, with holes)  area
+     53  IfcSlab  ArchiCADQuantities.Surface Area of the Slab Edges (Gross)  area
+     53  IfcSlab  ArchiCADQuantities.Surface Area of the Slab Edges (Gross, with holes)  area
+     53  IfcSlab  ArchiCADQuantities.Surface Area of the Slab Top (Conditional)  area
+     53  IfcSlab  ArchiCADQuantities.Surface Area of the Slab Top (Gross)  area
+     53  IfcSlab  ArchiCADQuantities.Surface Area of the Slab Top (Gross, with holes)  area
+     53  IfcSlab  ArchiCADQuantities.Thickness  length
+     53  IfcSlab  ArchiCADQuantities.Top Elevation To First Reference Level  length
+     53  IfcSlab  ArchiCADQuantities.Top Elevation To Home Story  length
+     53  IfcSlab  ArchiCADQuantities.Top Elevation To Project Zero  length
+     53  IfcSlab  ArchiCADQuantities.Top Elevation To Sea Level  length
+     53  IfcSlab  ArchiCADQuantities.Top Elevation To Second Reference Level  length
+     53  IfcSlab  ArchiCADQuantities.Top Surface Area (Conditional)  area
+     53  IfcSlab  ArchiCADQuantities.Top Surface Area (Gross)  area
+     53  IfcSlab  ArchiCADQuantities.Top Surface Area (Net)  area
+     53  IfcSlab  ArchiCADQuantities.Volume (Conditional)  volume
+     53  IfcSlab  ArchiCADQuantities.Volume (Gross)  volume
+     53  IfcSlab  ArchiCADQuantities.Volume (Net)  volume
+     53  IfcSlab  BaseQuantities.GrossArea  area
+     53  IfcSlab  BaseQuantities.GrossVolume  volume
+     53  IfcSlab  BaseQuantities.NetArea  area
+     53  IfcSlab  BaseQuantities.NetVolume  volume
+     53  IfcSlab  BaseQuantities.Perimeter  length
+     53  IfcSlab  BaseQuantities.Width  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Back Overhang (rightOverhangBottomBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Back Overhang (rightOverhangTopBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Bottom Height  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Bottom Height of Top Bracing (bottomHeightTopBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Bottom Height of Top Bracing (topHeightBottomBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Bottom Level  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Depth  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Distance of Panels  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Element Height (heightBottomBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Element Height (heightFrame)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Element Height (heightTopBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Front Overhang (leftOverhangBottomBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Front Overhang (leftOverhangTopBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Height  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Panel Bottom Height  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Panel Length  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Panel Thickness  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Panel Top Height  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Thickness (thicknessBottomBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Thickness (thicknessFrame)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Thickness (thicknessPost)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Thickness (thicknessTopBracing)  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Top Height  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Top Level  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Width  length
+      2  IfcWall  AC_Equantity_Partition_Panel_25.Width of Post  length
+    187  IfcWall  ArchiCADQuantities.3D Length  length
+    187  IfcWall  ArchiCADQuantities.Air Skin Thickness  length
+    187  IfcWall  ArchiCADQuantities.Analytic Surface Area of Openings on the Inside Face  area
+    187  IfcWall  ArchiCADQuantities.Analytic Surface Area of Openings on the Outside Face  area
+    187  IfcWall  ArchiCADQuantities.Analytic Volume of the Openings  volume
+    189  IfcWall  ArchiCADQuantities.Area  area
+    187  IfcWall  ArchiCADQuantities.Area of the Doors  area
+    187  IfcWall  ArchiCADQuantities.Area of the Windows  area
+    187  IfcWall  ArchiCADQuantities.Average length of the Wall  length
+    189  IfcWall  ArchiCADQuantities.Bottom Elevation To First Reference Level  length
+    189  IfcWall  ArchiCADQuantities.Bottom Elevation To Home Story  length
+    189  IfcWall  ArchiCADQuantities.Bottom Elevation To Project Zero  length
+    189  IfcWall  ArchiCADQuantities.Bottom Elevation To Sea Level  length
+    189  IfcWall  ArchiCADQuantities.Bottom Elevation To Second Reference Level  length
+    189  IfcWall  ArchiCADQuantities.Bottom Surface Area (Net)  area
+    187  IfcWall  ArchiCADQuantities.Combined Width of Doors  length
+    187  IfcWall  ArchiCADQuantities.Combined Width of Windows  length
+    187  IfcWall  ArchiCADQuantities.Edge Surface Area (Net)  area
+    189  IfcWall  ArchiCADQuantities.Elevation to 1. Reference højde  length
+    189  IfcWall  ArchiCADQuantities.Elevation to 2. Reference højde  length
+    189  IfcWall  ArchiCADQuantities.Elevation to Linked/Home Story  length
+    189  IfcWall  ArchiCADQuantities.Elevation to Project Zero  length
+    189  IfcWall  ArchiCADQuantities.Elevation to Sea Level  length
+    187  IfcWall  ArchiCADQuantities.End Thickness of the Wall  length
+    187  IfcWall  ArchiCADQuantities.Floor Plan Perimeter  length
+    189  IfcWall  ArchiCADQuantities.Height  length
+    189  IfcWall  ArchiCADQuantities.Home Offset  length
+    187  IfcWall  ArchiCADQuantities.Insulation Skin Thickness  length
+      2  IfcWall  ArchiCADQuantities.Length (A)  length
+    187  IfcWall  ArchiCADQuantities.Length of Reference Line  length
+    187  IfcWall  ArchiCADQuantities.Length of the Wall Inside Face (Conditional)  length
+    187  IfcWall  ArchiCADQuantities.Length of the Wall Outside Face (Conditional)  length
+    187  IfcWall  ArchiCADQuantities.Length of the Wall at the Center  length
+    187  IfcWall  ArchiCADQuantities.Length of the Wall on the Inside Face  length
+    187  IfcWall  ArchiCADQuantities.Length of the Wall on the Outside Face  length
+    187  IfcWall  ArchiCADQuantities.Maximum Height of the Wall  length
+    187  IfcWall  ArchiCADQuantities.Maximum Height of the Wall Skin on the Inside Face  length
+    187  IfcWall  ArchiCADQuantities.Maximum Height of the Wall Skin on the Outside Face  length
+    187  IfcWall  ArchiCADQuantities.Minimum Height of the Wall  length
+    187  IfcWall  ArchiCADQuantities.Minimum Height of the Wall Skin on the Inside Face  length
+    187  IfcWall  ArchiCADQuantities.Minimum Height of the Wall Skin on the Outside Face  length
+    189  IfcWall  ArchiCADQuantities.Surface Area  area
+    187  IfcWall  ArchiCADQuantities.Surface Area of Empty Openings in the Wall  area
+    187  IfcWall  ArchiCADQuantities.Surface Area of the Wall Inside Face (Conditional)  area
+    187  IfcWall  ArchiCADQuantities.Surface Area of the Wall Inside Face (Gross)  area
+    187  IfcWall  ArchiCADQuantities.Surface Area of the Wall Inside Face (Net)  area
+    187  IfcWall  ArchiCADQuantities.Surface Area of the Wall Outside Face (Conditional)  area
+    187  IfcWall  ArchiCADQuantities.Surface Area of the Wall Outside Face (Gross)  area
+    187  IfcWall  ArchiCADQuantities.Surface Area of the Wall Outside Face (Net)  area
+      2  IfcWall  ArchiCADQuantities.Survey Coordinate X  length
+      2  IfcWall  ArchiCADQuantities.Survey Coordinate Y  length
+      2  IfcWall  ArchiCADQuantities.Survey Coordinate Z  length
+    187  IfcWall  ArchiCADQuantities.Thickness  length
+    189  IfcWall  ArchiCADQuantities.Top Elevation To First Reference Level  length
+    189  IfcWall  ArchiCADQuantities.Top Elevation To Home Story  length
+    189  IfcWall  ArchiCADQuantities.Top Elevation To Project Zero  length
+    189  IfcWall  ArchiCADQuantities.Top Elevation To Sea Level  length
+    189  IfcWall  ArchiCADQuantities.Top Elevation To Second Reference Level  length
+    187  IfcWall  ArchiCADQuantities.Top Offset  length
+    189  IfcWall  ArchiCADQuantities.Top Surface Area (Net)  area
+    187  IfcWall  ArchiCADQuantities.Volume (Conditional)  volume
+    187  IfcWall  ArchiCADQuantities.Volume (Gross)  volume
+    189  IfcWall  ArchiCADQuantities.Volume (Net)  volume
+    187  IfcWall  ArchiCADQuantities.Volume of the Columns  volume
+    183  IfcWall  ArchiCADQuantities.Volume of the Wall Inside Face Component (Conditional)  volume
+    183  IfcWall  ArchiCADQuantities.Volume of the Wall Outside Face Component (Conditional)  volume
+    187  IfcWall  ArchiCADQuantities.Wall Component Thickness on the Inside Face  length
+    187  IfcWall  ArchiCADQuantities.Wall Component Thickness on the Outside Face  length
+    183  IfcWall  ArchiCADQuantities.Wall Component Volume on the Inside Face (Net)  volume
+    183  IfcWall  ArchiCADQuantities.Wall Component Volume on the Outside Face (Net)  volume
+    189  IfcWall  ArchiCADQuantities.Width  length
+    187  IfcWall  BaseQuantities.GrossFootprintArea  area
+    187  IfcWall  BaseQuantities.GrossSideArea  area
+    187  IfcWall  BaseQuantities.GrossVolume  volume
+    187  IfcWall  BaseQuantities.Height  length
+    187  IfcWall  BaseQuantities.Length  length
+    187  IfcWall  BaseQuantities.NetFootprintArea  area
+    187  IfcWall  BaseQuantities.NetSideArea  area
+    187  IfcWall  BaseQuantities.NetVolume  volume
+    187  IfcWall  BaseQuantities.Width  length
+wall length, BaseQuantities.Length: 7/7
+net volume, BaseQuantities.NetVolume: 14/14
+PDF renders of this model are not answered from the IFC.
