@@ -1,0 +1,29 @@
+# Dependencies and build output
+node_modules
+dist
+dist-ssr
+.output
+.vinxi
+.nitro
+.wrangler/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.local
+.dev.vars
+
+# GitHub rejects a single file over 100 MB
+*.zip
+
+# Logs and editor
+logs
+*.log
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# dataset
+junction-dataset-preview/
