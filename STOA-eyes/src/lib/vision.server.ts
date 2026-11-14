@@ -5,7 +5,7 @@ import { APICallError, NoObjectGeneratedError, Output, jsonSchema, streamText, t
 
 import { createLovableAiGatewayRunIdFetch } from "./ai/run-id.server";
 import { answerSampleSheet, localMissError, selectBackend, type BackendInfo } from "./backend.server";
-import { arbitrate, nameReason, questionType, withoutDetector, type VisionPayload } from "./checker";
+import { arbitrate, nameReason, questionType, recognizedTemplate, withoutDetector, type VisionPayload } from "./checker";
 import { callDetector } from "./detector.server";
 import type { RawAnalysis } from "./detections";
 
@@ -180,6 +180,9 @@ function refused(reason: string): RawAnalysis {
 export async function analyzeDrawingOnServer(input: AnalyzeInput): Promise<AnalyzeOutcome> {
   const refusedName = nameReason(input.filename);
   if (refusedName) return { ok: true, raw: refused(refusedName) };
+
+  const known = recognizedTemplate(input.question);
+  if (known) return { ok: true, raw: known };
 
   const detected = await callDetector(input);
   if (detected.ok && detected.body.scope === "out_of_scope") return { ok: true, raw: refused(detected.body.reason) };

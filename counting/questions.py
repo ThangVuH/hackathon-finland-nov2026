@@ -20,9 +20,9 @@ def fold(text: str) -> str:
 def asked_kinds(question: str) -> list[str]:
     text = fold(question)
     found = []
-    if re.search(r"\b(windows?|fenetres?)\b", text):
+    if re.search(r"\b(windows?|fenetres?|ikkuna\w*|finestr\w*|fenster\w*|vindue\w*|aken\w*)\b", text):
         found.append("window")
-    if re.search(r"\b(doors?|portes?)\b", text):
+    if re.search(r"\b(doors?|portes?|ovea|ovia|ovi|turen|dore\w*|ust)\b", text):
         found.append("door")
     return found
 

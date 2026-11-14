@@ -40,4 +40,20 @@ Door rules tried on the 50. Six, one of them not distinct.
 6. Arcs whose swing midpoint is outside a room named outdoor, shaft, or void:
    16/50. 129 arcs dropped. Worse than the arcs alone.
 
-If the 15 are scored later, the door rule is 2. The others are not retried.
+Doors stop here. Six rules were tried, and the plain arc count is the best.
+29/50 on the training buildings is the development ceiling. The badge stays unverified.
+The other five rules are not retried. The 15 are not scored.
+
+Apartment candidates, fixed before the score, then stopped.
+The span between two labels stays the failed 10/86 and is not tried again.
+1. Area of the unit outline that contains the unit label: 16/86.
+2. Sum of the room areas inside that outline: 25/86.
+No third rule.
+
+PDF room stroke, chosen by count and not by area.
+Closed gray paths, fill 0.541 and width 0.37, equal the DXF room-polygon count on 39/50.
+No other signature matches that count on any plan.
+On those 39 plans, the PDF area is within 2% of the DXF polygon on 742/989 rooms.
+The written scale and the printed-area factor disagree by more than 2% on 18 plans.
+That disagreement is a low-confidence flag. It does not change the factor.
+The 15 are not read.

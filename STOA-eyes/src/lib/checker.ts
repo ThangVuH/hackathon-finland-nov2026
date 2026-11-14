@@ -43,9 +43,50 @@ function fold(text: string): string {
 export function askedKinds(question: string): Array<"window" | "door"> {
   const text = fold(question);
   const found: Array<"window" | "door"> = [];
-  if (/\b(windows?|fenetres?)\b/.test(text)) found.push("window");
-  if (/\b(doors?|portes?)\b/.test(text)) found.push("door");
+  if (/\b(windows?|fenetres?|ikkuna\w*|finestr\w*|fenster\w*|vindue\w*|aken\w*)\b/.test(text)) found.push("window");
+  if (/\b(doors?|portes?|ovea|ovia|ovi|turen|dore\w*|ust)\b/.test(text)) found.push("door");
   return found;
+}
+
+export function routeQuestion(question: string): { template: string; proof: string } {
+  const text = question.toLowerCase();
+  const area = /net floor area|net area|superficie netta|surface nette|nettofläche|nettowohnfläche|nettoareal|netopõrandapind|nettovolumen|netto-volumen/.test(text);
+  const code = question.match(/\b[A-Za-z]?\d+\.\d+\b/);
+  const letter = question.match(/(?:apartment|appartamento|appartement|wohnung)\s+([A-Za-z])\b/i);
+  if (code && area && /room |locale |pièce |piece |raum |rummet/.test(text)) return { template: "room_area", proof: "room_polygons" };
+  if (letter && area) return { template: "apartment_area", proof: "room_polygons" };
+  if (area && /labelled|denominat|désign|design|bezeichn/.test(text)) return { template: "labelled_area", proof: "room_polygons" };
+  if (/numbered indoor|interni numerati|intérieures numérot|interieures numerot|nummerierten innen/.test(text)) {
+    return { template: "indoor_total", proof: "room_polygons" };
+  }
+  if (/rooms labelled|denominazione|bezeichnung|désignation|designation/.test(text)) return { template: "label_count", proof: "text_boxes" };
+  if (/apartments|appartamenti|appartements|wohnungen/.test(text) && !area) return { template: "apartment_count", proof: "text_boxes" };
+  if (/sinks and wash|pesu- ja tiskiallasta/.test(text)) return { template: "sink", proof: "detector_boxes" };
+  if (/showers and bathtub|suihkua ja kylpyammetta/.test(text)) return { template: "shower", proof: "detector_boxes" };
+  if (/bathtub|vasche da bagno|badewanne|baignoire/.test(text)) return { template: "bath", proof: "detector_boxes" };
+  if (/toilet bowl|wc seat|wc-istuin/.test(text)) return { template: "toilet_bowl", proof: "detector_boxes" };
+  if (/washbasin|lavabi|lavabo/.test(text)) return { template: "basin", proof: "detector_boxes" };
+  if (/toilet| wc|wcs/.test(text)) return { template: "toilet", proof: "detector_boxes" };
+  if (/kitchen|keittiö|keittio/.test(text)) return { template: "kitchen", proof: "detector_boxes" };
+  if (/sauna/.test(text)) return { template: "sauna", proof: "detector_boxes" };
+  if (/floors|storeys|kerrosta/.test(text)) return { template: "floor", proof: "detector_boxes" };
+  const kinds = askedKinds(question);
+  if (kinds.length === 1) return { template: kinds[0], proof: "detector_boxes" };
+  if (kinds.length === 2) return { template: "both", proof: "detector_boxes" };
+  return { template: "unverified", proof: "unverified_vlm" };
+}
+
+export function recognizedTemplate(question: string): RawAnalysis | null {
+  const routed = routeQuestion(question);
+  if (routed.template === "window" || routed.template === "door" || routed.template === "both" || routed.template === "unverified") return null;
+  return {
+    answer: `Recognized template: ${routed.template}. The proof would be ${routed.proof.replaceAll("_", " ")}. No count was invented.`,
+    object_type: routed.template,
+    count: 0,
+    items: [],
+    verdict: "unverified",
+    warning: "This template is recognized, and it is not counted in the browser yet.",
+  };
 }
 
 export function questionType(question: string): QuestionType {

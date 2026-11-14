@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { arbitrate, nameReason, questionType, withoutDetector, type CheckerItem, type VisionPayload } from "./checker";
+import { arbitrate, nameReason, questionType, recognizedTemplate, withoutDetector, type CheckerItem, type VisionPayload } from "./checker";
 
 function box(kind: string, xmin: number, ymin: number, xmax: number, ymax: number, score = 0.9): CheckerItem {
   return { kind, label: kind, xmin, ymin, xmax, ymax, score };
@@ -12,6 +12,8 @@ describe("questionType", () => {
     expect(questionType("Count the doors and the windows")).toBe("both");
     expect(questionType("How many rooms?")).toBe("other");
     expect(questionType("Count the doorways without a leaf")).toBe("other");
+    expect(questionType("Kuinka monta ikkunaa pohjapiirustuksessa on?")).toBe("window");
+    expect(questionType("Mitu ust on mudelis?")).toBe("door");
   });
 });
 
@@ -24,6 +26,16 @@ describe("nameReason", () => {
     expect(nameReason("high_quality-11459.png")).toBeNull();
     expect(nameReason("high_quality_architectural-10491.png")).toBeNull();
     expect(nameReason("data/finna/scan.jpg")).toBeTruthy();
+  });
+});
+
+describe("recognizedTemplate", () => {
+  it("names the proof and does not invent a count", () => {
+    const result = recognizedTemplate("How many rooms labelled 'Zimmer' are there on this floor?");
+    expect(result?.verdict).toBe("unverified");
+    expect(result?.count).toBe(0);
+    expect(result?.answer).toContain("text boxes");
+    expect(recognizedTemplate("How many windows?")).toBeNull();
   });
 });
 
