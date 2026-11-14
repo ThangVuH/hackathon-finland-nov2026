@@ -22,7 +22,9 @@ from pathlib import Path
 from export_yolo import questions_path
 
 QUOTED = re.compile(r"[«»„“”\"'‚‘’]\s*([^«»„“”\"'‚‘’]+?)\s*[«»„“”\"'‚‘’]")
-CODE = re.compile(r"\b([A-Za-z]?\d+\.\d+)\b")
+CODE = re.compile(r"\b([A-Za-z]*\d+\.\d+)\b")
+LABEL_TAIL = re.compile(r"labelled '(.*)' are there on this floor|labelled '(.*)' on this floor")
+ROOM_NAME = re.compile(r"\('(.*)'\)")
 LETTER = re.compile(r"(?:apartment|appartamento|appartement|wohnung)\s+([A-Za-z])\b", re.IGNORECASE)
 ENGLISH = {"how", "what", "which", "could", "is", "are", "can", "on"}
 
@@ -63,8 +65,20 @@ def _has(text: str, *parts: str) -> bool:
     return any(part in text for part in parts)
 
 
+def _straight(question: str) -> str:
+    return question.replace("\u2019", "'").replace("\u2018", "'").replace("\u201a", "'")
+
+
+def _label_text(question: str) -> str:
+    found = LABEL_TAIL.search(question)
+    if found is None:
+        return ""
+    return next(group for group in found.groups() if group is not None)
+
+
 def route(question: str) -> tuple[str, tuple, str]:
     """Return template, parameters, and the proof that would be shown."""
+    question = _straight(question)
     folded = _fold(question)
     quotes = tuple(QUOTED.findall(question))
     code = CODE.search(question)
@@ -88,12 +102,13 @@ def route(question: str) -> tuple[str, tuple, str]:
         "netto-volumen",
     )
     if code_text and area and _has(folded, "room ", "locale ", "pièce ", "piece ", "raum ", "rummet"):
-        label = quotes[0] if quotes else ""
+        named = ROOM_NAME.search(question)
+        label = named.group(1) if named else (quotes[0] if quotes else "")
         return "room_area", (code_text, label), PROOF["room_area"]
     if letter_text and area:
         return "apartment_area", (letter_text,), PROOF["apartment_area"]
     if area and _has(folded, "labelled", "denominat", "désign", "design", "bezeichn"):
-        return "labelled_area", (quotes[0] if quotes else "",), PROOF["labelled_area"]
+        return "labelled_area", (_label_text(question) or (quotes[0] if quotes else ""),), PROOF["labelled_area"]
     if _has(
         folded,
         "numbered indoor",
@@ -104,7 +119,7 @@ def route(question: str) -> tuple[str, tuple, str]:
     ):
         return "indoor_total", (), PROOF["indoor_total"]
     if _has(folded, "rooms labelled", "denominazione", "bezeichnung", "désignation", "designation"):
-        return "label_count", (quotes[0] if quotes else "",), PROOF["label_count"]
+        return "label_count", (_label_text(question) or (quotes[0] if quotes else ""),), PROOF["label_count"]
     if _has(folded, "apartments", "appartamenti", "appartements", "wohnungen") and not area:
         return "apartment_count", (), PROOF["apartment_count"]
     if _has(folded, "sinks and wash", "pesu- ja tiskiallasta"):

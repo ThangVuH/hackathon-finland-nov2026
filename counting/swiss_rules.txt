@@ -53,7 +53,19 @@ No third rule.
 PDF room stroke, chosen by count and not by area.
 Closed gray paths, fill 0.541 and width 0.37, equal the DXF room-polygon count on 39/50.
 No other signature matches that count on any plan.
-On those 39 plans, the PDF area is within 2% of the DXF polygon on 742/989 rooms.
+742/989 is polygon against polygon. It is not the question score.
 The written scale and the printed-area factor disagree by more than 2% on 18 plans.
-That disagreement is a low-confidence flag. It does not change the factor.
+On those plans, before any answer was read, the written scale reproduces the
+DXF polygon on 371/371 rooms and the printed factor on 0/371.
+When the two factors differ, the written scale is the one used.
+Question inference, label centre inside the closed path: room area 97/98,
+labelled total 42/50, indoor total 37/50.
 The 15 are not read.
+
+Apostrophes and room codes, corrected before any reading of the 15.
+Curly apostrophes (’ and ‘) are read as the straight apostrophe.
+A label may contain one, as in Cage d'escalier. The closing quote is the one
+before "are there" or "on this floor", not the first apostrophe.
+A room-area question accepts the same code as the label reader:
+a letter prefix, then digits, a dot and digits (2.10 or U1.09).
+This does not change which rooms an area total includes.
