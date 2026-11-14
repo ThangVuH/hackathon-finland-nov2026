@@ -31,18 +31,38 @@ VAL_FRACTION = 0.15
 SEED = 13
 
 
+_preview_cache: Path | None = None
+
+
 def preview_dir() -> Path:
+    global _preview_cache
+    if _preview_cache is not None:
+        return _preview_cache
     candidates = [
         ROOT.parent / "junction-dataset-preview" / "data" / "cubicasa5k",
         ROOT.parent.parent / "stoa-preview" / "junction-dataset-preview" / "data" / "cubicasa5k",
     ]
     for candidate in candidates:
         if candidate.is_dir():
+            _preview_cache = candidate
             return candidate
     raise FileNotFoundError("CubiCasa preview images were not found next to the repo.")
 
 
-PREVIEW = preview_dir()
+class _LazyPreview:
+    """Resolved on first use, so importing the server does not need the dataset."""
+
+    def __truediv__(self, other: object) -> Path:
+        return preview_dir() / other
+
+    def __fspath__(self) -> str:
+        return str(preview_dir())
+
+    def __getattr__(self, name: str):
+        return getattr(preview_dir(), name)
+
+
+PREVIEW = _LazyPreview()
 
 
 def questions_path() -> Path:

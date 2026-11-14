@@ -44,7 +44,7 @@ py -3.13 -m pip install -r requirements.txt
 py -3.13 -m uvicorn server:app --host 0.0.0.0 --port 8765
 ```
 
-The service listens on port 8765. It has no page at the root: `GET /` returns 404. The routes are `/health`, `/detect`, `/arbitrate`, and `/file`.
+The service listens on port 8765. It has no page at the root: `GET /` returns 404. The routes are `/health`, `/detect`, `/arbitrate`, and `/file`. It starts from this repository alone. The preview dataset is needed only to rerun a measurement or to retrain, not to answer.
 
 `/detect` receives the image and the question. It returns the total, the rectangles on a 0–1000 scale (`ymin, xmin, ymax, xmax`), and a confidence score. The weights in use are `counting/runs/multiclass/weights/epoch22.pt`. The live cutoffs, chosen on the validation plans before the test was read, are window 0.30, door 0.45, sink 0.60, toilet 0.45, shower 0.15, sauna stove 0.15. `counting/detector_threshold.txt` (0.40) belongs to the earlier window-and-door model and is not applied to this one.
 
