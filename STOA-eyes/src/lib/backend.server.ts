@@ -90,6 +90,7 @@ function pack(kind: string, items: Item[]): RawAnalysis {
     count: items.length,
     items: items.map((item) => ({
       label: item.label,
+      kind: noun,
       ymin: item.box[0],
       xmin: item.box[1],
       ymax: item.box[2],

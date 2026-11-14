@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Eye, EyeOff, FileImage, Loader2, TriangleAlert, X } from "lucide-react";
+import { ArrowUp, Eye, FileImage, GripVertical, Loader2, TriangleAlert, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { AnalysisResult } from "@/lib/detections";
+import { spokenAnswer } from "@/lib/speak";
+import { detectionKind, kindSummary, type AnalysisResult } from "@/lib/detections";
+import { markPaint } from "@/lib/mark-style";
 
 export type ChatFile = { id: string; name: string };
 
@@ -11,7 +13,8 @@ export type ChatMessage =
   | { id: string; role: "assistant"; status: "pending"; fileId: string; fileName: string }
   | { id: string; role: "assistant"; status: "error"; error: string; fileId: string; fileName: string }
   | { id: string; role: "assistant"; status: "done"; result: AnalysisResult; fileId: string; fileName: string }
-  | { id: string; role: "assistant"; status: "note"; text: string };
+  | { id: string; role: "assistant"; status: "note"; text: string }
+  | { id: string; role: "assistant"; status: "choose"; question: string; files: ChatFile[]; userMessageId: string; chosen?: boolean };
 
 const QUICK_PROMPTS = ["How many doors?", "Count all windows", "How many rooms?", "Count the columns"];
 
@@ -20,14 +23,18 @@ interface Props {
   files: ChatFile[];
   busy: boolean;
   showBlueprint: boolean;
-  onToggleBlueprint: () => void;
+  horizontal: boolean;
+  onToggleBlueprint: (messageId: string) => void;
   activeFileId: string | null;
   activeMessageId: string | null;
   highlighted: number | null;
   onAddFiles: (files: FileList | File[]) => void;
   onRemoveFile: (id: string) => void;
+  onClearFiles: () => void;
+  onClearMessages: () => void;
   onOpenFile: (id: string) => void;
   onAsk: (question: string) => void;
+  onChoose: (userMessageId: string, question: string, fileIds: string[]) => void;
   onHoverItem: (messageId: string, index: number | null) => void;
   onSelectItem: (messageId: string, index: number) => void;
 }
@@ -37,21 +44,27 @@ export function ChatPanel({
   files,
   busy,
   showBlueprint,
+  horizontal,
   onToggleBlueprint,
   activeFileId,
   activeMessageId,
   highlighted,
   onAddFiles,
   onRemoveFile,
+  onClearFiles,
+  onClearMessages,
   onOpenFile,
   onAsk,
+  onChoose,
   onHoverItem,
   onSelectItem,
 }: Props) {
   const [input, setInput] = useState("");
   const [dropActive, setDropActive] = useState(false);
+  const [fileShare, setFileShare] = useState(33);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const drag = useRef<{ x: number; share: number; width: number } | null>(null);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -65,9 +78,11 @@ export function ChatPanel({
     setInput("");
   };
 
+  const library = files.length > 0;
+
   return (
     <div
-      className="flex h-full min-h-0 flex-col bg-canvas"
+      className="flex h-full min-h-0 flex-row bg-canvas"
       onDragOver={(event) => {
         event.preventDefault();
         setDropActive(true);
@@ -81,23 +96,101 @@ export function ChatPanel({
         if (event.dataTransfer.files.length) onAddFiles(event.dataTransfer.files);
       }}
     >
-      <div className="flex h-12 shrink-0 items-center justify-end px-3">
+      {library && (
+        <>
+        <aside className={cn("flex h-full min-h-0 shrink-0 flex-col", dropActive && "bg-safety/10")} style={{ width: `${fileShare}%` }} aria-label="Drawings to read">
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 px-3 py-3">
+            <span className="label-tech">{files.length} {files.length === 1 ? "file" : "files"}</span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                aria-label="Delete all files"
+                onClick={onClearFiles}
+                disabled={busy}
+                className="inline-flex h-8 items-center rounded-sm border border-border px-2 font-mono text-[0.68rem] text-muted-foreground transition-colors hover:border-safety hover:text-safety disabled:opacity-40"
+              >
+                Delete all
+              </button>
+              <button
+                type="button"
+                onClick={() => fileInput.current?.click()}
+                disabled={busy}
+                className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border px-2 font-mono text-[0.68rem] text-foreground transition-colors hover:border-safety hover:text-safety disabled:opacity-40"
+              >
+                <FileImage className="size-3.5" />
+                Add
+              </button>
+            </div>
+          </div>
+          <ul className="scrollbar-thin min-h-0 flex-1 overflow-y-auto px-2 pb-3">
+            {files.map((file) => (
+              <li key={file.id} className={cn("mb-1 flex min-w-0 items-center gap-1 rounded-sm border bg-panel-raised py-2 pr-1 pl-2", file.id === activeFileId ? "border-safety" : "border-border")}>
+                <button type="button" onClick={() => onOpenFile(file.id)} className="flex min-w-0 flex-1 items-center gap-2 text-left">
+                  <FileImage className="size-3.5 shrink-0 text-scan" />
+                  <span className="truncate font-mono text-[0.72rem] text-foreground">{file.name}</span>
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Remove ${file.name}`}
+                  disabled={busy}
+                  onClick={() => onRemoveFile(file.id)}
+                  className="inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground disabled:opacity-40"
+                >
+                  <X className="size-3" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
         <button
           type="button"
-          onClick={onToggleBlueprint}
-          aria-pressed={showBlueprint}
-          className={cn(
-            "inline-flex shrink-0 items-center gap-2 rounded-sm px-3 py-1.5 font-display text-sm font-semibold",
-            showBlueprint
-              ? "border border-border text-foreground hover:border-safety hover:text-safety"
-              : "bg-safety text-safety-foreground hover:opacity-90",
-          )}
+          aria-orientation="vertical"
+          aria-label="Resize file list"
+          aria-valuemin={18}
+          aria-valuemax={55}
+          aria-valuenow={Math.round(fileShare)}
+          className="group relative z-10 flex w-2 shrink-0 cursor-col-resize items-center justify-center border-0 bg-transparent p-0"
+          onPointerDown={(event) => {
+            const parent = event.currentTarget.parentElement;
+            if (!parent) return;
+            drag.current = { x: event.clientX, share: fileShare, width: parent.getBoundingClientRect().width };
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }}
+          onPointerMove={(event) => {
+            const active = drag.current;
+            if (!active) return;
+            const next = active.share + ((event.clientX - active.x) / active.width) * 100;
+            setFileShare(Math.min(55, Math.max(18, next)));
+          }}
+          onPointerUp={() => {
+            drag.current = null;
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft") setFileShare((share) => Math.max(18, share - 2));
+            if (event.key === "ArrowRight") setFileShare((share) => Math.min(55, share + 2));
+          }}
         >
-          {showBlueprint ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-          {showBlueprint ? "Hide blueprint" : "Show blueprint"}
+          <span className="pointer-events-none absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-border group-hover:bg-safety group-focus-visible:bg-safety" />
+          <span className="pointer-events-none z-10 flex h-7 w-3 items-center justify-center rounded-sm border border-border bg-canvas text-muted-foreground group-hover:border-safety group-hover:text-safety">
+            <GripVertical className="size-3" />
+          </span>
         </button>
-      </div>
-
+        </>
+      )}
+      <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col">
+      {messages.length > 0 && (
+        <div className="flex shrink-0 items-center justify-end px-3 pt-3">
+          <button
+            type="button"
+            aria-label="Delete conversation"
+            onClick={onClearMessages}
+            disabled={busy}
+            className="inline-flex h-8 items-center rounded-sm border border-border px-2 font-mono text-[0.68rem] text-muted-foreground transition-colors hover:border-safety hover:text-safety disabled:opacity-40"
+          >
+            Delete conversation
+          </button>
+        </div>
+      )}
       <div ref={scrollRef} className="scrollbar-thin min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && (files.length > 0 || !showBlueprint) && <EmptyState dropActive={dropActive} />}
         {messages.map((m) =>
@@ -114,12 +207,39 @@ export function ChatPanel({
             <div key={m.id} className="max-w-[85%] rounded-sm border border-border px-3 py-2 text-sm leading-relaxed text-foreground">
               {m.text}
             </div>
+          ) : m.status === "choose" ? (
+            <div key={m.id} className="max-w-[85%] rounded-sm border border-border px-3 py-3">
+              <p className="text-sm leading-relaxed text-foreground">Which drawing should I read?</p>
+              <div className="mt-2.5 flex flex-col gap-1.5">
+                {m.files.map((file) => (
+                  <button
+                    key={file.id}
+                    type="button"
+                    disabled={busy || m.chosen}
+                    onClick={() => onChoose(m.userMessageId, m.question, [file.id])}
+                    className="truncate rounded-sm border border-border bg-panel-raised px-2.5 py-1.5 text-left font-mono text-[0.72rem] text-foreground hover:border-safety hover:text-safety disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {file.name}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  disabled={busy || m.chosen}
+                  onClick={() => onChoose(m.userMessageId, m.question, m.files.map((file) => file.id))}
+                  className="rounded-sm bg-safety px-2.5 py-1.5 text-left font-mono text-[0.72rem] font-semibold text-safety-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  All of these
+                </button>
+              </div>
+            </div>
           ) : (
             <AssistantMessage
               key={m.id}
               message={m}
               active={m.id === activeMessageId}
+              blueprintOpen={showBlueprint && m.id === activeMessageId}
               highlighted={m.id === activeMessageId ? highlighted : null}
+              onToggleBlueprint={() => onToggleBlueprint(m.id)}
               onHover={(index) => onHoverItem(m.id, index)}
               onSelect={(index) => onSelectItem(m.id, index)}
             />
@@ -141,46 +261,26 @@ export function ChatPanel({
             </button>
           ))}
         </div>
-        {files.length > 0 && (
-          <ul className="mb-2.5 flex flex-wrap gap-1.5" aria-label="Drawings to read">
-            {files.map((file) => (
-              <li key={file.id} className={cn("flex max-w-full items-center gap-1 rounded-sm border bg-panel-raised py-1 pr-1 pl-2", file.id === activeFileId ? "border-safety" : "border-border")}>
-                <button type="button" onClick={() => onOpenFile(file.id)} className="flex min-w-0 items-center gap-1">
-                  <FileImage className="size-3.5 shrink-0 text-scan" />
-                  <span className="truncate font-mono text-[0.7rem] text-foreground">{file.name}</span>
-                </button>
-                <button
-                  type="button"
-                  aria-label={`Remove ${file.name}`}
-                  disabled={busy}
-                  onClick={() => onRemoveFile(file.id)}
-                  className="inline-flex size-5 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground disabled:opacity-40"
-                >
-                  <X className="size-3" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
         <form
           onSubmit={(e) => {
             e.preventDefault();
             submit(input);
           }}
-          className="flex items-end gap-2 rounded-sm border border-input bg-canvas p-1.5 focus-within:border-scan"
+          className="flex w-full items-center gap-2 rounded-sm border border-input bg-canvas p-1.5 focus-within:border-scan"
         >
-          <button
-            type="button"
-            onClick={() => fileInput.current?.click()}
-            disabled={busy}
-            aria-label="Read drawings"
-            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-sm border border-border px-2.5 font-mono text-[0.68rem] text-foreground transition-colors hover:border-safety hover:text-safety disabled:opacity-40"
-          >
-            <FileImage className="size-3.5" />
-            Read drawings
-          </button>
+          {!library && (
+            <button
+              type="button"
+              onClick={() => fileInput.current?.click()}
+              disabled={busy}
+              aria-label="Read drawings"
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-sm border border-border px-2.5 font-mono text-[0.68rem] text-foreground transition-colors hover:border-safety hover:text-safety disabled:opacity-40"
+            >
+              <FileImage className="size-3.5" />
+              Read drawings
+            </button>
+          )}
           <input
-            id="drawing-files"
             ref={fileInput}
             type="file"
             accept="image/png,image/jpeg,image/webp"
@@ -200,7 +300,7 @@ export function ChatPanel({
                 submit(input);
               }
             }}
-            rows={2}
+            rows={horizontal ? 1 : 2}
             placeholder={files.length > 1 ? "Ask about these drawings…" : "Ask about this drawing…"}
             className="min-h-10 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
           />
@@ -213,6 +313,7 @@ export function ChatPanel({
             {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowUp className="size-4" />}
           </button>
         </form>
+      </div>
       </div>
     </div>
   );
@@ -246,13 +347,17 @@ function BlueprintIntro({ large = false }: { large?: boolean }) {
 function AssistantMessage({
   message,
   active,
+  blueprintOpen,
   highlighted,
+  onToggleBlueprint,
   onHover,
   onSelect,
 }: {
-  message: Exclude<Extract<ChatMessage, { role: "assistant" }>, { status: "note" }>;
+  message: Exclude<Extract<ChatMessage, { role: "assistant" }>, { status: "note" } | { status: "choose" }>;
   active: boolean;
+  blueprintOpen: boolean;
   highlighted: number | null;
+  onToggleBlueprint: () => void;
   onHover: (index: number | null) => void;
   onSelect: (index: number) => void;
 }) {
@@ -281,27 +386,40 @@ function AssistantMessage({
 
   const { result } = message;
   const hasItems = result.detections.length > 0;
-  const direct = /^(yes|no)\b/i.test(result.answer.trim());
+  const speech = spokenAnswer(result);
 
   return (
     <div className={cn("rounded-sm border bg-background/40", active && hasItems ? "border-scan/60" : "border-border")}>
       <div className="p-3">
         <FileReference name={message.fileName} />
-        {hasItems && !direct && (
-          <div className="mt-2 mb-2 flex items-baseline gap-2">
-            <span className="font-mono text-3xl leading-none font-bold text-safety tabular-nums">{result.count}</span>
-            <span className="label-tech">
-              {result.objectType}
-              {result.count === 1 ? "" : "s"} detected
-            </span>
-          </div>
-        )}
-        <p className={cn("leading-relaxed whitespace-pre-wrap text-foreground", direct ? "mt-2 text-base font-medium" : "text-sm", hasItems && !direct ? "" : "mt-2")}>
-          {result.answer}
-        </p>
+        <p className="mt-2 text-base leading-relaxed whitespace-pre-wrap text-foreground">{speech}</p>
       </div>
 
-      {hasItems && (
+      <div className="border-t border-border px-3 py-2">
+        <button
+          type="button"
+          onClick={onToggleBlueprint}
+          aria-pressed={blueprintOpen}
+          aria-expanded={blueprintOpen}
+          className={cn(
+            "inline-flex items-center gap-2 rounded-sm px-3 py-1.5 font-display text-sm font-semibold",
+            blueprintOpen
+              ? "border border-border text-foreground hover:border-safety hover:text-safety"
+              : "bg-safety text-safety-foreground hover:opacity-90",
+          )}
+        >
+          <Eye className="size-4" />
+          Show blueprint
+        </button>
+      </div>
+
+      {blueprintOpen && result.detections.length > 0 && (
+        <div className="border-t border-border px-3 py-2">
+          <span className="label-tech">{kindSummary(result.detections)}</span>
+        </div>
+      )}
+
+      {blueprintOpen && hasItems && (
         <div className="border-t border-border">
           <div className="px-3 py-2">
             <span className="label-tech">On this file</span>
@@ -309,8 +427,12 @@ function AssistantMessage({
           <ul className="pb-1.5">
             {result.detections.map((d, i) => {
               const on = active && highlighted === i;
+              const paint = markPaint(d.tag);
+              const previous = result.detections[i - 1];
+              const heading = !previous || detectionKind(previous.tag) !== detectionKind(d.tag);
               return (
                 <li key={i}>
+                  {heading && <div className="px-3 pt-2 pb-1 label-tech">{detectionKind(d.tag)}</div>}
                   <button
                     type="button"
                     onMouseEnter={() => onHover(i)}
@@ -326,7 +448,7 @@ function AssistantMessage({
                     <span
                       className={cn(
                         "flex h-5 min-w-7 items-center justify-center rounded-[2px] px-1 font-mono text-[0.68rem] font-bold tabular-nums",
-                        on ? "bg-safety text-safety-foreground" : "bg-scan text-scan-foreground",
+                        on ? "bg-safety text-safety-foreground" : paint.badge,
                       )}
                     >
                       {String(i + 1).padStart(2, "0")}
@@ -348,7 +470,7 @@ function AssistantMessage({
 
 function FileReference({ name }: { name: string }) {
   return (
-    <p className="flex min-w-0 items-center gap-1.5 font-mono text-[0.68rem] text-scan">
+    <p className="flex min-w-0 items-center gap-1.5 font-mono text-sm text-scan">
       <FileImage className="size-3.5 shrink-0" />
       <span className="truncate">{name}</span>
     </p>

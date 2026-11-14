@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
-import { Crosshair, Maximize, Minus, Plus, Upload } from "lucide-react";
+import { Crosshair, Maximize, Minus, Plus, Upload, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { Detection } from "@/lib/detections";
+import { detectionKind, kindSummary, type Detection } from "@/lib/detections";
+import { markPaint } from "@/lib/mark-style";
 import { ACCEPTED_TYPES } from "@/lib/image-prep";
 
 export interface Drawing {
@@ -38,6 +39,7 @@ interface Props {
   onHoverDetection: (index: number | null) => void;
   onSelectDetection: (index: number) => void;
   onFiles: (files: FileList | File[]) => void;
+  onClose?: () => void;
   handleRef?: Ref<DrawingCanvasHandle>;
 }
 
@@ -53,6 +55,7 @@ export function DrawingCanvas({
   onHoverDetection,
   onSelectDetection,
   onFiles,
+  onClose,
   handleRef,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -203,7 +206,6 @@ export function DrawingCanvas({
       {/* Toolbar */}
       <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-border bg-canvas px-3">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="label-tech">Sheet</span>
           <span className="truncate font-mono text-xs text-foreground">{drawing.name}</span>
           {badge && (
             <span className="label-tech shrink-0 text-scan" title={badgeTitle}>
@@ -217,6 +219,17 @@ export function DrawingCanvas({
           )}
         </div>
         <div className="flex items-center gap-1">
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close blueprint"
+              className="mr-1 inline-flex h-8 items-center gap-1.5 rounded-sm border border-border px-2 font-mono text-[0.68rem] text-foreground hover:border-safety hover:text-safety"
+            >
+              <X className="size-3.5" />
+              Close
+            </button>
+          )}
           {sourceToggle && (
             <button
               type="button"
@@ -289,9 +302,11 @@ export function DrawingCanvas({
           />
 
           {natural && showBoxes &&
-            detections.map((d, i) => {
+            detections.map((d, i) => ({ d, i })).sort((a, b) => paintRank(a.d.tag) - paintRank(b.d.tag)).map(({ d, i }) => {
               const [ymin, xmin, ymax, xmax] = d.box;
               const active = highlighted === i;
+              const paint = markPaint(d.tag);
+              const weight = detectionKind(d.tag) === "room" ? 3 : 2;
               return (
                 <button
                   key={i}
@@ -301,26 +316,27 @@ export function DrawingCanvas({
                   onPointerLeave={() => onHoverDetection(null)}
                   onClick={() => onSelectDetection(i)}
                   className={cn(
-                    "absolute cursor-pointer rounded-[1px] border-solid transition-colors",
-                    active
-                      ? "z-20 animate-box-pulse border-safety"
-                      : "z-10 border-scan bg-scan/10 hover:bg-scan/20",
+                    "absolute cursor-pointer rounded-[1px] transition-colors",
+                    paint.box,
+                    paint.dashed ? "border-dashed" : "border-solid",
+                    active ? "z-20 animate-box-pulse" : "z-10",
                   )}
                   style={{
                     top: `${ymin / 10}%`,
                     left: `${xmin / 10}%`,
                     height: `${(ymax - ymin) / 10}%`,
                     width: `${(xmax - xmin) / 10}%`,
-                    borderWidth: `calc(${active ? 3 : 2}px / var(--z))`,
+                    borderWidth: `calc(${active ? weight + 1 : weight}px / var(--z))`,
+                    zIndex: active ? 20 : 10 + paintRank(d.tag),
                   }}
                 >
                   <span
                     className={cn(
                       "pointer-events-none absolute bottom-full left-0 origin-bottom-left font-mono text-[11px] leading-none font-semibold whitespace-nowrap",
-                      active ? "bg-safety text-safety-foreground" : "bg-scan text-scan-foreground",
+                      active ? "bg-safety text-safety-foreground" : paint.badge,
                     )}
                     style={{
-                      transform: `translate(calc(-${active ? 3 : 2}px / var(--z)), 0) scale(calc(1 / var(--z)))`,
+                      transform: `translate(calc(-${active ? weight + 1 : weight}px / var(--z)), 0) scale(calc(1 / var(--z)))`,
                       padding: "3px 5px",
                     }}
                   >
@@ -357,13 +373,35 @@ export function DrawingCanvas({
           <span className="hidden md:inline">· scroll to zoom · drag to pan · dbl-click to fit</span>
         </div>
         {showBoxes && detections.length > 0 && (
-          <div className="pointer-events-none absolute right-3 bottom-3 rounded-sm border border-scan/50 bg-panel/90 px-2.5 py-1.5 font-mono text-[0.7rem] text-scan backdrop-blur">
-            {detections.length} BOX{detections.length === 1 ? "" : "ES"} OVERLAID
+          <div className="pointer-events-none absolute right-3 bottom-3 flex max-w-[70%] flex-wrap items-center justify-end gap-1.5 rounded-sm border border-border bg-panel/90 px-2.5 py-1.5 font-mono text-[0.7rem] text-foreground backdrop-blur">
+            {legendKinds(detections).map((kind) => (
+              <span key={kind} className="inline-flex items-center gap-1">
+                <span className={cn("size-2.5", markPaint(kind).swatch, markPaint(kind).dashed && "border border-dashed border-foreground")} />
+                {kind}
+              </span>
+            ))}
+            <span className="text-muted-foreground">{kindSummary(detections)}</span>
           </div>
         )}
       </div>
     </div>
   );
+}
+
+function paintRank(tag: string): number {
+  const order = ["room", "stair", "column", "door", "window"];
+  const rank = order.indexOf(detectionKind(tag));
+  return rank === -1 ? order.length : rank;
+}
+
+function legendKinds(detections: Detection[]): string[] {
+  const seen: string[] = [];
+  for (const item of [...detections].sort((a, b) => paintRank(a.tag) - paintRank(b.tag))) {
+    const kind = detectionKind(item.tag);
+    const title = kind.charAt(0).toUpperCase() + kind.slice(1);
+    if (!seen.includes(title)) seen.push(title);
+  }
+  return seen;
 }
 
 function ToolButton({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {

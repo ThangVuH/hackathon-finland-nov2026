@@ -15,4 +15,9 @@ describe("off topic questions", () => {
     expect(offTopicReply("door 1 is opposite the 4th door?")).toBeNull();
     expect(offTopicReply("Count the columns")).toBeNull();
   });
+
+  it("keeps a summary of a named blueprint on the drawing", () => {
+    expect(offTopicReply("Summarize the object's information in blue print 2002")).toBeNull();
+    expect(offTopicReply("Describe what is on sheet 2002")).toBeNull();
+  });
 });

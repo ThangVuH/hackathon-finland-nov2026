@@ -82,9 +82,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Stoa Vision" },
+      { title: "BlueprintEye" },
       { name: "description", content: "AI drawing analysis with verifiable visual grounding for site engineers." },
-      { property: "og:title", content: "Stoa Vision" },
+      { property: "og:title", content: "BlueprintEye" },
       { property: "og:description", content: "AI drawing analysis with verifiable visual grounding for site engineers." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

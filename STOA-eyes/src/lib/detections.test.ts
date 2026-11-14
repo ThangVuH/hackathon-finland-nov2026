@@ -25,6 +25,21 @@ describe("normalizeAnalysis", () => {
     expect(r.detections[0]!.box).toEqual([200, 100, 400, 300]);
   });
 
+  it("numbers each kind on its own and reads the kind from the item", () => {
+    const r = normalizeAnalysis({
+      answer: "Doors, windows, and rooms.",
+      object_type: "object",
+      count: 3,
+      items: [
+        { kind: "Window", label: "Living window", ymin: 10, xmin: 10, ymax: 40, xmax: 80 },
+        { kind: "Door", label: "Bedroom 1 door", ymin: 100, xmin: 100, ymax: 160, xmax: 140 },
+        { kind: "Room", label: "Kitchen", ymin: 200, xmin: 200, ymax: 500, xmax: 600 },
+      ],
+    });
+    expect(r.detections.map((item) => item.tag)).toEqual(["Window #1", "Door #1", "Room #1"]);
+    expect(r.objectType).toBe("Object");
+  });
+
   it("counts the boxes drawn, not the model's stated number", () => {
     const r = normalizeAnalysis({
       ...base,

@@ -28,6 +28,7 @@ const analysisSchema = jsonSchema<RawAnalysis>({
         required: ["label", "ymin", "xmin", "ymax", "xmax"],
         properties: {
           label: { type: "string" },
+          kind: { type: "string", description: "Door, Window, Room, Column, or Stair." },
           ymin: { type: "number" },
           xmin: { type: "number" },
           ymax: { type: "number" },
@@ -306,6 +307,15 @@ function retryDelayMs(body: string): number {
   return Math.min(Math.max(ms, 5_000), 24 * 60 * 60 * 1000);
 }
 
+export const MODEL_BUSY_REPLY = "This model is busy right now. The drawing was not read. Ask again in a few seconds.";
+
+/** Gemini answers 503, and sometimes 500, with this sentence when the model is overloaded. The drawing was not rejected. */
+export function modelIsBusy(status: number, body: string): boolean {
+  if (status === 503) return true;
+  const message = `${safeMessage(body) ?? ""} ${body}`;
+  return /experiencing high demand|spikes in demand|model is overloaded/i.test(message);
+}
+
 const GEMINI_SCHEMA = {
   type: "OBJECT",
   required: ["answer", "object_type", "count", "items"],
@@ -320,6 +330,7 @@ const GEMINI_SCHEMA = {
         required: ["label", "ymin", "xmin", "ymax", "xmax"],
         properties: {
           label: { type: "STRING" },
+          kind: { type: "STRING" },
           ymin: { type: "NUMBER" },
           xmin: { type: "NUMBER" },
           ymax: { type: "NUMBER" },
@@ -368,31 +379,42 @@ async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Pro
   });
   try {
     let response: { status: number; text: string } | undefined;
+    let sawBusy = false;
     for (const candidate of usable) {
-      try {
-        response = await postJsonRetry(
-          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(candidate)}:generateContent`,
-          { "Content-Type": "application/json", "x-goog-api-key": backend.apiKey ?? "" },
-          body,
-          120_000,
-        );
-      } catch (error) {
-        console.error("[stoa-vision] gemini request", candidate, error instanceof Error ? error.message : error);
-        response = undefined;
-        continue;
+      let busy = false;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          response = await postJsonRetry(
+            `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(candidate)}:generateContent`,
+            { "Content-Type": "application/json", "x-goog-api-key": backend.apiKey ?? "" },
+            body,
+            120_000,
+          );
+        } catch (error) {
+          console.error("[stoa-vision] gemini request", candidate, error instanceof Error ? error.message : error);
+          response = undefined;
+          busy = false;
+          break;
+        }
+        busy = modelIsBusy(response.status, response.text);
+        if (!busy) break;
+        sawBusy = true;
+        console.error("[stoa-vision] gemini busy", candidate, safeMessage(response.text) ?? response.status);
+        if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 700 * (attempt + 1)));
       }
+      if (!response || busy) continue;
       if (response.status === 429) {
         holdModel(candidate, response.text);
         console.error("[stoa-vision] gemini status", response.status, candidate, safeMessage(response.text) ?? "");
         continue;
       }
-      if (response.status === 503 || response.status === 404) {
+      if (response.status === 404) {
         console.error("[stoa-vision] gemini status", response.status, candidate);
         continue;
       }
       if (response.status < 200 || response.status >= 300) break;
       let payload: {
-        candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[];
+        candidates?: { finishMessage?: string; content?: { parts?: { text?: string; thought?: boolean }[] } }[];
         promptFeedback?: { blockReason?: string };
       };
       try {
@@ -408,6 +430,12 @@ async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Pro
         .filter((part) => part.text && !part.thought)
         .map((part) => part.text)
         .join("\n");
+      const finishMessage = payload.candidates?.[0]?.finishMessage ?? "";
+      if (!text.trim() && modelIsBusy(200, finishMessage)) {
+        sawBusy = true;
+        console.error("[stoa-vision] gemini busy", candidate, finishMessage);
+        continue;
+      }
       try {
         return { ok: true, raw: parseAnalysisText(text) };
       } catch (error) {
@@ -418,6 +446,7 @@ async function analyzeWithGemini(input: AnalyzeInput, backend: BackendInfo): Pro
       console.error("[stoa-vision] gemini status", response?.status ?? 0);
       return { ok: false, error: geminiHttpError(response?.status ?? 0, response?.text ?? "") };
     }
+    if (sawBusy) return { ok: false, error: MODEL_BUSY_REPLY };
     return { ok: false, error: "The vision model did not answer. Try the question again." };
   } catch (error) {
     console.error("[stoa-vision] analysis failed", error instanceof Error ? error.message : error);
@@ -452,6 +481,7 @@ function parseAnalysisText(text: string): RawAnalysis {
     count: Number(parsed.count ?? items.length),
     items: items.map((item) => ({
       label: String(item?.label ?? ""),
+      kind: String(item?.kind ?? ""),
       ymin: Number(item?.ymin),
       xmin: Number(item?.xmin),
       ymax: Number(item?.ymax),
@@ -461,6 +491,7 @@ function parseAnalysisText(text: string): RawAnalysis {
 }
 
 function geminiHttpError(status: number, body: string): string {
+  if (modelIsBusy(status, body)) return MODEL_BUSY_REPLY;
   if (status === 404) return "This model is not on the free key. In .env set STOA_MODEL to a Flash model from AI Studio, then restart.";
   if (status === 401 || status === 403) return "The Gemini key was rejected. Copy it again into STOA_API_KEY and restart.";
   if (status === 429) return "The free Gemini quota is used up for the moment. Wait a minute and try again.";

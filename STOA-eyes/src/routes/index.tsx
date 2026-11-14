@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ImagePlus } from "lucide-react";
+import { ChevronDown, ImagePlus } from "lucide-react";
 import { toast } from "sonner";
 
 import { ChatPanel, type ChatMessage } from "@/components/stoa/ChatPanel";
@@ -8,6 +8,7 @@ import { DrawingCanvas, isAcceptedFile, type Drawing, type DrawingCanvasHandle }
 import { normalizeAnalysis, stabilizeDetections } from "@/lib/detections";
 import { prepareImageForAnalysis, type PreparedImage } from "@/lib/image-prep";
 import { detectSheetMarks } from "@/lib/sketch-mark";
+import { selectDrawingTargets } from "@/lib/file-target";
 import { offTopicReply } from "@/lib/off-topic";
 import { analyzeDrawing, simplifyDrawing } from "@/lib/vision.functions";
 import { cn } from "@/lib/utils";
@@ -15,12 +16,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Stoa Vision — AI drawing analysis for site engineers" },
+      { title: "BlueprintEye — AI drawing analysis for site engineers" },
       {
         name: "description",
         content: "Ask questions about one or more construction drawings and read each count with the file it came from.",
       },
-      { property: "og:title", content: "Stoa Vision — AI drawing analysis for site engineers" },
+      { property: "og:title", content: "BlueprintEye — AI drawing analysis for site engineers" },
       {
         property: "og:description",
         content: "Count doors, windows, rooms and columns on construction drawings. Each answer names the file.",
@@ -41,6 +42,26 @@ interface SheetView {
   note?: string;
 }
 
+function Wordmark() {
+  const [showAi, setShowAi] = useState(false);
+  useEffect(() => {
+    const timer = setInterval(() => setShowAi((current) => !current), 3000);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <span className="font-display text-[1.541rem] font-bold leading-none tracking-[0.12em]">
+      <span className="sr-only">Blueprint.Eye</span>
+      <span aria-hidden>
+        Blueprint<span className="text-white">.</span>
+        <span className="inline-grid justify-items-start text-safety">
+          <span className={cn("col-start-1 row-start-1 transition-opacity duration-500", showAi ? "opacity-0" : "opacity-100")}>Eye</span>
+          <span className={cn("col-start-1 row-start-1 transition-opacity duration-500", showAi ? "opacity-100" : "opacity-0")}>AI</span>
+        </span>
+      </span>
+    </span>
+  );
+}
+
 function StoaVision() {
   const [drawings, setDrawings] = useState<Drawing[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -49,6 +70,7 @@ function StoaVision() {
   const [hovered, setHovered] = useState<number | null>(null);
   const [pinned, setPinned] = useState<number | null>(null);
   const [showBlueprint, setShowBlueprint] = useState(true);
+  const [chatOpen, setChatOpen] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
   const [busy, setBusy] = useState(false);
   const [sheets, setSheets] = useState<Record<string, SheetView>>({});
@@ -132,6 +154,25 @@ function StoaVision() {
     });
   }, []);
 
+  const clearMessages = useCallback(() => {
+    setMessages([]);
+    setActiveMessageId(null);
+    setHovered(null);
+    setPinned(null);
+  }, []);
+
+  const clearFiles = useCallback(() => {
+    setDrawings((current) => {
+      for (const item of current) URL.revokeObjectURL(item.src);
+      return [];
+    });
+    setActiveId(null);
+    setShowBlueprint(false);
+    prepared.current.clear();
+    ready.current.clear();
+    setSheets({});
+  }, []);
+
   const ask = async (question: string) => {
     const aside = offTopicReply(question);
     if (aside) {
@@ -146,12 +187,45 @@ function StoaVision() {
       toast.error("Add a drawing first");
       return;
     }
-    const targets = drawings;
+    const selection = selectDrawingTargets(question, drawings, activeId);
+    if (selection.kind === "missing") {
+      setMessages((current) => [
+        ...current,
+        { id: uid(), role: "user", text: question, files: [] },
+        { id: uid(), role: "assistant", status: "note", text: selection.reply },
+      ]);
+      return;
+    }
+    if (selection.kind === "choose") {
+      const userMessageId = uid();
+      setMessages((current) => [
+        ...current,
+        { id: userMessageId, role: "user", text: question, files: [] },
+        { id: uid(), role: "assistant", status: "choose", question, files: selection.files, userMessageId },
+      ]);
+      return;
+    }
+    const targets = drawings.filter((item) => selection.files.some((file) => file.id === item.id));
+    await runOnFiles(question, targets, true);
+  };
+
+  const chooseDrawings = (userMessageId: string, question: string, ids: string[]) => {
+    const targets = drawings.filter((item) => ids.includes(item.id));
+    void runOnFiles(question, targets, false, userMessageId);
+  };
+
+  const runOnFiles = async (question: string, targets: Drawing[], recordUser: boolean, userMessageId?: string) => {
+    if (targets.length === 0) return;
+    const named = targets.map((drawing) => ({ id: drawing.id, name: drawing.name }));
     const pending = targets.map((drawing) => ({ id: uid(), drawing }));
     const prior = messages;
     setMessages((current) => [
-      ...current,
-      { id: uid(), role: "user", text: question, files: targets.map((drawing) => ({ id: drawing.id, name: drawing.name })) },
+      ...current.map((message) => {
+        if (message.role === "user" && message.id === userMessageId) return { ...message, files: named };
+        if (message.role === "assistant" && message.status === "choose" && message.userMessageId === userMessageId) return { ...message, chosen: true };
+        return message;
+      }),
+      ...(recordUser ? [{ id: uid(), role: "user" as const, text: question, files: named }] : []),
       ...pending.map((item) => ({ id: item.id, role: "assistant" as const, status: "pending" as const, fileId: item.drawing.id, fileName: item.drawing.name })),
     ]);
     setBusy(true);
@@ -232,15 +306,30 @@ function StoaVision() {
     <div className="flex h-dvh flex-col bg-background text-foreground">
       <header className="flex h-12 shrink-0 items-center gap-4 border-b border-border bg-background px-4">
         <div className="flex items-center gap-2.5">
-          <div className="hazard-stripe size-5 rounded-[2px]" aria-hidden />
-          <span className="font-display text-lg font-bold tracking-[0.12em]">
-            Stoa <span className="text-safety">Vision</span>
-          </span>
+          <div className="hazard-stripe size-[1.7125rem] rounded-[2px]" aria-hidden />
+          <Wordmark />
         </div>
       </header>
-      <main className="flex min-h-0 flex-1 flex-col bg-canvas lg:flex-row">
+      <input
+        id="drawing-files"
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        multiple
+        className="hidden"
+        onChange={(event) => {
+          if (event.target.files) handleFiles(event.target.files);
+          event.target.value = "";
+        }}
+      />
+      <main className="relative flex min-h-0 flex-1 flex-col bg-canvas lg:flex-row">
         {showBlueprint && (
-          <section className="h-[55vh] min-h-0 border-border lg:h-auto lg:w-[70%] lg:border-r" aria-label="Drawing canvas">
+          <section
+            className={cn(
+              "min-h-0 border-border",
+              chatOpen ? "h-[55vh] lg:h-auto lg:w-[70%] lg:border-r" : "flex-1",
+            )}
+            aria-label="Drawing canvas"
+          >
             {drawing && displaySrc ? (
               <DrawingCanvas
                 handleRef={canvasRef}
@@ -254,6 +343,7 @@ function StoaVision() {
                     ? { showingOriginal: showOriginal, onToggle: () => setShowOriginal((value) => !value) }
                     : null
                 }
+                onClose={chatOpen ? () => setShowBlueprint(false) : undefined}
                 onHoverDetection={setHovered}
                 onSelectDetection={(index) => activeMessageId && selectItem(activeMessageId, index)}
                 onFiles={handleFiles}
@@ -263,19 +353,40 @@ function StoaVision() {
             )}
           </section>
         )}
-        <aside className={cn("flex min-h-0 flex-1 flex-col bg-canvas", showBlueprint ? "border-t border-border lg:w-[30%] lg:flex-none lg:border-t-0" : "mx-auto w-full max-w-3xl")} aria-label="Drawing Q&A">
+        {chatOpen && (
+        <aside className={cn("flex min-h-0 w-full flex-1 flex-col bg-canvas", showBlueprint && "border-t border-border lg:w-[30%] lg:flex-none lg:border-t-0")} aria-label="Drawing Q&A">
           <ChatPanel
             messages={messages}
             files={drawings.map((item) => ({ id: item.id, name: item.name }))}
             busy={busy}
+            horizontal={!showBlueprint}
             showBlueprint={showBlueprint}
-            onToggleBlueprint={() => setShowBlueprint((value) => !value)}
+            onToggleBlueprint={(messageId) => {
+              const message = messages.find((item) => item.id === messageId);
+              if (!message || message.role !== "assistant" || message.status !== "done") return;
+              if (showBlueprint && activeMessageId === messageId) {
+                setShowBlueprint(false);
+                return;
+              }
+              setActiveId(message.fileId);
+              setActiveMessageId(messageId);
+              setShowOriginal(false);
+              setPinned(null);
+              setHovered(null);
+              setShowBlueprint(true);
+            }}
             activeFileId={drawing?.id ?? null}
             activeMessageId={activeMessageId}
             highlighted={highlighted}
             onAddFiles={handleFiles}
             onRemoveFile={removeFile}
+            onClearFiles={clearFiles}
+            onClearMessages={clearMessages}
             onOpenFile={(id) => {
+              if (showBlueprint && drawing?.id === id) {
+                setShowBlueprint(false);
+                return;
+              }
               setActiveId(id);
               setShowOriginal(false);
               setShowBlueprint(true);
@@ -285,6 +396,7 @@ function StoaVision() {
               setHovered(null);
             }}
             onAsk={ask}
+            onChoose={chooseDrawings}
             onHoverItem={(id, index) => {
               const message = messages.find((item) => item.id === id);
               if (message?.role === "assistant") setActiveId(message.fileId);
@@ -294,6 +406,20 @@ function StoaVision() {
             onSelectItem={selectItem}
           />
         </aside>
+        )}
+        {!chatOpen && (
+          <button
+            type="button"
+            onClick={() => {
+              setShowBlueprint(false);
+              setChatOpen(true);
+            }}
+            aria-label="Open chat"
+            className="absolute bottom-8 left-1/2 z-20 inline-flex size-12 -translate-x-1/2 animate-bounce items-center justify-center rounded-full border border-safety bg-canvas text-safety"
+          >
+            <ChevronDown className="size-6" />
+          </button>
+        )}
       </main>
     </div>
   );
@@ -315,10 +441,6 @@ function EmptySheet({ onUpload, onFiles }: { onUpload: () => void; onFiles: (fil
         if (event.dataTransfer.files.length) onFiles(event.dataTransfer.files);
       }}
     >
-      <div className="flex h-11 shrink-0 items-center gap-2 border-b border-border bg-canvas px-3">
-        <span className="label-tech">Sheet</span>
-        <span className="font-mono text-xs text-muted-foreground">No drawing loaded</span>
-      </div>
       <button
         type="button"
         onClick={onUpload}
