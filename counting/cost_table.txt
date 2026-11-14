@@ -1,0 +1,16 @@
+Inference cost. No vision call was made. The 429 measurement is not used as a comparison.
+PDF times are 10 revision plans. IFC times are the bench files. Detector times are 5 plans after one warmup.
+CPU seconds are process time on this machine, not a claim about another machine.
+
+PDF plan read, median 0.036 s
+label count after the plan is open, median 0.003 s
+one room area after the plan is open, median 0.000 s
+door strokes, median 0.009 s
+IFC list, median 0.516 s over 5 files
+detector warmup, including the weight load, 4.2 s
+detector per plan, median wall 0.070 s, median CPU 0.516 s, median pixels 333498
+
+LLM calls on the page path:
+labels, areas, apartment count, PDF doors, IFC: 0
+sinks, toilets, showers, saunas: 0, detector only
+windows and doors on pixels: 0 when no key is set; 1 vision call when a key is set, plus the detector

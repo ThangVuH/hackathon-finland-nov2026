@@ -36,11 +36,11 @@ With only this, the site opens a plan and answers. A window or door count is mar
 
 This is the only step that needs Python. One machine can run it for the whole team. The others do not install PyTorch; they point the site at that machine.
 
-Python 3.13, with PyTorch, Ultralytics, FastAPI, Pillow, `python-multipart`, PyMuPDF, Shapely, and ifcopenshell.
+Python 3.13.5. The commands use `py -3.13`. The pinned packages are `counting/requirements.txt`.
 
 ```powershell
 cd counting
-py -3.13 -m pip install torch ultralytics fastapi uvicorn python-multipart pillow pymupdf shapely ifcopenshell
+py -3.13 -m pip install -r requirements.txt
 py -3.13 -m uvicorn server:app --host 0.0.0.0 --port 8765
 ```
 
@@ -147,11 +147,58 @@ The non-modal plans, where the answer is not the training mode, are 32/95. Showe
 
 Swiss, PDF inference, measured on 50 revision plans. The sentences already in the table did not move after the apostrophe and letter-code fix: labels 303/303, one room 97/98, labelled total 42/50, indoor total 37/50, apartments 50/50, doors 29/50. The three repaired sentences enter on top: "Cage d'escalier" on 9 plans, 9/9, and rooms U1.09 and U1.15, 2/2. Doors stop at the arcs. The PDF stroke equals that count on 50/50, so it is not a second measurement. Apartment area has no solver.
 
-The 15 holdout buildings were read once, after that rehearsal, from predictions written before the answers were opened: labels 93/93, one room 29/30, labelled total 12/15, indoor total 12/15, apartments 15/15, doors 8/15.
+The 15 holdout buildings were read once, after that rehearsal, from predictions written before the answers were opened. The constant beside them is the rule already used on the 50: the most frequent answer of a sentence that repeats there, otherwise the most frequent answer of the template, and a tie keeps the smaller value. It was not refit on the 15. A baseline hit is an equal value.
+
+| Question | 15, one read | Constant from the 50 |
+|---|---|---|
+| Labels | 93/93 | 34/93 |
+| One room | 29/30 | 0/30 |
+| Labelled total | 12/15 | 0/15 |
+| Indoor total | 12/15 | 0/15 |
+| Apartments | 15/15 | 4/15 |
+| Doors | 8/15 | 0/15 |
+
+One mode for every label question on the 50 is 1, which would score 24/93. The sentence rule above scores 34/93. The single modes are label 1, room area 8.98, labelled total 12.67, indoor total 34.08, apartments 1, doors 12. Apartments at 15/15 and labels at 93/93 are the reader against that constant, not a bare fraction.
 
 IFC is a development score, with no file held out. On a dropped file the page lists each room's name, value, and GlobalId, and it shows the margin of the property chosen on that file. It does not show 215/225.
 
 A vision-only pass is declared in `counting/vlm_alone.txt` and written call by call in `counting/vlm_alone_result.txt`. A failed call, including HTTP 429, is a missing answer. Precision and coverage use the successes only.
+
+## Inference cost
+
+Measured on this machine, Python 3.13.5, CPU. No vision call was made, so this is not a comparison with the vision-only pass.
+
+| Route | LLM calls | Median latency |
+|---|---|---|
+| Label count | 0 | 0.036 s to read the plan, then 0.003 s |
+| Room area, labelled total, indoor total | 0 | the same plan read, then under 0.001 s |
+| Apartment count | 0 | included in the label read |
+| PDF doors | 0 | 0.009 s for the strokes |
+| Dropped IFC | 0 | 0.516 s over 5 bench files |
+| Sinks, toilets, showers, saunas | 0 | the detector, below |
+| Windows or doors on pixels | 0 without a key; 1 vision call when a key is set | the detector, and the badge stays unchecked without the key |
+
+The detector loads in 4.2 s the first time, including the weights. After that, on 5 CubiCasa preview plans (median about 333 000 pixels), the median is 0.070 s of wall time and 0.516 s of process time per plan. Process time can exceed wall time because the library uses more than one thread. The detail is `counting/cost_table.txt`.
+
+## Not measured
+
+- The vision-only pass, and the precision of the agreement badge: not measured. All 35 calls were HTTP 429.
+- Swiss windows, toilets, washbasins, bathtubs, and apartment area: no solver. The badge stays unverified.
+- IFC: a development score, with no file held out.
+- CubiCasa: 48/139 against 44 for the constant.
+
+## Protocol
+
+The measurement was frozen in this order, on `version-1-1`:
+
+| Commit | What was frozen |
+|---|---|
+| `0cf3e01` | the Swiss split and the door candidates |
+| `29bb6cd` | the area fallback and every door rule tried on the 50 |
+| `f3fe5b2` | apostrophes and letter room codes, before the 15 were read |
+| `b41e38f` | the measured limits, the one reading of the 15, and the cached demo routes |
+
+`v1.1-freeze` points at `b41e38f`.
 
 ## What to say
 
@@ -173,6 +220,13 @@ Five of the eight preregistered foreign routes were not returned by the model. T
 ## Data and licence
 
 Room and opening labels used to train the detector come from CubiCasa5K. That dataset is CC BY-NC-SA. The trained detector is a derivative of those labels, so it is not for commercial use. Credit CubiCasa5K when the detector or its counts are shown.
+
+## The four criteria
+
+- Accuracy: the tables above, each family next to its constant. Swiss is measured on 50 revision plans, with 15 read once. CubiCasa is 48/139 against 44. IFC is a development score, with no file held out.
+- A human can check: the page draws the text boxes, the polygon, or the room list with GlobalId. Each template carries its measured sentence. The limits in "Not measured" are part of that check.
+- Creativity: a question is routed to the structured file when the file has the answer. The protocol above was frozen before the reading. When the written scale and the printed areas disagree, the written scale is the one used, and the page says so.
+- Cost: the table in "Inference cost". Recognized templates make no model call.
 
 ## Submission
 

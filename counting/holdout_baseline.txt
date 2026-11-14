@@ -1,0 +1,11 @@
+Holdout baseline. The constant is computed on the 50 only, then applied to the 15.
+Rule fixed with the revision table: repeated sentence mode, otherwise the template mode. A tie keeps the smaller.
+A baseline hit is an equal value. Areas do not use the 2% band in this column.
+
+template                 sentence   one mode  template mode
+label_count              34/93      24/93    1.0
+room_area                 0/30       0/30    8.98
+labelled_area             0/15       0/15    12.67
+indoor_total              0/15       0/15    34.08
+apartment_count           4/15       4/15    1.0
+door                      0/15       0/15    12.0
