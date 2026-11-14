@@ -20,4 +20,10 @@ describe("off topic questions", () => {
     expect(offTopicReply("Summarize the object's information in blue print 2002")).toBeNull();
     expect(offTopicReply("Describe what is on sheet 2002")).toBeNull();
   });
+
+  it("treats summarize this image as a summary of the open sheet", () => {
+    expect(offTopicReply("summarize this image")).toBeNull();
+    expect(offTopicReply("Summarize the picture")).toBeNull();
+    expect(offTopicReply("hello")).toContain("Let's get back to work");
+  });
 });

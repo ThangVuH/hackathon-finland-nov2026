@@ -13,11 +13,14 @@ const ON_READING =
 
 const ON_SHEET = /\b\d{3,}\b/;
 
+/** "this image" names the open sheet the same way "image 7513" names a file. */
+const ON_PICTURE = /\b(?:images?|pictures?|photos?|scans?)\b|\b(?:this|the|current)\s+(?:one|sheet|plan|drawing|file|blueprint)\b/i;
+
 /** A question outside the drawings gets a fixed reply and is not sent to the model. */
 export function offTopicReply(question: string): string | null {
   const text = question.trim();
   if (!text) return null;
   if (ON_DRAWING.test(text) || ON_TASK.test(text) || ON_ITEM.test(text)) return null;
-  if (ON_READING.test(text) && ON_SHEET.test(text)) return null;
+  if (ON_READING.test(text) && (ON_SHEET.test(text) || ON_PICTURE.test(text))) return null;
   return WORK;
 }

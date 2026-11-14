@@ -26,6 +26,12 @@ describe("drawing prompts", () => {
   });
 
   it("summarizes the objects on a named blueprint in plain sentences", () => {
+    const text = instructionsFor("summarize this image");
+    expect(text).toContain("every object on the sheet");
+    expect(text).not.toContain("start with Yes or No");
+  });
+
+  it("uses the same object summary when the sheet is named", () => {
     const text = instructionsFor("Summarize the object's information in blue print 2002");
     expect(text).toContain("every object on the sheet");
     expect(text).toContain("doors, windows, rooms, columns, and stairs");
